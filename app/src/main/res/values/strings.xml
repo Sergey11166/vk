@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">VKNaks</string>
+
+    <integer name="com_vk_sdk_AppId">5367687</integer>
+
+    <string name="prompt_email">E-mail or login</string>
+    <string name="prompt_password">Password</string>
+    <string name="error_incorrect_password_or_login">Wrong password or login</string>
+    <string name="error_invalid_password">Invalid password</string>
+    <string name="error_invalid_email">Invalid email</string>
+    <string name="error_field_required">Required</string>
+    <string name="action_log_in">Log in</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="nav_menu_item_news">News</string>
+    <string name="nav_menu_item_feedback">Feedback</string>
+    <string name="nav_menu_item_messages">Messages</string>
+    <string name="nav_menu_item_friends">Friends</string>
+    <string name="nav_menu_item_birthdays">Birthdays</string>
+    <string name="nav_menu_item_communities">Communities</string>
+    <string name="nav_menu_item_photos">Photos</string>
+    <string name="nav_menu_item_bookmarks">Bookmarks</string>
+    <string name="nav_menu_item_search">Search</string>
+    <string name="nav_menu_item_settings">Settings</string>
+
+</resources>
