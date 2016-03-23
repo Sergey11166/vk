@@ -1,4 +1,4 @@
-package com.naks.vk.model;
+package com.naks.vk.model.domain;
 
 public class News {
 

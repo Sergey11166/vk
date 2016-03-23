@@ -1,4 +1,4 @@
-package com.naks.vk.ui.view;
+package com.naks.vk.ui.custom_view;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;

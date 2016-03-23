@@ -4,23 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
-import com.naks.vk.R;
+import com.naks.vk.presenter.LoginPresenter;
+import com.naks.vk.presenter.LoginPresenterImpl;
+import com.naks.vk.ui.view.LoginView;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
-import com.vk.sdk.util.VKUtil;
 
-public class StartActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements LoginView {
 
-    /**
-     * Scope is set of required permissions for your application
-     *
-     * @see <a href="https://vk.com/dev/permissions">vk.com api permissions documentation</a>
-     */
     private static final String[] sMyScope = new String[]{
             VKScope.FRIENDS,
             VKScope.PHOTOS,
@@ -36,46 +31,20 @@ public class StartActivity extends AppCompatActivity {
             VKScope.OFFLINE
     };
 
+    private LoginPresenter presenter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
 
-        String[] fingerprint = VKUtil.getCertificateFingerprint(this, this.getPackageName());
-        Log.d("Fingerprint", fingerprint[0]);
-
-        VKSdk.wakeUpSession(this, new VKCallback<VKSdk.LoginState>() {
-            @Override
-            public void onResult(VKSdk.LoginState res) {
-                switch (res) {
-                    case LoggedOut:
-                        showLogin();
-                        break;
-                    case LoggedIn:
-                        startMainActivity();
-                        break;
-                    case Pending:
-                        break;
-                    case Unknown:
-                        break;
-                }
-            }
-
-            @Override
-            public void onError(VKError error) {
-
-            }
-        });
+        presenter = new LoginPresenterImpl(this);
+        presenter.wakeUpSession(this);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        presenter.onDestroy();
+        super.onDestroy();
     }
 
     @Override
@@ -84,7 +53,7 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onResult(VKAccessToken res) {
                 // User passed Authorization
-                startMainActivity();
+                presenter.onUserPassedAuthorization();
             }
 
             @Override
@@ -99,11 +68,13 @@ public class StartActivity extends AppCompatActivity {
         }
     }
 
-    private void showLogin() {
+    @Override
+    public void showLoginScreen() {
         VKSdk.login(this, sMyScope);
     }
 
-    private void startMainActivity() {
+    @Override
+    public void navigateToMainScreen() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }

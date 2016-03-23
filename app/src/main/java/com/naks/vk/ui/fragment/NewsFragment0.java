@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naks.vk.R;
-import com.naks.vk.model.News;
+import com.naks.vk.model.domain.News;
 
 import java.util.ArrayList;
 import java.util.List;
