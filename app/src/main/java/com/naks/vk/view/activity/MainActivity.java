@@ -1,17 +1,24 @@
-package com.naks.vk.ui.activity;
+package com.naks.vk.view.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.naks.vk.R;
-import com.naks.vk.ui.fragment.NewsTabsFragment;
+import com.naks.vk.di.component.DaggerMainActivityComponent;
+import com.naks.vk.di.component.HasComponent;
+import com.naks.vk.di.component.MainActivityComponent;
+import com.naks.vk.di.module.MainActivityModule;
+import com.naks.vk.view.fragment.NewsTabsFragment;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity
+        implements
+        HasComponent<MainActivityComponent>,
+        NavigationView.OnNavigationItemSelectedListener {
+
+    MainActivityComponent component;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +27,20 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.naw_view);
         setupNavigationView(navigationView);
+    }
+
+    @Override
+    protected void initDiComponent() {
+        component = DaggerMainActivityComponent.builder()
+                .appComponent(getAppComponent())
+                .mainActivityModule(new MainActivityModule(this))
+                .build();
+        component.inject(this);
+    }
+
+    @Override
+    public MainActivityComponent getComponent() {
+        return component;
     }
 
     @Override

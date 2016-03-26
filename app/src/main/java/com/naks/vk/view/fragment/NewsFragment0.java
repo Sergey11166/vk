@@ -1,9 +1,8 @@
-package com.naks.vk.ui.fragment;
+package com.naks.vk.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,12 +12,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naks.vk.R;
+import com.naks.vk.di.component.DaggerNewsFragment0Component;
+import com.naks.vk.di.component.NewsFragment0Component;
 import com.naks.vk.model.domain.News;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsFragment0 extends Fragment {
+public class NewsFragment0 extends BaseFragment {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -38,11 +39,9 @@ public class NewsFragment0 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         View rootView = LayoutInflater
                 .from(getContext())
                 .inflate(R.layout.news_fragment0, container, false);
-
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -54,11 +53,25 @@ public class NewsFragment0 extends Fragment {
                 R.color.colorAccent,
                 R.color.colorPrimary,
                 R.color.colorPrimaryDark);
-
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         setupRecyclerView(recyclerView);
-
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        bus.hashCode();
+    }
+
+    @Override
+    protected void initDiComponent() {
+        NewsFragment0Component.HasNewsFragment0Depends activityComponent =
+                getActivityComponent(NewsFragment0Component.HasNewsFragment0Depends.class);
+        DaggerNewsFragment0Component.builder()
+                .hasNewsFragment0Depends(activityComponent)
+                .build()
+                .inject(this);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {

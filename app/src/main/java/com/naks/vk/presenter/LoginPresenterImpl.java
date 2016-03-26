@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.naks.vk.model.interactor.LoginInteractor;
 import com.naks.vk.model.interactor.LoginInteractorImpl;
-import com.naks.vk.ui.view.LoginView;
+import com.naks.vk.view.LoginView;
 
 public class LoginPresenterImpl implements LoginPresenter {
 

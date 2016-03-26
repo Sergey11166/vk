@@ -1,4 +1,4 @@
-package com.naks.vk.ui.view;
+package com.naks.vk.view;
 
 public interface LoginView {
 

@@ -1,4 +1,4 @@
-package com.naks.vk.ui.fragment;
+package com.naks.vk.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -14,16 +14,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.naks.vk.R;
+import com.naks.vk.di.component.DaggerNewsTabFragmentComponent;
+import com.naks.vk.di.component.NewsTabFragmentComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsTabsFragment extends Fragment {
+public class NewsTabsFragment extends BaseFragment {
 
     public static NewsTabsFragment newInstance() {
         NewsTabsFragment instance = new NewsTabsFragment();
@@ -35,6 +38,11 @@ public class NewsTabsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Nullable
@@ -69,6 +77,16 @@ public class NewsTabsFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    protected void initDiComponent() {
+        NewsTabFragmentComponent.HasNewsTabFragmentDepends activityComponent =
+                getActivityComponent(NewsTabFragmentComponent.HasNewsTabFragmentDepends.class);
+        DaggerNewsTabFragmentComponent.builder()
+                .hasNewsTabFragmentDepends(activityComponent)
+                .build()
+                .inject(this);
+    }
+
     private void setupDrawer(Activity activity, DrawerLayout drawer, Toolbar toolbar) {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(activity, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -89,8 +107,8 @@ public class NewsTabsFragment extends Fragment {
         private final List<Fragment> mFragments = new ArrayList<>();
         private final List<String> mFragmentTitles = new ArrayList<>();
 
-        public Adapter(FragmentManager fm) {
-            super(fm);
+        public Adapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
         }
 
         public void addFragment(Fragment fragment, String title) {

@@ -1,4 +1,4 @@
-package com.naks.vk.ui.activity;
+package com.naks.vk.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.naks.vk.presenter.LoginPresenter;
 import com.naks.vk.presenter.LoginPresenterImpl;
-import com.naks.vk.ui.view.LoginView;
+import com.naks.vk.view.LoginView;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
