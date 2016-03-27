@@ -1,49 +1,43 @@
 package com.naks.vk.presenter;
 
-import android.content.Context;
-
 import com.naks.vk.model.interactor.LoginInteractor;
-import com.naks.vk.model.interactor.LoginInteractorImpl;
 import com.naks.vk.view.LoginView;
 
-public class LoginPresenterImpl implements LoginPresenter {
+public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLoginFinishedListener {
 
-    private LoginView mLoginView;
-    private LoginInteractor mLoginInteractor;
+    private LoginView loginView;
+    private LoginInteractor loginInteractor;
 
-    public LoginPresenterImpl(LoginView loginView) {
-        mLoginView = loginView;
-        mLoginInteractor = new LoginInteractorImpl();
+    public LoginPresenterImpl(LoginView loginView, LoginInteractor loginInteractor) {
+        this.loginView = loginView;
+        this.loginInteractor = loginInteractor;
     }
 
     @Override
-    public void wakeUpSession(Context context) {
-        mLoginInteractor.wakeUpSession(context, new OnFinishedListener());
+    public void wakeUpSession() {
+        loginInteractor.wakeUpSession(this);
     }
 
     @Override
     public void onUserPassedAuthorization() {
-        mLoginView.navigateToMainScreen();
+        loginView.navigateToMainScreen();
     }
 
     @Override
     public void onDestroy() {
-        mLoginView = null;
+        loginView = null;
     }
 
-    private class OnFinishedListener implements LoginInteractor.OnLoginFinishedListener {
-
-        @Override
-        public void onLoggedOut() {
-            mLoginView.showLoginScreen();
-        }
-
-        @Override
-        public void onLoggedIn() {
-            mLoginView.navigateToMainScreen();
-        }
-
-        @Override public void onPending() {}
-        @Override public void onUnknown() {}
+    @Override
+    public void onLoggedOut() {
+        loginView.showLoginScreen();
     }
+
+    @Override
+    public void onLoggedIn() {
+        loginView.navigateToMainScreen();
+    }
+
+    @Override public void onPending() {}
+    @Override public void onUnknown() {}
 }

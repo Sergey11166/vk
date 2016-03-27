@@ -1,7 +1,5 @@
 package com.naks.vk.model.interactor;
 
-import android.content.Context;
-
 public interface LoginInteractor {
 
     interface OnLoginFinishedListener {
@@ -15,5 +13,5 @@ public interface LoginInteractor {
         void onUnknown();
     }
 
-    void wakeUpSession(Context context, OnLoginFinishedListener listener);
+    void wakeUpSession(OnLoginFinishedListener listener);
 }

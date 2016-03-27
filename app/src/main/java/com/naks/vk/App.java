@@ -1,6 +1,7 @@
 package com.naks.vk;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.naks.vk.di.component.AppComponent;
 import com.naks.vk.di.component.DaggerAppComponent;
@@ -19,7 +20,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.component = createComponent();
+        component = createComponent();
         component.inject(this);
         vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
@@ -33,5 +34,9 @@ public class App extends Application {
 
     public AppComponent getComponent() {
         return component;
+    }
+
+    public static App get(Context context) {
+        return (App) context.getApplicationContext();
     }
 }

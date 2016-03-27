@@ -14,19 +14,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.naks.vk.R;
-import com.naks.vk.di.component.DaggerNewsTabFragmentComponent;
-import com.naks.vk.di.component.NewsTabFragmentComponent;
+import com.naks.vk.view.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsTabsFragment extends BaseFragment {
+public class NewsTabsFragment extends Fragment {
 
     public static NewsTabsFragment newInstance() {
         NewsTabsFragment instance = new NewsTabsFragment();
@@ -43,6 +41,7 @@ public class NewsTabsFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //((MainActivity)getActivity()).getComponent().inject(this);
     }
 
     @Nullable
@@ -75,16 +74,6 @@ public class NewsTabsFragment extends BaseFragment {
         });
 
         return rootView;
-    }
-
-    @Override
-    protected void initDiComponent() {
-        NewsTabFragmentComponent.HasNewsTabFragmentDepends activityComponent =
-                getActivityComponent(NewsTabFragmentComponent.HasNewsTabFragmentDepends.class);
-        DaggerNewsTabFragmentComponent.builder()
-                .hasNewsTabFragmentDepends(activityComponent)
-                .build()
-                .inject(this);
     }
 
     private void setupDrawer(Activity activity, DrawerLayout drawer, Toolbar toolbar) {

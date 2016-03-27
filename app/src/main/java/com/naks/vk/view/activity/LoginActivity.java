@@ -3,10 +3,11 @@ package com.naks.vk.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
+import com.naks.vk.di.component.AppComponent;
+import com.naks.vk.di.component.DaggerLoginComponent;
+import com.naks.vk.di.module.LoginModule;
 import com.naks.vk.presenter.LoginPresenter;
-import com.naks.vk.presenter.LoginPresenterImpl;
 import com.naks.vk.view.LoginView;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
@@ -14,7 +15,9 @@ import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
-public class LoginActivity extends AppCompatActivity implements LoginView {
+import javax.inject.Inject;
+
+public class LoginActivity extends BaseActivity implements LoginView {
 
     private static final String[] sMyScope = new String[]{
             VKScope.FRIENDS,
@@ -31,14 +34,21 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
             VKScope.OFFLINE
     };
 
-    private LoginPresenter presenter;
+    @Inject LoginPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter.wakeUpSession();
+    }
 
-        presenter = new LoginPresenterImpl(this);
-        presenter.wakeUpSession(this);
+    @Override
+    protected void setupComponent(AppComponent appComponent) {
+        DaggerLoginComponent.builder()
+                .appComponent(appComponent)
+                .loginModule(new LoginModule(this))
+                .build()
+                .inject(this);
     }
 
     @Override

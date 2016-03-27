@@ -6,10 +6,18 @@ import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
+import javax.inject.Inject;
+
 public class LoginInteractorImpl implements LoginInteractor {
 
+    private Context context;
+
+    @Inject public LoginInteractorImpl(Context context) {
+        this.context = context;
+    }
+
     @Override
-    public void wakeUpSession(Context context, final OnLoginFinishedListener listener) {
+    public void wakeUpSession(final OnLoginFinishedListener listener) {
         VKSdk.wakeUpSession(context, new VKCallback<VKSdk.LoginState>() {
             @Override
             public void onResult(VKSdk.LoginState res) {

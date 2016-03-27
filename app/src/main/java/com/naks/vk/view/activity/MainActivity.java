@@ -7,18 +7,21 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 
 import com.naks.vk.R;
+import com.naks.vk.di.component.AppComponent;
 import com.naks.vk.di.component.DaggerMainActivityComponent;
-import com.naks.vk.di.component.HasComponent;
 import com.naks.vk.di.component.MainActivityComponent;
-import com.naks.vk.di.module.MainActivityModule;
+import com.naks.vk.di.module.MainModule;
+import com.naks.vk.presenter.MainPresenter;
+import com.naks.vk.view.MainView;
 import com.naks.vk.view.fragment.NewsTabsFragment;
 
-public class MainActivity extends BaseActivity
-        implements
-        HasComponent<MainActivityComponent>,
-        NavigationView.OnNavigationItemSelectedListener {
+import javax.inject.Inject;
 
-    MainActivityComponent component;
+public class MainActivity extends BaseActivity implements
+        NavigationView.OnNavigationItemSelectedListener, MainView {
+
+    private MainActivityComponent component;
+    @Inject MainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +33,14 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected void initDiComponent() {
+    protected void setupComponent(AppComponent appComponent) {
         component = DaggerMainActivityComponent.builder()
-                .appComponent(getAppComponent())
-                .mainActivityModule(new MainActivityModule(this))
+                .appComponent(appComponent)
+                .mainModule(new MainModule(this))
                 .build();
         component.inject(this);
     }
 
-    @Override
     public MainActivityComponent getComponent() {
         return component;
     }
@@ -47,46 +49,13 @@ public class MainActivity extends BaseActivity
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         assert drawer != null;
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        presenter.onBackPressed(drawer.isDrawerOpen(GravityCompat.START));
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.nav_news) {
-            NewsTabsFragment newsTabsFragment = NewsTabsFragment.newInstance();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, newsTabsFragment)
-                    .commit();
-
-        } else if (id == R.id.nav_feedback) {
-
-        } else if (id == R.id.nav_messages) {
-
-        } else if (id == R.id.nav_friends) {
-
-        } else if (id == R.id.nav_birthdays) {
-
-        } else if (id == R.id.nav_communities) {
-
-        } else if (id == R.id.nav_photos) {
-
-        } else if (id == R.id.nav_bookmarks) {
-
-        } else if (id == R.id.nav_search) {
-
-        } else if (id == R.id.nav_setting) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        assert drawer != null;
-        drawer.closeDrawer(GravityCompat.START);
+        presenter.onNavigationItemSelected(id);
         return true;
     }
 
@@ -94,5 +63,25 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_news);
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
+    }
+
+    @Override
+    public void showNewsTabFragment() {
+        NewsTabsFragment newsTabsFragment = NewsTabsFragment.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_container, newsTabsFragment)
+                .commit();
+    }
+
+    @Override
+    public void closeDrawer() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        assert drawer != null;
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void pressBack() {
+        super.onBackPressed();
     }
 }

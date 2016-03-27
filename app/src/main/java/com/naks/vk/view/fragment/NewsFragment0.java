@@ -3,6 +3,7 @@ package com.naks.vk.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,14 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.naks.vk.R;
-import com.naks.vk.di.component.DaggerNewsFragment0Component;
-import com.naks.vk.di.component.NewsFragment0Component;
 import com.naks.vk.model.domain.News;
+import com.naks.vk.view.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsFragment0 extends BaseFragment {
+public class NewsFragment0 extends Fragment {
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -33,6 +33,12 @@ public class NewsFragment0 extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        //((MainActivity)getActivity()).getComponent().inject(this);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Nullable
@@ -59,19 +65,8 @@ public class NewsFragment0 extends BaseFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        bus.hashCode();
-    }
-
-    @Override
-    protected void initDiComponent() {
-        NewsFragment0Component.HasNewsFragment0Depends activityComponent =
-                getActivityComponent(NewsFragment0Component.HasNewsFragment0Depends.class);
-        DaggerNewsFragment0Component.builder()
-                .hasNewsFragment0Depends(activityComponent)
-                .build()
-                .inject(this);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
