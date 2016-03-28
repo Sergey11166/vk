@@ -1,11 +1,10 @@
 package com.naks.vk.di.module;
 
-import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import com.naks.vk.App;
 import com.naks.vk.view.activity.LoginActivity;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
@@ -18,16 +17,16 @@ import dagger.Provides;
 @Module
 public class AppModule {
 
-    private final Application app;
+    private final Context context;
 
-    public AppModule(App app) {
-        this.app = app;
+    public AppModule(Context context) {
+        this.context = context;
     }
 
     @Provides
     @Singleton
-    Application provideApplication() {
-        return app;
+    Context provideContext() {
+        return context;
     }
 
     @Provides
@@ -38,10 +37,10 @@ public class AppModule {
             public void onVKAccessTokenChanged(@Nullable VKAccessToken oldToken,
                                                @Nullable VKAccessToken newToken) {
                 if (newToken == null) {
-                    Toast.makeText(app, "AccessToken invalidated", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(app, LoginActivity.class);
+                    Toast.makeText(context, "AccessToken invalidated", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    app.startActivity(intent);
+                    context.startActivity(intent);
                 }
             }
         };

@@ -1,7 +1,8 @@
 package com.naks.vk.di.module;
 
-import android.app.Application;
+import android.content.Context;
 
+import com.naks.vk.di.anotation.PerActivity;
 import com.naks.vk.model.interactor.LoginInteractor;
 import com.naks.vk.model.interactor.LoginInteractorImpl;
 import com.naks.vk.presenter.LoginPresenter;
@@ -21,16 +22,19 @@ public class LoginModule {
     }
 
     @Provides
+    @PerActivity
     public LoginView provideLoginView() {
         return loginView;
     }
 
     @Provides
-    public LoginInteractor provideLoginInteractor(Application application) {
-        return new LoginInteractorImpl(application);
+    @PerActivity
+    public LoginInteractor provideLoginInteractor(Context context) {
+        return new LoginInteractorImpl(context);
     }
 
     @Provides
+    @PerActivity
     public LoginPresenter provideLoginPresenter(LoginView loginView, LoginInteractor loginInteractor) {
         return new LoginPresenterImpl(loginView, loginInteractor);
     }

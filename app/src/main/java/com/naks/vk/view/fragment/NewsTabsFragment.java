@@ -19,12 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.naks.vk.R;
-import com.naks.vk.view.activity.MainActivity;
+import com.naks.vk.di.component.AppComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsTabsFragment extends Fragment {
+public class NewsTabsFragment extends BaseFragment {
 
     public static NewsTabsFragment newInstance() {
         NewsTabsFragment instance = new NewsTabsFragment();
@@ -39,9 +39,8 @@ public class NewsTabsFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //((MainActivity)getActivity()).getComponent().inject(this);
+    protected void setupComponent(AppComponent appComponent) {
+
     }
 
     @Nullable

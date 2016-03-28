@@ -6,23 +6,17 @@ import android.content.Context;
 import com.naks.vk.di.component.AppComponent;
 import com.naks.vk.di.component.DaggerAppComponent;
 import com.naks.vk.di.module.AppModule;
-import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
-
-import javax.inject.Inject;
 
 public class App extends Application {
 
     private AppComponent component;
 
-    @Inject VKAccessTokenTracker vkAccessTokenTracker;
-
     @Override
     public void onCreate() {
         super.onCreate();
         component = createComponent();
-        component.inject(this);
-        vkAccessTokenTracker.startTracking();
+        component.getVKAccessTokenTracker().startTracking();
         VKSdk.initialize(this);
     }
 

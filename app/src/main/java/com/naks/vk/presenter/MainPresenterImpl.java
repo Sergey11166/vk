@@ -46,4 +46,9 @@ public class MainPresenterImpl implements MainPresenter {
             view.pressBack();
         }
     }
+
+    @Override
+    public void onDestroy() {
+        view = null;
+    }
 }

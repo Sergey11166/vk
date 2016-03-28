@@ -8,8 +8,7 @@ import android.view.MenuItem;
 
 import com.naks.vk.R;
 import com.naks.vk.di.component.AppComponent;
-import com.naks.vk.di.component.DaggerMainActivityComponent;
-import com.naks.vk.di.component.MainActivityComponent;
+import com.naks.vk.di.component.DaggerMainComponent;
 import com.naks.vk.di.module.MainModule;
 import com.naks.vk.presenter.MainPresenter;
 import com.naks.vk.view.MainView;
@@ -18,31 +17,25 @@ import com.naks.vk.view.fragment.NewsTabsFragment;
 import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener, MainView {
+        NavigationView.OnNavigationItemSelectedListener,
+        MainView {
 
-    private MainActivityComponent component;
     @Inject MainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.naw_view);
-        setupNavigationView(navigationView);
+        setupNavigationView((NavigationView) findViewById(R.id.naw_view));
     }
 
     @Override
     protected void setupComponent(AppComponent appComponent) {
-        component = DaggerMainActivityComponent.builder()
+        DaggerMainComponent.builder()
                 .appComponent(appComponent)
                 .mainModule(new MainModule(this))
-                .build();
-        component.inject(this);
-    }
-
-    public MainActivityComponent getComponent() {
-        return component;
+                .build()
+                .inject(this);
     }
 
     @Override
