@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.naks.vk.di.HasComponent;
 import com.naks.vk.di.component.AppComponent;
 import com.naks.vk.di.component.DaggerLoginComponent;
+import com.naks.vk.di.component.LoginComponent;
 import com.naks.vk.di.module.LoginModule;
 import com.naks.vk.presenter.LoginPresenter;
 import com.naks.vk.view.LoginView;
@@ -17,22 +19,28 @@ import com.vk.sdk.api.VKError;
 
 import javax.inject.Inject;
 
-public class LoginActivity extends BaseActivity implements LoginView {
+public class LoginActivity extends BaseActivity implements
+        HasComponent<LoginComponent>,
+        LoginView {
+
+    private static final String TAG = "LoginActivity";
 
     private static final String[] sMyScope = new String[]{
+            VKScope.NOTIFICATIONS,
+            VKScope.MESSAGES,
             VKScope.FRIENDS,
+            VKScope.OFFLINE,
             VKScope.PHOTOS,
-            VKScope.DOCS,
             VKScope.STATUS,
+            VKScope.GROUPS,
+            VKScope.EMAIL,
             VKScope.NOTES,
             VKScope.PAGES,
             VKScope.WALL,
-            VKScope.GROUPS,
-            VKScope.MESSAGES,
-            VKScope.EMAIL,
-            VKScope.NOTIFICATIONS,
-            VKScope.OFFLINE
+            VKScope.DOCS,
     };
+
+    private LoginComponent component;
 
     @Inject LoginPresenter presenter;
 
@@ -44,11 +52,11 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     protected void setupComponent(AppComponent appComponent) {
-        DaggerLoginComponent.builder()
+        component = DaggerLoginComponent.builder()
                 .appComponent(appComponent)
                 .loginModule(new LoginModule(this))
-                .build()
-                .inject(this);
+                .build();
+        component.inject(this);
     }
 
     @Override
@@ -87,5 +95,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
     public void navigateToMainScreen() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    @Override
+    public LoginComponent getComponent() {
+        return component;
     }
 }

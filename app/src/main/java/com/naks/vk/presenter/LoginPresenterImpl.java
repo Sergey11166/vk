@@ -2,15 +2,19 @@ package com.naks.vk.presenter;
 
 import com.naks.vk.model.interactor.LoginInteractor;
 import com.naks.vk.view.LoginView;
+import com.naks.vk.view.activity.LoginActivity;
+
+import javax.inject.Inject;
 
 public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLoginFinishedListener {
 
-    private LoginView loginView;
-    private LoginInteractor loginInteractor;
+    private static final String TAG = "LoginPresenterImpl";
 
-    public LoginPresenterImpl(LoginView loginView, LoginInteractor loginInteractor) {
-        this.loginView = loginView;
-        this.loginInteractor = loginInteractor;
+    @Inject LoginView loginView;
+    @Inject LoginInteractor loginInteractor;
+
+    public LoginPresenterImpl(LoginActivity activity) {
+        activity.getComponent().inject(this);
     }
 
     @Override

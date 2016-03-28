@@ -5,7 +5,9 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.naks.vk.App;
 import com.naks.vk.R;
 import com.naks.vk.di.component.AppComponent;
 import com.naks.vk.di.component.DaggerMainComponent;
@@ -13,6 +15,7 @@ import com.naks.vk.di.module.MainModule;
 import com.naks.vk.presenter.MainPresenter;
 import com.naks.vk.view.MainView;
 import com.naks.vk.view.fragment.NewsTabsFragment;
+import com.vk.sdk.VKAccessTokenTracker;
 
 import javax.inject.Inject;
 

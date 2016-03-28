@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.naks.vk.db.DBHelper;
 import com.naks.vk.view.activity.LoginActivity;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
@@ -24,13 +25,17 @@ public class AppModule {
     }
 
     @Provides
-    @Singleton
     Context provideContext() {
         return context;
     }
 
     @Provides
-    @Singleton
+    DBHelper provideDBHelper(Context context) {
+        return new DBHelper(context);
+    }
+
+
+    @Provides
     VKAccessTokenTracker vkAccessTokenTracker() {
         return new VKAccessTokenTracker() {
             @Override

@@ -1,13 +1,12 @@
 package com.naks.vk.di.module;
 
-import android.content.Context;
-
 import com.naks.vk.di.anotation.PerActivity;
 import com.naks.vk.model.interactor.LoginInteractor;
 import com.naks.vk.model.interactor.LoginInteractorImpl;
 import com.naks.vk.presenter.LoginPresenter;
 import com.naks.vk.presenter.LoginPresenterImpl;
 import com.naks.vk.view.LoginView;
+import com.naks.vk.view.activity.LoginActivity;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,27 +14,33 @@ import dagger.Provides;
 @Module
 public class LoginModule {
 
-    private LoginView loginView;
+    private LoginActivity activity;
 
-    public LoginModule(LoginView loginView) {
-        this.loginView = loginView;
+    public LoginModule(LoginActivity activity) {
+        this.activity = activity;
     }
 
     @Provides
     @PerActivity
-    public LoginView provideLoginView() {
-        return loginView;
+    LoginView provideLoginView() {
+        return activity;
     }
 
     @Provides
     @PerActivity
-    public LoginInteractor provideLoginInteractor(Context context) {
-        return new LoginInteractorImpl(context);
+    LoginActivity provideLoginActivity() {
+        return activity;
     }
 
     @Provides
     @PerActivity
-    public LoginPresenter provideLoginPresenter(LoginView loginView, LoginInteractor loginInteractor) {
-        return new LoginPresenterImpl(loginView, loginInteractor);
+    LoginPresenter provideLoginPresenter(LoginActivity activity) {
+        return new LoginPresenterImpl(activity);
+    }
+
+    @Provides
+    @PerActivity
+    LoginInteractor provideLoginInteractor(LoginActivity activity) {
+        return new LoginInteractorImpl(activity);
     }
 }

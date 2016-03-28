@@ -1,5 +1,6 @@
 package com.naks.vk.di.module;
 
+import com.naks.vk.di.anotation.PerActivity;
 import com.naks.vk.presenter.MainPresenter;
 import com.naks.vk.presenter.MainPresenterImpl;
 import com.naks.vk.view.MainView;
@@ -18,16 +19,19 @@ public class MainModule {
     }
 
     @Provides
+    @PerActivity
     public MainActivity provideMainActivity() {
         return mainActivity;
     }
 
     @Provides
+    @PerActivity
     public MainView provideMainView() {
         return mainActivity;
     }
 
     @Provides
+    @PerActivity
     public MainPresenter provideMainPresenter (MainView mainView) {
         return new MainPresenterImpl(mainView);
     }
