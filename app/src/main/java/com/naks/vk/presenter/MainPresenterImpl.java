@@ -1,15 +1,26 @@
 package com.naks.vk.presenter;
 
 
+import android.util.Log;
+
 import com.naks.vk.R;
+import com.naks.vk.db.DBHelper;
+import com.naks.vk.model.interactor.MainInteractor;
 import com.naks.vk.view.MainView;
+import com.naks.vk.view.activity.MainActivity;
+
+import javax.inject.Inject;
 
 public class MainPresenterImpl implements MainPresenter {
 
-    private MainView view;
+    private static final String TAG = "MainPresenterImpl";
 
-    public MainPresenterImpl(MainView view) {
-        this.view = view;
+    @Inject MainView view;
+    @Inject DBHelper dbHelper;
+    @Inject MainInteractor interactor;
+
+    public MainPresenterImpl(MainActivity activity) {
+        activity.getComponent().inject(this);
     }
 
     @Override
@@ -17,9 +28,10 @@ public class MainPresenterImpl implements MainPresenter {
         if (itemId == R.id.nav_news) {
             view.showNewsTabFragment();
         } else if (itemId == R.id.nav_feedback) {
-
+            Log.d(TAG, dbHelper.toString());
         } else if (itemId == R.id.nav_messages) {
-
+            String resultTestAction = interactor.testAction();
+            Log.d(TAG, resultTestAction);
         } else if (itemId == R.id.nav_friends) {
 
         } else if (itemId == R.id.nav_birthdays) {

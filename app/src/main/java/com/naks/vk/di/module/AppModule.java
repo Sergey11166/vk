@@ -25,17 +25,20 @@ public class AppModule {
     }
 
     @Provides
+    @Singleton
     Context provideContext() {
         return context;
     }
 
     @Provides
+    @Singleton
     DBHelper provideDBHelper(Context context) {
         return new DBHelper(context);
     }
 
 
     @Provides
+    @Singleton
     VKAccessTokenTracker vkAccessTokenTracker() {
         return new VKAccessTokenTracker() {
             @Override

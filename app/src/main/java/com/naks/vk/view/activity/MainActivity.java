@@ -4,26 +4,33 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.naks.vk.App;
 import com.naks.vk.R;
+import com.naks.vk.db.DBHelper;
+import com.naks.vk.di.HasComponent;
 import com.naks.vk.di.component.AppComponent;
 import com.naks.vk.di.component.DaggerMainComponent;
+import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.module.MainModule;
 import com.naks.vk.presenter.MainPresenter;
 import com.naks.vk.view.MainView;
 import com.naks.vk.view.fragment.NewsTabsFragment;
-import com.vk.sdk.VKAccessTokenTracker;
 
 import javax.inject.Inject;
 
 public class MainActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener,
+        HasComponent<MainComponent>,
         MainView {
 
+    private static final String TAG = "MainActivity";
+
+    private MainComponent component;
+
     @Inject MainPresenter presenter;
+    @Inject DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +39,10 @@ public class MainActivity extends BaseActivity implements
         setupNavigationView((NavigationView) findViewById(R.id.naw_view));
     }
 
-    @Override
-    protected void setupComponent(AppComponent appComponent) {
-        DaggerMainComponent.builder()
-                .appComponent(appComponent)
-                .mainModule(new MainModule(this))
-                .build()
-                .inject(this);
+    private void setupNavigationView(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_news);
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));
     }
 
     @Override
@@ -55,14 +59,9 @@ public class MainActivity extends BaseActivity implements
         return true;
     }
 
-    private void setupNavigationView(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_news);
-        onNavigationItemSelected(navigationView.getMenu().getItem(0));
-    }
-
     @Override
     public void showNewsTabFragment() {
+        Log.d(TAG, dbHelper.toString());
         NewsTabsFragment newsTabsFragment = NewsTabsFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_container, newsTabsFragment)
@@ -79,5 +78,19 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void pressBack() {
         super.onBackPressed();
+    }
+
+    @Override
+    protected void setupComponent(AppComponent appComponent) {
+        component = DaggerMainComponent.builder()
+                .appComponent(appComponent)
+                .mainModule(new MainModule(this))
+                .build();
+        component.inject(this);
+    }
+
+    @Override
+    public MainComponent getComponent() {
+        return component;
     }
 }
