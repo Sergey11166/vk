@@ -19,19 +19,33 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.naks.vk.R;
-import com.naks.vk.di.component.AppComponent;
+import com.naks.vk.di.HasComponent;
+import com.naks.vk.di.component.MainComponent;
+import com.naks.vk.di.component.NewsTabComponent;
+import com.naks.vk.di.module.NewsTabModule;
+import com.naks.vk.presenter.NewsTabPresenter;
+import com.naks.vk.view.NewsTabView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsTabsFragment extends BaseFragment {
+import javax.inject.Inject;
+
+public class NewsTabsFragment extends BaseFragment implements
+        NewsTabView, HasComponent<NewsTabComponent> {
+
+    private static final String TAG = "NewsTabsFragment";
+
+    private NewsTabComponent component;
+
+    @Inject NewsTabPresenter presenter;
+
+    public NewsTabsFragment(){}
 
     public static NewsTabsFragment newInstance() {
         NewsTabsFragment instance = new NewsTabsFragment();
         return instance;
     }
-
-    public NewsTabsFragment(){}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,8 +53,9 @@ public class NewsTabsFragment extends BaseFragment {
     }
 
     @Override
-    protected void setupComponent(AppComponent appComponent) {
-
+    protected void setupComponent(MainComponent component) {
+        this.component = component.plus(new NewsTabModule(this));
+        this.component.inject(this);
     }
 
     @Nullable
@@ -69,6 +84,7 @@ public class NewsTabsFragment extends BaseFragment {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                presenter.onFABClick();
             }
         });
 
@@ -89,6 +105,22 @@ public class NewsTabsFragment extends BaseFragment {
         adapter.addFragment(NewsFragment0.newInstance(), "NewsNewsNews");
         adapter.addFragment(NewsFragment0.newInstance(), "NewsNewsNewsNews");
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void navigateToCreateNewsActivity() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public NewsTabComponent getComponent() {
+        return component;
     }
 
     static class Adapter extends FragmentPagerAdapter {

@@ -14,6 +14,7 @@ import com.naks.vk.di.component.AppComponent;
 import com.naks.vk.di.component.DaggerMainComponent;
 import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.module.MainModule;
+import com.naks.vk.di.module.NewsTabModule;
 import com.naks.vk.presenter.MainPresenter;
 import com.naks.vk.view.MainView;
 import com.naks.vk.view.fragment.NewsTabsFragment;
