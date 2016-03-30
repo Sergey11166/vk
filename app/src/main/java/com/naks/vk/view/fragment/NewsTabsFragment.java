@@ -23,6 +23,7 @@ import com.naks.vk.di.HasComponent;
 import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.component.NewsTabComponent;
 import com.naks.vk.di.module.NewsTabModule;
+import com.naks.vk.model.interactor.NewsPageInteractor;
 import com.naks.vk.presenter.NewsTabPresenter;
 import com.naks.vk.view.NewsTabView;
 
@@ -30,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.naks.vk.model.interactor.NewsPageInteractor.TypeNews;
 
 public class NewsTabsFragment extends BaseFragment implements
         NewsTabView, HasComponent<NewsTabComponent> {
@@ -100,15 +103,15 @@ public class NewsTabsFragment extends BaseFragment implements
 
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getActivity().getSupportFragmentManager());
-        adapter.addFragment(NewsFragment0.newInstance(), "News");
-        adapter.addFragment(NewsFragment0.newInstance(), "NewsNews");
-        adapter.addFragment(NewsFragment0.newInstance(), "NewsNewsNews");
-        adapter.addFragment(NewsFragment0.newInstance(), "NewsNewsNewsNews");
+        adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.NEWS, "news");
+        adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.RECOMMENDATIONS, "recommendation");
+        adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.FRIENDS, "friends");
+        adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.COMMUNITIES, "communities");
         viewPager.setAdapter(adapter);
     }
 
     @Override
-    public void navigateToCreateNewsActivity() {
+    public void navigateToNewPostActivity() {
 
     }
 
@@ -131,7 +134,10 @@ public class NewsTabsFragment extends BaseFragment implements
             super(fragmentManager);
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        public void addFragment(Fragment fragment, NewsPageInteractor.TypeNews type, String title) {
+            Bundle args = new Bundle();
+            args.putString(NewsPageFragment.KEY_NEWS_TYPE, type.name());
+            fragment.setArguments(args);
             mFragments.add(fragment);
             mFragmentTitles.add(title);
         }

@@ -22,25 +22,19 @@ public class NewsTabModule {
 
     @Provides
     @PerFragment
-    NewsTabsFragment provideNewsTabFragment() {
+    NewsTabView provideView() {
         return fragment;
     }
 
     @Provides
     @PerFragment
-    NewsTabView provideNewsTabView() {
-        return fragment;
-    }
-
-    @Provides
-    @PerFragment
-    NewsTabPresenter provideNewsTabPresenter(NewsTabsFragment fragment) {
+    NewsTabPresenter providePresenter() {
         return new NewsTabPresenterImpl(fragment);
     }
 
     @Provides
     @PerFragment
-    NewsTabInteractor provideNewsTabInteractor(NewsTabsFragment fragment) {
+    NewsTabInteractor provideInteractor() {
         return new NewsTabInteractorImpl(fragment);
     }
 }

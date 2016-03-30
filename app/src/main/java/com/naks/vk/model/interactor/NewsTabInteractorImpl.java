@@ -1,8 +1,8 @@
 package com.naks.vk.model.interactor;
 
+import android.content.Context;
 import android.util.Log;
 
-import com.naks.vk.db.DBHelper;
 import com.naks.vk.view.fragment.NewsTabsFragment;
 
 import javax.inject.Inject;
@@ -11,7 +11,8 @@ public class NewsTabInteractorImpl implements NewsTabInteractor {
 
     private static final String TAG = "NewsTabInteractorImpl";
 
-    @Inject DBHelper dbHelper;
+    @Inject
+    Context context;
 
     public NewsTabInteractorImpl(NewsTabsFragment fragment) {
         fragment.getComponent().inject(this);
@@ -19,7 +20,7 @@ public class NewsTabInteractorImpl implements NewsTabInteractor {
 
     @Override
     public String testAction() {
-        Log.d(TAG, dbHelper.toString());
+        Log.d(TAG, context.toString());
         return "ResultTestAction";
     }
 }

@@ -22,7 +22,7 @@ public class NewsTabPresenterImpl implements NewsTabPresenter {
     @Override
     public void onFABClick() {
         String result = interactor.testAction();
-        view.navigateToCreateNewsActivity();
+        view.navigateToNewPostActivity();
         Log.d(TAG, view.toString());
         Log.d(TAG, result);
     }
