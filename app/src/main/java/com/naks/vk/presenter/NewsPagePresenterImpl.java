@@ -45,7 +45,6 @@ public class NewsPagePresenterImpl implements
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
-        view = null;
         interactor.onDestroy();
     }
 

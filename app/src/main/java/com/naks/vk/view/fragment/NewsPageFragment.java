@@ -60,13 +60,14 @@ public class NewsPageFragment extends BaseFragment implements
         super.onActivityCreated(savedInstanceState);
         setupRecyclerView(recyclerView);
         setupSwipeRefreshLayout();
+        Log.d(TAG, "presenter.hashCode()" + String.valueOf(presenter.hashCode()));
         presenter.onActivityCreated(typeNews);
         presenter.onRefreshNews(typeNews);
     }
 
     @Override
     public void onDestroy() {
-        presenter.onDestroy();
+        if (presenter != null) presenter.onDestroy();
         super.onDestroy();
     }
 

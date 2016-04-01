@@ -102,7 +102,7 @@ public class NewsTabsFragment extends BaseFragment implements
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getActivity().getSupportFragmentManager());
+        Adapter adapter = new Adapter(getChildFragmentManager());
         adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.NEWS, "news");
         adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.RECOMMENDATIONS, "recommendation");
         adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.FRIENDS, "friends");
