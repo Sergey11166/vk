@@ -23,7 +23,7 @@ public class NewsPagePresenterImpl extends MvpBasePresenter<NewsPageView> implem
 
     public NewsPagePresenterImpl(NewsPageFragment fragment) {
         fragment.getComponent().inject(this);
-        view = getView();
+        view = fragment;
     }
 
     @Override

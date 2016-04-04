@@ -2,6 +2,7 @@ package com.naks.vk.view.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -62,9 +63,12 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void showNewsTabFragment() {
         Log.d(TAG, dbHelper.toString());
-        NewsTabsFragment newsTabsFragment = NewsTabsFragment.newInstance();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_container, newsTabsFragment)
+        NewsTabsFragment newsTabsFragment;
+        FragmentManager fm = getSupportFragmentManager();
+        newsTabsFragment = (NewsTabsFragment) fm.findFragmentByTag(NewsTabsFragment.TAG);
+        if (newsTabsFragment == null) newsTabsFragment = NewsTabsFragment.newInstance();
+        fm.beginTransaction()
+                .replace(R.id.main_container, newsTabsFragment, NewsTabsFragment.TAG)
                 .commit();
     }
 

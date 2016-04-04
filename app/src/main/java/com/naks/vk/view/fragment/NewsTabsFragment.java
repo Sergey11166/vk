@@ -40,7 +40,7 @@ public class NewsTabsFragment extends BaseFragment<MainComponent, MainActivity>
         NewsTabView,
         HasComponent<NewsTabComponent> {
 
-    private static final String TAG = "NewsTabsFragment";
+    public static final String TAG = "NewsTabsFragment";
 
     private NewsTabComponent component;
 

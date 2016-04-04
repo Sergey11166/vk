@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
+        android:id="@+id/contentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -24,12 +24,8 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyle"
-        android:layout_gravity="center"/>
+    <include layout="@layout/loading_view"/>
+    <include layout="@layout/error_view"/>
 
 </FrameLayout>
 

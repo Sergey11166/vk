@@ -38,7 +38,7 @@ public class NewsPageInteractorImpl implements NewsPageInteractor {
                         }
                         break;
                     case RECOMMENDATIONS:
-                        if (context != null) {
+                        if (context == null) {
                             listener.onSuccess(createSampleNews("simple recommendations"));
                         } else {
                             listener.onError(new Exception("Error loading"), pullToRefresh);

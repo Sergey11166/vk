@@ -17,10 +17,10 @@ public abstract class MosbyBaseFragment<CV extends View,
         HC extends HasComponent<T>> extends MvpLceViewStateFragment<CV, M, V, P> {
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         //noinspection unchecked
         setupComponent(((HC)getActivity()).getComponent());
+        super.onViewCreated(view, savedInstanceState);
     }
 
     protected abstract void setupComponent(T component);

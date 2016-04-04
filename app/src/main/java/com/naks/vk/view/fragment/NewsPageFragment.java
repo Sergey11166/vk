@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hannesdorfmann.mosby.mvp.viewstate.lce.LceViewState;
-import com.hannesdorfmann.mosby.mvp.viewstate.lce.data.RetainingLceViewState;
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.data.CastedArrayListLceViewState;
 import com.naks.vk.R;
 import com.naks.vk.di.HasComponent;
 import com.naks.vk.di.component.MainComponent;
@@ -53,8 +53,7 @@ public class NewsPageFragment extends MosbyBaseFragment<SwipeRefreshLayout, List
 
     @NonNull
     @Override public LceViewState<List<News>, NewsPageView> createViewState() {
-        setRetainInstance(true);
-        return new RetainingLceViewState<>();
+        return new CastedArrayListLceViewState<>();
     }
 
     @Override
@@ -79,11 +78,12 @@ public class NewsPageFragment extends MosbyBaseFragment<SwipeRefreshLayout, List
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        contentView.setOnRefreshListener(this);
         typeNews = getTypeNews();
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        setupRecyclerView(recyclerView);
+        Log.d(TAG, "presenter.hashCode()" + String.valueOf(presenter.hashCode()));
     }
-
-
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         adapter.setOnNewsItemClickListener(new NewsRecyclerAdapter.OnNewsItemClickListener() {
@@ -131,6 +131,12 @@ public class NewsPageFragment extends MosbyBaseFragment<SwipeRefreshLayout, List
     @Override
     public void showContent() {
         super.showContent();
+        contentView.setRefreshing(false);
+    }
+
+    @Override
+    public void showError(Throwable e, boolean pullToRefresh) {
+        super.showError(e, pullToRefresh);
         contentView.setRefreshing(false);
     }
 
