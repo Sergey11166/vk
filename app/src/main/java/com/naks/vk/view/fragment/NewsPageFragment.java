@@ -9,8 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.LceViewState;
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.data.RetainingLceViewState;
 import com.naks.vk.R;
 import com.naks.vk.di.HasComponent;
 import com.naks.vk.di.component.MainComponent;
@@ -19,56 +20,48 @@ import com.naks.vk.di.module.NewsPageModule;
 import com.naks.vk.model.domain.News;
 import com.naks.vk.model.interactor.NewsPageInteractor;
 import com.naks.vk.presenter.NewsPagePresenter;
+import com.naks.vk.presenter.NewsPagePresenterImpl;
 import com.naks.vk.view.NewsPageView;
+import com.naks.vk.view.activity.MainActivity;
 import com.naks.vk.view.adapter.NewsRecyclerAdapter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
-public class NewsPageFragment extends BaseFragment implements
+public class NewsPageFragment extends MosbyBaseFragment<SwipeRefreshLayout, List<News>,
+        NewsPageView, NewsPagePresenter, MainComponent, MainActivity>
+        implements
+        NewsPageView,
         HasComponent<NewsPageComponent>,
-        NewsPageView {
+        SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "NewsPageFragment";
     public static final String KEY_NEWS_TYPE = NewsPageFragment.class.getName() + "KEY_NEWS_TYPE";
 
     private NewsPageComponent component;
 
-    @Inject NewsPagePresenter presenter;
     @Inject NewsRecyclerAdapter adapter;
 
-    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private NewsPageInteractor.TypeNews typeNews;
-    private View progressBar;
 
     public static NewsPageFragment newInstance() {
         NewsPageFragment instance = new NewsPageFragment();
-        instance.setRetainInstance(true);
         return instance;
     }
 
-    public NewsPageFragment() {}
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        typeNews = getTypeNews();
+    @NonNull
+    @Override public LceViewState<List<News>, NewsPageView> createViewState() {
+        setRetainInstance(true);
+        return new RetainingLceViewState<>();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupRecyclerView(recyclerView);
-        setupSwipeRefreshLayout();
         Log.d(TAG, "presenter.hashCode()" + String.valueOf(presenter.hashCode()));
-        presenter.onActivityCreated(typeNews);
-        presenter.onRefreshNews(typeNews);
-    }
-
-    @Override
-    public void onDestroy() {
-        if (presenter != null) presenter.onDestroy();
-        super.onDestroy();
     }
 
     @Override
@@ -77,18 +70,20 @@ public class NewsPageFragment extends BaseFragment implements
         this.component.inject(this);
     }
 
-    @Nullable
-    @Override
+    @Nullable @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View rootView = LayoutInflater
-                .from(getContext())
-                .inflate(R.layout.news_page_fragment, container, false);
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        progressBar = rootView.findViewById(R.id.progress);
-        return rootView;
+        return inflater.inflate(R.layout.news_page_fragment, container, false);
     }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        typeNews = getTypeNews();
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+    }
+
+
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         adapter.setOnNewsItemClickListener(new NewsRecyclerAdapter.OnNewsItemClickListener() {
@@ -100,19 +95,6 @@ public class NewsPageFragment extends BaseFragment implements
         recyclerView.setAdapter(adapter);
     }
 
-    private void setupSwipeRefreshLayout() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                presenter.onRefreshNews(typeNews);
-            }
-        });
-        swipeRefreshLayout.setColorSchemeResources(
-                R.color.colorAccent,
-                R.color.colorPrimary,
-                R.color.colorPrimaryDark);
-    }
-
     private NewsPageInteractor.TypeNews getTypeNews() {
         String key = getArguments().getString(KEY_NEWS_TYPE);
         assert key != null;
@@ -120,24 +102,59 @@ public class NewsPageFragment extends BaseFragment implements
     }
 
     @Override
-    public void notifyDataSetChanged() {
+    public void loadData(boolean pullToRefresh) {
+        presenter.loadNews(typeNews, pullToRefresh);
+    }
+
+    @Override
+    protected String getErrorMessage(Throwable e, boolean pullToRefresh) {
+        return e.getMessage();
+    }
+
+    @NonNull
+    @Override
+    public NewsPagePresenter createPresenter() {
+        return new NewsPagePresenterImpl(this);
+    }
+
+    @Override
+    public void setData(List<News> data) {
+        adapter.setData(data);
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void showError() {
-        Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+    public void onRefresh() {
+        loadData(true);
     }
 
     @Override
-    public void showProgress(boolean isShow) {
-        progressBar.setVisibility(isShow ? View.VISIBLE : View.GONE);
-        swipeRefreshLayout.setVisibility(isShow ? View.GONE : View.VISIBLE);
+    public void showContent() {
+        super.showContent();
+        contentView.setRefreshing(false);
     }
 
     @Override
-    public void setRefreshingFalse() {
-        swipeRefreshLayout.setRefreshing(false);
+    public void showLoading(boolean pullToRefresh) {
+        super.showLoading(pullToRefresh);
+        if (pullToRefresh && !contentView.isRefreshing()) {
+            contentView.post(new Runnable() {
+                @Override
+                public void run() {
+                    contentView.setRefreshing(true);
+                }
+            });
+        }
+    }
+
+    @Override
+    public List<News> getData() {
+        return adapter == null? null : adapter.getData();
+    }
+
+    @Override
+    public boolean isRetainInstance() {
+        return super.isRetainInstance();
     }
 
     @Override

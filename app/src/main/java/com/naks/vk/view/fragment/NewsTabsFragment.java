@@ -26,6 +26,7 @@ import com.naks.vk.di.module.NewsTabModule;
 import com.naks.vk.model.interactor.NewsPageInteractor;
 import com.naks.vk.presenter.NewsTabPresenter;
 import com.naks.vk.view.NewsTabView;
+import com.naks.vk.view.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +35,10 @@ import javax.inject.Inject;
 
 import static com.naks.vk.model.interactor.NewsPageInteractor.TypeNews;
 
-public class NewsTabsFragment extends BaseFragment implements
-        NewsTabView, HasComponent<NewsTabComponent> {
+public class NewsTabsFragment extends BaseFragment<MainComponent, MainActivity>
+        implements
+        NewsTabView,
+        HasComponent<NewsTabComponent> {
 
     private static final String TAG = "NewsTabsFragment";
 

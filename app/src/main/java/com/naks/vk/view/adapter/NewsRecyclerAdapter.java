@@ -38,7 +38,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return data == null ? 0 : data.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -50,6 +50,10 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
             v = itemView;
             textContent = (TextView) itemView.findViewById(R.id.text_content);
         }
+    }
+
+    public List<News> getData() {
+        return data;
     }
 
     public void setData(List<News> data) {

@@ -1,16 +1,11 @@
 package com.naks.vk.view;
 
+import com.hannesdorfmann.mosby.mvp.lce.MvpLceView;
 import com.naks.vk.model.domain.News;
 
-public interface NewsPageView {
+import java.util.List;
 
-    void notifyDataSetChanged();
-
-    void showError();
-
-    void showProgress(boolean isShow);
-
-    void setRefreshingFalse();
+public interface NewsPageView extends MvpLceView<List<News>> {
 
     void navigateToNewsDetailActivity(News item);
 }

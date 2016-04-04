@@ -2,16 +2,14 @@ package com.naks.vk.presenter;
 
 import android.view.View;
 
+import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.naks.vk.model.domain.News;
 import com.naks.vk.model.interactor.NewsPageInteractor;
+import com.naks.vk.view.NewsPageView;
 
-public interface NewsPagePresenter {
+public interface NewsPagePresenter extends MvpPresenter<NewsPageView > {
 
     void onItemClick(View v, News item);
 
-    void onRefreshNews(NewsPageInteractor.TypeNews type);
-
-    void onActivityCreated(NewsPageInteractor.TypeNews type);
-
-    void onDestroy();
+    void loadNews(NewsPageInteractor.TypeNews type, final boolean pullToRefresh);
 }

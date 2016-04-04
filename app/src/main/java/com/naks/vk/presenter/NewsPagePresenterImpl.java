@@ -1,29 +1,29 @@
 package com.naks.vk.presenter;
 
-import android.util.Log;
 import android.view.View;
 
+import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.naks.vk.model.domain.News;
 import com.naks.vk.model.interactor.NewsPageInteractor;
 import com.naks.vk.view.NewsPageView;
-import com.naks.vk.view.adapter.NewsRecyclerAdapter;
 import com.naks.vk.view.fragment.NewsPageFragment;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class NewsPagePresenterImpl implements
+public class NewsPagePresenterImpl extends MvpBasePresenter<NewsPageView> implements
         NewsPagePresenter, NewsPageInteractor.OnNewsFinishedListener {
 
     private static final String TAG = "NewsPagePresenterImpl";
 
-    @Inject NewsPageView view;
     @Inject NewsPageInteractor interactor;
-    @Inject NewsRecyclerAdapter adapter;
+
+    private NewsPageView view;
 
     public NewsPagePresenterImpl(NewsPageFragment fragment) {
         fragment.getComponent().inject(this);
+        view = getView();
     }
 
     @Override
@@ -32,38 +32,33 @@ public class NewsPagePresenterImpl implements
     }
 
     @Override
-    public void onActivityCreated(NewsPageInteractor.TypeNews type) {
-        view.showProgress(true);
-        interactor.requestNews(type, this);
-    }
-
-    @Override
-    public void onRefreshNews(NewsPageInteractor.TypeNews type) {
-        interactor.requestNews(type, this);
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "onDestroy");
-        interactor.onDestroy();
+    public void loadNews(NewsPageInteractor.TypeNews type, boolean pullToRefresh) {
+        view.showLoading(pullToRefresh);
+        interactor.loadNews(type, this, pullToRefresh);
     }
 
     @Override
     public void onSuccess(List<News> result) {
-        setDataToAdapter(result);
-        view.notifyDataSetChanged();
-        view.showProgress(false);
-        view.setRefreshingFalse();
+        if (isViewAttached()) {
+            view.setData(result);
+            view.showContent();
+        }
     }
 
     @Override
-    public void onError() {
-        view.showProgress(false);
-        view.setRefreshingFalse();
-        view.showError();
+    public void onError(Exception e, boolean pullToRefresh) {
+        if (isViewAttached()) {
+            view.showError(e, pullToRefresh);
+        }
     }
 
-    private void setDataToAdapter(List<News> data) {
-        adapter.setData(data);
+    @Override
+    public void detachView(boolean retainInstance) {
+        super.detachView(retainInstance);
+    }
+
+    @Override
+    public void attachView(NewsPageView view) {
+        super.attachView(view);
     }
 }

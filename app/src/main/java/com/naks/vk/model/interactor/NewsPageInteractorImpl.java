@@ -24,7 +24,7 @@ public class NewsPageInteractorImpl implements NewsPageInteractor {
     }
 
     @Override
-    public void requestNews(final TypeNews type, final OnNewsFinishedListener listener) {
+    public void loadNews(final TypeNews type, final OnNewsFinishedListener listener, final boolean pullToRefresh) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -34,28 +34,28 @@ public class NewsPageInteractorImpl implements NewsPageInteractor {
                         if (context != null) {
                             listener.onSuccess(createSampleNews("simple news"));
                         } else {
-                            listener.onError();
+                            listener.onError(new Exception("Error loading"), pullToRefresh);
                         }
                         break;
                     case RECOMMENDATIONS:
                         if (context != null) {
                             listener.onSuccess(createSampleNews("simple recommendations"));
                         } else {
-                            listener.onError();
+                            listener.onError(new Exception("Error loading"), pullToRefresh);
                         }
                         break;
                     case FRIENDS:
                         if (context != null) {
                             listener.onSuccess(createSampleNews("simple friends"));
                         } else {
-                            listener.onError();
+                            listener.onError(new Exception("Error loading"), pullToRefresh);
                         }
                         break;
                     case COMMUNITIES:
                         if (context != null) {
                             listener.onSuccess(createSampleNews("simple communities"));
                         } else {
-                            listener.onError();
+                            listener.onError(new Exception("Error loading"), pullToRefresh);
                         }
                         break;
                 }

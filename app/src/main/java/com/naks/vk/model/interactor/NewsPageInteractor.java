@@ -17,10 +17,10 @@ public interface NewsPageInteractor {
 
         void onSuccess(List<News> result);
 
-        void onError();
+        void onError(Exception e, boolean pullToRefresh);
     }
 
-    void requestNews(TypeNews type, OnNewsFinishedListener listener);
+    void loadNews(TypeNews type, OnNewsFinishedListener listener, boolean pullToRefresh);
 
     void onDestroy();
 
