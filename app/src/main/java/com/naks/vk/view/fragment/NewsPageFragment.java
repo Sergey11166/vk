@@ -18,7 +18,7 @@ import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.component.NewsPageComponent;
 import com.naks.vk.di.module.NewsPageModule;
 import com.naks.vk.model.domain.News;
-import com.naks.vk.model.interactor.NewsPageInteractor;
+import com.naks.vk.model.interactor.GetNewsInteractor;
 import com.naks.vk.presenter.NewsPagePresenter;
 import com.naks.vk.presenter.NewsPagePresenterImpl;
 import com.naks.vk.view.NewsPageView;
@@ -37,18 +37,17 @@ public class NewsPageFragment extends MosbyBaseFragment<SwipeRefreshLayout, List
         SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "NewsPageFragment";
-    public static final String KEY_NEWS_TYPE = NewsPageFragment.class.getName() + "KEY_NEWS_TYPE";
+    public static final String KEY_NEWS_TYPE = NewsPageFragment.class.getName() + "_keyNewsType";
 
     private NewsPageComponent component;
 
     @Inject NewsRecyclerAdapter adapter;
 
     private RecyclerView recyclerView;
-    private NewsPageInteractor.TypeNews typeNews;
+    private GetNewsInteractor.TypeNews typeNews;
 
     public static NewsPageFragment newInstance() {
-        NewsPageFragment instance = new NewsPageFragment();
-        return instance;
+        return new NewsPageFragment();
     }
 
     @NonNull
@@ -95,10 +94,10 @@ public class NewsPageFragment extends MosbyBaseFragment<SwipeRefreshLayout, List
         recyclerView.setAdapter(adapter);
     }
 
-    private NewsPageInteractor.TypeNews getTypeNews() {
+    private GetNewsInteractor.TypeNews getTypeNews() {
         String key = getArguments().getString(KEY_NEWS_TYPE);
         assert key != null;
-        return NewsPageInteractor.TypeNews.valueOf(NewsPageInteractor.TypeNews.class, key);
+        return GetNewsInteractor.TypeNews.valueOf(GetNewsInteractor.TypeNews.class, key);
     }
 
     @Override
@@ -155,12 +154,7 @@ public class NewsPageFragment extends MosbyBaseFragment<SwipeRefreshLayout, List
 
     @Override
     public List<News> getData() {
-        return adapter == null? null : adapter.getData();
-    }
-
-    @Override
-    public boolean isRetainInstance() {
-        return super.isRetainInstance();
+        return adapter == null ? null : adapter.getData();
     }
 
     @Override

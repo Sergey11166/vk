@@ -4,7 +4,7 @@ import com.naks.vk.model.domain.News;
 
 import java.util.List;
 
-public interface NewsPageInteractor {
+public interface GetNewsInteractor {
 
     enum TypeNews {
         NEWS,
@@ -22,7 +22,6 @@ public interface NewsPageInteractor {
 
     void loadNews(TypeNews type, OnNewsFinishedListener listener, boolean pullToRefresh);
 
-    void onDestroy();
-
+    void cancelLoader();
 
 }

@@ -23,7 +23,7 @@ import com.naks.vk.di.HasComponent;
 import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.component.NewsTabComponent;
 import com.naks.vk.di.module.NewsTabModule;
-import com.naks.vk.model.interactor.NewsPageInteractor;
+import com.naks.vk.model.interactor.GetNewsInteractor;
 import com.naks.vk.presenter.NewsTabPresenter;
 import com.naks.vk.view.NewsTabView;
 import com.naks.vk.view.activity.MainActivity;
@@ -33,7 +33,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.naks.vk.model.interactor.NewsPageInteractor.TypeNews;
+import static com.naks.vk.model.interactor.GetNewsInteractor.TypeNews;
 
 public class NewsTabsFragment extends BaseFragment<MainComponent, MainActivity>
         implements
@@ -49,8 +49,7 @@ public class NewsTabsFragment extends BaseFragment<MainComponent, MainActivity>
     public NewsTabsFragment(){}
 
     public static NewsTabsFragment newInstance() {
-        NewsTabsFragment instance = new NewsTabsFragment();
-        return instance;
+        return new NewsTabsFragment();
     }
 
     @Override
@@ -137,7 +136,7 @@ public class NewsTabsFragment extends BaseFragment<MainComponent, MainActivity>
             super(fragmentManager);
         }
 
-        public void addFragment(Fragment fragment, NewsPageInteractor.TypeNews type, String title) {
+        public void addFragment(Fragment fragment, GetNewsInteractor.TypeNews type, String title) {
             Bundle args = new Bundle();
             args.putString(NewsPageFragment.KEY_NEWS_TYPE, type.name());
             fragment.setArguments(args);
