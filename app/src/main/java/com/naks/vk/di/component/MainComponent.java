@@ -4,9 +4,9 @@ import com.naks.vk.di.anotation.PerActivity;
 import com.naks.vk.di.module.MainModule;
 import com.naks.vk.di.module.NewsPageModule;
 import com.naks.vk.di.module.NewsTabModule;
-import com.naks.vk.model.interactor.MainInteractorImpl;
-import com.naks.vk.presenter.MainPresenterImpl;
-import com.naks.vk.view.activity.MainActivity;
+import com.naks.vk.mvp.model.interactor.MainInteractorImpl;
+import com.naks.vk.mvp.presenter.MainPresenterImpl;
+import com.naks.vk.ui.activity.MainActivity;
 
 import dagger.Component;
 

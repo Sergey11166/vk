@@ -2,9 +2,9 @@ package com.naks.vk.di.component;
 
 import com.naks.vk.di.anotation.PerActivity;
 import com.naks.vk.di.module.LoginModule;
-import com.naks.vk.model.interactor.LoginInteractorImpl;
-import com.naks.vk.presenter.LoginPresenterImpl;
-import com.naks.vk.view.activity.LoginActivity;
+import com.naks.vk.mvp.model.interactor.LoginInteractorImpl;
+import com.naks.vk.mvp.presenter.LoginPresenterImpl;
+import com.naks.vk.ui.activity.LoginActivity;
 
 import dagger.Component;
 

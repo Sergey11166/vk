@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.naks.vk.db.DBHelper;
-import com.naks.vk.view.activity.LoginActivity;
+import com.naks.vk.ui.activity.LoginActivity;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 

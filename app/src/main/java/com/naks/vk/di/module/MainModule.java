@@ -1,12 +1,12 @@
 package com.naks.vk.di.module;
 
 import com.naks.vk.di.anotation.PerActivity;
-import com.naks.vk.model.interactor.MainInteractor;
-import com.naks.vk.model.interactor.MainInteractorImpl;
-import com.naks.vk.presenter.MainPresenter;
-import com.naks.vk.presenter.MainPresenterImpl;
-import com.naks.vk.view.MainView;
-import com.naks.vk.view.activity.MainActivity;
+import com.naks.vk.mvp.model.interactor.MainInteractor;
+import com.naks.vk.mvp.model.interactor.MainInteractorImpl;
+import com.naks.vk.mvp.presenter.MainPresenter;
+import com.naks.vk.mvp.presenter.MainPresenterImpl;
+import com.naks.vk.mvp.view.MainView;
+import com.naks.vk.ui.activity.MainActivity;
 
 import dagger.Module;
 import dagger.Provides;

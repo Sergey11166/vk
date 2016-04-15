@@ -1,12 +1,12 @@
 package com.naks.vk.di.module;
 
 import com.naks.vk.di.anotation.PerFragment;
-import com.naks.vk.model.interactor.NewsTabInteractor;
-import com.naks.vk.model.interactor.NewsTabInteractorImpl;
-import com.naks.vk.presenter.NewsTabPresenter;
-import com.naks.vk.presenter.NewsTabPresenterImpl;
-import com.naks.vk.view.NewsTabView;
-import com.naks.vk.view.fragment.NewsTabsFragment;
+import com.naks.vk.mvp.model.interactor.NewsTabInteractor;
+import com.naks.vk.mvp.model.interactor.NewsTabInteractorImpl;
+import com.naks.vk.mvp.presenter.NewsTabPresenter;
+import com.naks.vk.mvp.presenter.NewsTabPresenterImpl;
+import com.naks.vk.mvp.view.NewsTabView;
+import com.naks.vk.ui.fragment.NewsTabsFragment;
 
 import dagger.Module;
 import dagger.Provides;

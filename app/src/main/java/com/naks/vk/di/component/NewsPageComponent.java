@@ -2,9 +2,9 @@ package com.naks.vk.di.component;
 
 import com.naks.vk.di.anotation.PerFragment;
 import com.naks.vk.di.module.NewsPageModule;
-import com.naks.vk.model.interactor.GetNewsInteractorImpl;
-import com.naks.vk.presenter.NewsPagePresenterImpl;
-import com.naks.vk.view.fragment.NewsPageFragment;
+import com.naks.vk.mvp.model.interactor.GetNewsInteractorImpl;
+import com.naks.vk.mvp.presenter.NewsPagePresenterImpl;
+import com.naks.vk.ui.fragment.NewsPageFragment;
 
 import dagger.Subcomponent;
 
