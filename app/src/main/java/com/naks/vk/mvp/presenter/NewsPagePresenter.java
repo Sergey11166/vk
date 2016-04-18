@@ -2,12 +2,10 @@ package com.naks.vk.mvp.presenter;
 
 import android.view.View;
 
-import com.hannesdorfmann.mosby.mvp.MvpPresenter;
-import com.naks.vk.mvp.model.viewmodel.News;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
-import com.naks.vk.mvp.view.NewsPageView;
+import com.naks.vk.mvp.model.viewmodel.News;
 
-public interface NewsPagePresenter extends MvpPresenter<NewsPageView > {
+public interface NewsPagePresenter {
 
     void onItemClick(View v, News item);
 

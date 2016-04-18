@@ -2,12 +2,9 @@ package com.naks.vk.mvp.model.interactor;
 
 import android.content.Context;
 
-import com.naks.vk.ui.activity.LoginActivity;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
-
-import javax.inject.Inject;
 
 public class LoginInteractorImpl implements LoginInteractor {
 
@@ -15,9 +12,8 @@ public class LoginInteractorImpl implements LoginInteractor {
 
     private Context context;
 
-    @Inject public LoginInteractorImpl(LoginActivity activity) {
-        activity.getComponent().inject(this);
-        this.context = activity;
+    public LoginInteractorImpl(Context context) {
+        this.context = context;
     }
 
     @Override

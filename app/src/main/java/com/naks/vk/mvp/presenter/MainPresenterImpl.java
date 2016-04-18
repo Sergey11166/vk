@@ -3,30 +3,29 @@ package com.naks.vk.mvp.presenter;
 
 import android.util.Log;
 
+import com.arellomobile.mvp.MvpPresenter;
 import com.naks.vk.R;
 import com.naks.vk.db.DBHelper;
 import com.naks.vk.mvp.model.interactor.MainInteractor;
 import com.naks.vk.mvp.view.MainView;
-import com.naks.vk.ui.activity.MainActivity;
 
 import javax.inject.Inject;
 
-public class MainPresenterImpl implements MainPresenter {
+public class MainPresenterImpl extends MvpPresenter<MainView> implements MainPresenter {
 
     private static final String TAG = "MainPresenterImpl";
 
-    @Inject MainView view;
     @Inject DBHelper dbHelper;
     @Inject MainInteractor interactor;
 
-    public MainPresenterImpl(MainActivity activity) {
-        activity.getComponent().inject(this);
+    public MainPresenterImpl() {
+        super();
     }
 
     @Override
     public void onNavigationItemSelected(int itemId) {
         if (itemId == R.id.nav_news) {
-            view.showNewsTabFragment();
+            getViewState().showNewsTabFragment();
         } else if (itemId == R.id.nav_feedback) {
             Log.d(TAG, dbHelper.toString());
         } else if (itemId == R.id.nav_messages) {
@@ -47,20 +46,20 @@ public class MainPresenterImpl implements MainPresenter {
         } else if (itemId == R.id.nav_setting) {
 
         }
-        view.closeDrawer();
+        getViewState().closeDrawer();
     }
 
     @Override
     public void onBackPressed(boolean isOpenedDrawer) {
         if (isOpenedDrawer) {
-            view.closeDrawer();
+            getViewState().closeDrawer();
         } else {
-            view.pressBack();
+            getViewState().pressBack();
         }
     }
 
     @Override
     public void onDestroy() {
-        view = null;
+
     }
 }

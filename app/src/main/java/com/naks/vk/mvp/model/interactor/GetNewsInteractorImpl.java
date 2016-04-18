@@ -1,27 +1,21 @@
 package com.naks.vk.mvp.model.interactor;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import com.naks.vk.mvp.model.viewmodel.News;
-import com.naks.vk.ui.fragment.NewsPageFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class GetNewsInteractorImpl implements GetNewsInteractor {
 
     private static final String TAG = "GetNewsInteractorImpl";
 
-    @Inject Context context;
-
     private NewsAsyncLoader loader;
 
-    public GetNewsInteractorImpl(NewsPageFragment fragment) {
-        fragment.getComponent().inject(this);
+    public GetNewsInteractorImpl() {
+
     }
 
     @Override

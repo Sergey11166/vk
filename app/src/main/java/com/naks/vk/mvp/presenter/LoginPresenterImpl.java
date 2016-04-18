@@ -1,20 +1,20 @@
 package com.naks.vk.mvp.presenter;
 
+import com.arellomobile.mvp.InjectViewState;
+import com.arellomobile.mvp.MvpPresenter;
 import com.naks.vk.mvp.model.interactor.LoginInteractor;
 import com.naks.vk.mvp.view.LoginView;
-import com.naks.vk.ui.activity.LoginActivity;
 
 import javax.inject.Inject;
 
-public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLoginFinishedListener {
+@InjectViewState
+public class LoginPresenterImpl extends MvpPresenter<LoginView>
+        implements LoginPresenter, LoginInteractor.OnLoginFinishedListener {
 
-    private static final String TAG = "LoginPresenterImpl";
-
-    @Inject LoginView loginView;
     @Inject LoginInteractor loginInteractor;
 
-    public LoginPresenterImpl(LoginActivity activity) {
-        activity.getComponent().inject(this);
+    public LoginPresenterImpl() {
+        super();
     }
 
     @Override
@@ -24,22 +24,22 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLog
 
     @Override
     public void onUserPassedAuthorization() {
-        loginView.navigateToMainScreen();
+        getViewState().navigateToMainScreen();
     }
 
     @Override
     public void onDestroy() {
-        loginView = null;
+
     }
 
     @Override
     public void onLoggedOut() {
-        loginView.showLoginScreen();
+        getViewState().showLoginScreen();
     }
 
     @Override
     public void onLoggedIn() {
-        loginView.navigateToMainScreen();
+        getViewState().navigateToMainScreen();
     }
 
     @Override public void onPending() {}
