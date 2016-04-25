@@ -5,33 +5,19 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.MenuItem;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.naks.vk.R;
-import com.naks.vk.db.DBHelper;
-import com.naks.vk.di.HasComponent;
-import com.naks.vk.di.component.AppComponent;
-import com.naks.vk.di.component.DaggerMainComponent;
-import com.naks.vk.di.component.MainComponent;
-import com.naks.vk.di.module.MainModule;
 import com.naks.vk.mvp.presenter.MainPresenter;
 import com.naks.vk.mvp.view.MainView;
 import com.naks.vk.ui.fragment.NewsTabsFragment;
 
-import javax.inject.Inject;
-
 public class MainActivity extends BaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
-        HasComponent<MainComponent>,
-        MainView {
+        NavigationView.OnNavigationItemSelectedListener, MainView {
 
-    private static final String TAG = "MainActivity";
-
-    private MainComponent component;
-
-    @Inject MainPresenter presenter;
-    @Inject DBHelper dbHelper;
+    @InjectPresenter
+    MainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +48,6 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void showNewsTabFragment() {
-        Log.d(TAG, dbHelper.toString());
         NewsTabsFragment newsTabsFragment;
         FragmentManager fm = getSupportFragmentManager();
         newsTabsFragment = (NewsTabsFragment) fm.findFragmentByTag(NewsTabsFragment.TAG);
@@ -82,19 +67,5 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void pressBack() {
         super.onBackPressed();
-    }
-
-    @Override
-    protected void setupComponent(AppComponent appComponent) {
-        component = DaggerMainComponent.builder()
-                .appComponent(appComponent)
-                .mainModule(new MainModule(this))
-                .build();
-        component.inject(this);
-    }
-
-    @Override
-    public MainComponent getComponent() {
-        return component;
     }
 }

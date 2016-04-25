@@ -2,18 +2,17 @@ package com.naks.vk.mvp.model.interactor;
 
 import android.content.Context;
 
+import com.naks.vk.App;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
 public class LoginInteractorImpl implements LoginInteractor {
 
-    private static final String TAG = "LoginInteractorImpl";
-
     private Context context;
 
-    public LoginInteractorImpl(Context context) {
-        this.context = context;
+    public LoginInteractorImpl() {
+        this.context = App.get();
     }
 
     @Override

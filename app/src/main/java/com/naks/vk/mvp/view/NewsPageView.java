@@ -10,21 +10,17 @@ import java.util.List;
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface NewsPageView extends MvpView {
 
-    void showError(String message);
-
-    void hideError();
-
-    void onStartLoading();
-
-    void onFinishLoading();
-
     void showRefreshing();
 
     void hideRefreshing();
 
-    void showListProgress();
+    void showProgress();
 
-    void hideListProgress();
+    void hideProgress();
+
+    void showError(String message);
+
+    void showRefreshingError(String message);
 
     void setNews(List<News> news, boolean maybeMore);
 

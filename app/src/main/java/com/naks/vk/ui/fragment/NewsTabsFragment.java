@@ -18,33 +18,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.naks.vk.R;
-import com.naks.vk.di.HasComponent;
-import com.naks.vk.di.component.MainComponent;
-import com.naks.vk.di.component.NewsTabComponent;
-import com.naks.vk.di.module.NewsTabModule;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
 import com.naks.vk.mvp.presenter.NewsTabPresenter;
 import com.naks.vk.mvp.view.NewsTabView;
-import com.naks.vk.ui.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import static com.naks.vk.mvp.model.interactor.GetNewsInteractor.TypeNews;
 
-public class NewsTabsFragment extends BaseFragment<MainComponent, MainActivity>
-        implements
-        NewsTabView,
-        HasComponent<NewsTabComponent> {
+public class NewsTabsFragment extends BaseFragment implements NewsTabView {
 
     public static final String TAG = "NewsTabsFragment";
 
-    private NewsTabComponent component;
-
-    @Inject NewsTabPresenter presenter;
+    @InjectPresenter
+    NewsTabPresenter presenter;
 
     public NewsTabsFragment(){}
 
@@ -55,12 +45,6 @@ public class NewsTabsFragment extends BaseFragment<MainComponent, MainActivity>
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void setupComponent(MainComponent component) {
-        this.component = component.plus(new NewsTabModule(this));
-        this.component.inject(this);
     }
 
     @Nullable
@@ -115,17 +99,6 @@ public class NewsTabsFragment extends BaseFragment<MainComponent, MainActivity>
     @Override
     public void navigateToNewPostActivity() {
 
-    }
-
-    @Override
-    public void onDestroy() {
-        presenter.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public NewsTabComponent getComponent() {
-        return component;
     }
 
     static class Adapter extends FragmentPagerAdapter {

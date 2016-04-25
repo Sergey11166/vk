@@ -1,8 +1,13 @@
 package com.naks.vk.mvp.presenter;
 
-public interface NewsTabPresenter {
+import com.arellomobile.mvp.InjectViewState;
+import com.arellomobile.mvp.MvpPresenter;
+import com.naks.vk.mvp.view.NewsTabView;
 
-    void onFABClick();
+@InjectViewState
+public class NewsTabPresenter extends MvpPresenter<NewsTabView> {
 
-    void onDestroy();
+    public void onFABClick() {
+        getViewState().navigateToNewPostActivity();
+    }
 }

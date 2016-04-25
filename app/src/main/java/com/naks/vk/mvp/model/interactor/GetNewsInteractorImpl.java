@@ -7,57 +7,54 @@ import com.naks.vk.mvp.model.viewmodel.News;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class GetNewsInteractorImpl implements GetNewsInteractor {
 
-    private static final String TAG = "GetNewsInteractorImpl";
-
     private NewsAsyncLoader loader;
+    private Random random;
 
     public GetNewsInteractorImpl() {
 
     }
 
     @Override
-    public void loadNews(final TypeNews type, OnNewsFinishedListener listener, boolean pullToRefresh) {
+    public void get(final TypeNews type, int page, boolean isPageLoading, boolean pullToRefresh,
+                    OnNewsLoadingFinishedListener listener) {
         if (loader != null && !loader.isCancelled()) {
             loader.cancel(true);
         }
-        loader = new NewsAsyncLoader(type, listener, pullToRefresh);
+        loader = new NewsAsyncLoader(type, isPageLoading, pullToRefresh, listener);
         loader.execute();
-    }
-
-    @Override
-    public void cancelLoader() {
-        if (loader != null) {
-            loader.cancel(true);
-        }
     }
 
     private class NewsAsyncLoader extends AsyncTask<Void, Void, List<News>> {
 
         private GetNewsInteractor.TypeNews type;
-        private GetNewsInteractor.OnNewsFinishedListener listener;
+        private GetNewsInteractor.OnNewsLoadingFinishedListener listener;
         private boolean pullToRefresh;
+        private boolean isPageLoading;
 
         public NewsAsyncLoader(GetNewsInteractor.TypeNews type,
-                               GetNewsInteractor.OnNewsFinishedListener listener,
-                               boolean pullToRefresh) {
+                               boolean isPageLoading,
+                               boolean pullToRefresh,
+                               GetNewsInteractor.OnNewsLoadingFinishedListener listener) {
             this.listener = listener;
             this.type = type;
             this.pullToRefresh = pullToRefresh;
+            this.isPageLoading = isPageLoading;
         }
 
         @Override
         protected List<News> doInBackground(Void... params) {
 
             try {
-                if (pullToRefresh) Thread.sleep(3000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 return null;
             }
 
-            List<News> news = new ArrayList<>();
+            List<News> news = null;
 
             switch (type) {
                 case NEWS:
@@ -73,25 +70,27 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
                     //error
                     break;
             }
-            Collections.shuffle(news);
+            if (news != null) Collections.shuffle(news);
             return news;
         }
 
         @Override
         protected void onPostExecute(List<News> news) {
 
-            if (isCancelled() || news == null) {
+            if (isCancelled()) {
                 return;
             }
 
-            if (news.isEmpty()) {
-                listener.onError(new Exception("Error loading"), pullToRefresh);
+            if (news == null) {
+                listener.onLoadingFailed(new Exception("Error loading"), isPageLoading, pullToRefresh);
             } else {
-                listener.onSuccess(news);
+                listener.onLoadingSuccess(news, isPageLoading, pullToRefresh);
             }
         }
 
         private List<News> createSampleNews(String sampleText) {
+            if (random == null) random = new Random();
+            if (random.nextBoolean()) return null;
             List<News> result = new ArrayList<>(100);
             for (int i=0; i<100; i++) {
                 News news = new News();

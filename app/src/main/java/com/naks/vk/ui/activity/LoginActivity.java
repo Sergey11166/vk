@@ -4,11 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.naks.vk.di.HasComponent;
-import com.naks.vk.di.component.AppComponent;
-import com.naks.vk.di.component.DaggerLoginComponent;
-import com.naks.vk.di.component.LoginComponent;
-import com.naks.vk.di.module.LoginModule;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.naks.vk.mvp.presenter.LoginPresenter;
 import com.naks.vk.mvp.view.LoginView;
 import com.vk.sdk.VKAccessToken;
@@ -17,13 +13,7 @@ import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
-import javax.inject.Inject;
-
-public class LoginActivity extends BaseActivity implements
-        HasComponent<LoginComponent>,
-        LoginView {
-
-    private static final String TAG = "LoginActivity";
+public class LoginActivity extends BaseActivity implements LoginView {
 
     private static final String[] sMyScope = new String[]{
             VKScope.NOTIFICATIONS,
@@ -40,23 +30,13 @@ public class LoginActivity extends BaseActivity implements
             VKScope.DOCS,
     };
 
-    private LoginComponent component;
-
-    @Inject LoginPresenter presenter;
+    @InjectPresenter
+    LoginPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.wakeUpSession();
-    }
-
-    @Override
-    protected void setupComponent(AppComponent appComponent) {
-        component = DaggerLoginComponent.builder()
-                .appComponent(appComponent)
-                .loginModule(new LoginModule(this))
-                .build();
-        component.inject(this);
     }
 
     @Override
@@ -95,10 +75,5 @@ public class LoginActivity extends BaseActivity implements
     public void navigateToMainScreen() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
-    }
-
-    @Override
-    public LoginComponent getComponent() {
-        return component;
     }
 }

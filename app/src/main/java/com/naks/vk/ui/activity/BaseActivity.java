@@ -1,18 +1,13 @@
 package com.naks.vk.ui.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
-import com.naks.vk.App;
-import com.naks.vk.di.component.AppComponent;
+import com.naks.vk.mvp.MoxyActivity;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends MoxyActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupComponent(App.get(this).getComponent());
     }
-
-    protected abstract void setupComponent(AppComponent appComponent);
 }

@@ -7,12 +7,12 @@
     android:layout_height="match_parent">
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/contentView"
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:name="com.naks.vk.ui.fragment.NewsListFragment"
@@ -24,8 +24,26 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/loading_view"/>
-    <include layout="@layout/error_view"/>
+    <ProgressBar
+        android:id="@+id/progressView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/errorView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_gravity="center"
+        android:drawablePadding="16dp"
+        android:textSize="20sp"
+        android:textColor="#656565"
+        android:text="An error has occurred! click here to retry"
+        android:gravity="center"
+        android:visibility="gone"/>
 
 </FrameLayout>
 

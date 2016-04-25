@@ -13,15 +13,13 @@ public interface GetNewsInteractor {
         COMMUNITIES
     }
 
-    interface OnNewsFinishedListener {
+    interface OnNewsLoadingFinishedListener {
 
-        void onSuccess(List<News> result);
+        void onLoadingSuccess(List<News> news, boolean isPageLoading, boolean pullToRefresh);
 
-        void onError(Exception e, boolean pullToRefresh);
+        void onLoadingFailed(Exception e, boolean isPageLoading, boolean pullToRefresh);
     }
 
-    void loadNews(TypeNews type, OnNewsFinishedListener listener, boolean pullToRefresh);
-
-    void cancelLoader();
-
+    void get(TypeNews type, int page, boolean isPageLoading, boolean pullToRefresh,
+             OnNewsLoadingFinishedListener listener);
 }
