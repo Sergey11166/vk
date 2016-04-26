@@ -17,8 +17,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 @InjectViewState
-public class NewsPagePresenter extends MvpPresenter<NewsPageView> implements
-        GetNewsInteractor.OnNewsLoadingFinishedListener {
+public class NewsPagePresenter extends MvpPresenter<NewsPageView>
+        implements GetNewsInteractor.OnNewsLoadingFinishedListener {
 
     @Inject GetNewsInteractor interactor;
 
@@ -67,7 +67,7 @@ public class NewsPagePresenter extends MvpPresenter<NewsPageView> implements
     private void loadData(int page, boolean isPageLoading, boolean pullToRefresh) {
         if (mIsInLoading) return;
         mIsInLoading = true;
-        showProgress(isPageLoading, isPageLoading);
+        showProgress(isPageLoading, pullToRefresh);
         interactor.get(typeNews, page, isPageLoading, pullToRefresh, this);
     }
 
@@ -91,12 +91,14 @@ public class NewsPagePresenter extends MvpPresenter<NewsPageView> implements
 
     @Override
     public void onLoadingSuccess(List<News> news, boolean isPageLoading, boolean pullToRefresh) {
+        mIsInLoading = false;
         hideProgress(isPageLoading, pullToRefresh);
         getViewState().setNews(news, false);
     }
 
     @Override
     public void onLoadingFailed(Exception e, boolean isPageLoading, boolean pullToRefresh) {
+        mIsInLoading = false;
         hideProgress(isPageLoading, pullToRefresh);
         if (pullToRefresh) {
             getViewState().showRefreshingError(e.getMessage());

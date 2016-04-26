@@ -30,19 +30,12 @@ public class LoginActivity extends BaseActivity implements LoginView {
             VKScope.DOCS,
     };
 
-    @InjectPresenter
-    LoginPresenter presenter;
+    @InjectPresenter LoginPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.wakeUpSession();
-    }
-
-    @Override
-    protected void onDestroy() {
-        presenter.onDestroy();
-        super.onDestroy();
     }
 
     @Override

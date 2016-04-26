@@ -4,7 +4,6 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.naks.vk.App;
 import com.naks.vk.di.component.DaggerLoginComponent;
-import com.naks.vk.di.component.LoginComponent;
 import com.naks.vk.di.module.LoginModule;
 import com.naks.vk.mvp.model.interactor.LoginInteractor;
 import com.naks.vk.mvp.view.LoginView;
@@ -15,21 +14,19 @@ import javax.inject.Inject;
 public class LoginPresenter extends MvpPresenter<LoginView>
         implements LoginInteractor.OnLoginFinishedListener {
 
-    private LoginComponent component;
-
     @Inject LoginInteractor loginInteractor;
 
     public LoginPresenter() {
         super();
-        component = createComponent();
-        component.inject(this);
+        initComponent();
     }
 
-    private LoginComponent createComponent() {
-        return DaggerLoginComponent.builder()
+    private void initComponent() {
+        DaggerLoginComponent.builder()
                 .appComponent(App.get().getComponent())
                 .loginModule(new LoginModule())
-                .build();
+                .build()
+                .inject(this);
     }
 
     public void wakeUpSession() {
@@ -38,11 +35,6 @@ public class LoginPresenter extends MvpPresenter<LoginView>
 
     public void onUserPassedAuthorization() {
         getViewState().navigateToMainScreen();
-    }
-
-    @Override
-    public void onDestroy() {
-
     }
 
     @Override

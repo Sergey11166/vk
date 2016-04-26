@@ -59,6 +59,12 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
         });
         progressView = view.findViewById(R.id.progressView);
         errorView = view.findViewById(R.id.errorView);
+        errorView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.loadNews(false);
+            }
+        });
         setupRecyclerView((RecyclerView) view.findViewById(R.id.recyclerView));
     }
 
@@ -96,6 +102,7 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
     @Override
     public void showProgress() {
         swipeRefreshLayout.setVisibility(View.GONE);
+        errorView.setVisibility(View.GONE);
         progressView.setVisibility(View.VISIBLE);
     }
 
@@ -108,13 +115,12 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
     @Override
     public void showError(String message) {
         swipeRefreshLayout.setVisibility(View.GONE);
-        progressView.setVisibility(View.GONE);
         errorView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showRefreshingError(String message) {
-        Toast.makeText(getActivity(), "Error lite", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "refreshing failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
