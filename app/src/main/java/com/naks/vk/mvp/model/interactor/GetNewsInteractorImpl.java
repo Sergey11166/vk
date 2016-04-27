@@ -14,10 +14,6 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
     private NewsAsyncLoader loader;
     private Random random;
 
-    public GetNewsInteractorImpl() {
-
-    }
-
     @Override
     public void get(final TypeNews type, int page, boolean isPageLoading, boolean pullToRefresh,
                     OnNewsLoadingFinishedListener listener) {
@@ -67,7 +63,7 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
                     news = createSampleNews("simple friends");
                     break;
                 case COMMUNITIES:
-                    //error
+                    news = createSampleNews("simple communities");
                     break;
             }
             if (news != null) Collections.shuffle(news);
@@ -94,7 +90,8 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
             List<News> result = new ArrayList<>(100);
             for (int i=0; i<100; i++) {
                 News news = new News();
-                news.setContent(sampleText + i);
+                StringBuilder sb = new StringBuilder(sampleText);
+                news.setContent(sb.append(i).toString());
                 result.add(news);
             }
             return result;
