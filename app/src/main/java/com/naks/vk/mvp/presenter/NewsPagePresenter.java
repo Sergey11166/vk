@@ -51,10 +51,11 @@ public class NewsPagePresenter extends MvpPresenter<NewsPageView>
         loadNews(false);
     }
 
-    public void onItemClick(News item) {
-        getViewState().navigateToNewsDetailActivity(item);
+    public void onItemClick(long id) {
+        getViewState().navigateToNewsDetailActivity(id);
     }
 
+    @SuppressWarnings("unused")
     public void loadNextNews(int currentCount) {
         int page = currentCount / 10;
         loadData(page, true, false);
@@ -97,13 +98,13 @@ public class NewsPagePresenter extends MvpPresenter<NewsPageView>
     }
 
     @Override
-    public void onLoadingFailed(Exception e, boolean isPageLoading, boolean pullToRefresh) {
+    public void onLoadingFailed(Throwable t, boolean isPageLoading, boolean pullToRefresh) {
         mIsInLoading = false;
         hideProgress(isPageLoading, pullToRefresh);
         if (pullToRefresh) {
-            getViewState().showRefreshingError(e.getMessage());
+            getViewState().showRefreshingError(t.getMessage());
         } else {
-            getViewState().showError(e.getMessage());
+            getViewState().showError(t.getMessage());
         }
     }
 }

@@ -8,7 +8,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 @StateStrategyType(SingleStateStrategy.class)
 public interface LoginView extends MvpView {
 
-    void showLoginScreen();
+    void showLoginScreen(String[] scope);
 
     @StateStrategyType(SkipStrategy.class)
     void navigateToMainScreen();

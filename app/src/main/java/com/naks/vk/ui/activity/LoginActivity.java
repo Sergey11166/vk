@@ -9,28 +9,13 @@ import com.naks.vk.mvp.presenter.LoginPresenter;
 import com.naks.vk.mvp.view.LoginView;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
-import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
 public class LoginActivity extends BaseActivity implements LoginView {
 
-    private static final String[] sMyScope = new String[]{
-            VKScope.NOTIFICATIONS,
-            VKScope.MESSAGES,
-            VKScope.FRIENDS,
-            VKScope.OFFLINE,
-            VKScope.PHOTOS,
-            VKScope.STATUS,
-            VKScope.GROUPS,
-            VKScope.EMAIL,
-            VKScope.NOTES,
-            VKScope.PAGES,
-            VKScope.WALL,
-            VKScope.DOCS,
-    };
-
-    @InjectPresenter LoginPresenter presenter;
+    @InjectPresenter
+    LoginPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,8 +45,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     @Override
-    public void showLoginScreen() {
-        VKSdk.login(this, sMyScope);
+    public void showLoginScreen(String[] scope) {
+        VKSdk.login(this, scope);
     }
 
     @Override

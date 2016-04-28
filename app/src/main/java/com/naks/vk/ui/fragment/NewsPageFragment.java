@@ -1,7 +1,6 @@
 package com.naks.vk.ui.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -20,28 +19,28 @@ import com.naks.vk.ui.adapter.NewsRecyclerAdapter;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
 public class NewsPageFragment extends BaseFragment implements NewsPageView {
 
     private static final String TAG = "NewsPageFragment";
     public static final String KEY_NEWS_TYPE = NewsPageFragment.class.getName() + "_keyNewsType";
 
-    @InjectPresenter
-    NewsPagePresenter presenter;
+    @InjectPresenter NewsPagePresenter presenter;
+
+    @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.recyclerView) RecyclerView recyclerView;
+    @BindView(R.id.progressView) View progressView;
+    @BindView(R.id.errorView) View errorView;
 
     private NewsRecyclerAdapter adapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private View progressView;
-    private View errorView;
+    private Unbinder unbinder;
 
     public static NewsPageFragment newInstance() {
         return new NewsPageFragment();
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.news_page_fragment, container, false);
     }
 
     @Override
@@ -50,33 +49,43 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
         presenter.onCreated(getArguments());
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.news_page_fragment, container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override public void onRefresh() {presenter.loadNews(true);}
         });
-        progressView = view.findViewById(R.id.progressView);
-        errorView = view.findViewById(R.id.errorView);
-        errorView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.loadNews(false);
-            }
-        });
-        setupRecyclerView((RecyclerView) view.findViewById(R.id.recyclerView));
+        setupRecyclerView();
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    private void setupRecyclerView() {
         adapter = new NewsRecyclerAdapter();
         adapter.setOnNewsItemClickListener(new NewsRecyclerAdapter.OnNewsItemClickListener() {
             @Override
-            public void onClick(View view, News news) {
-                presenter.onItemClick(news);
-            }
+            public void onClick(long id) {presenter.onItemClick(id);}
         });
         recyclerView.setAdapter(adapter);
+    }
+
+    @OnClick(R.id.errorView)
+    @SuppressWarnings("unused")
+    void errorViewClicked() {
+        presenter.loadNews(false);
     }
 
     @Override
@@ -135,7 +144,7 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
     }
 
     @Override
-    public void navigateToNewsDetailActivity(News item) {
-        Log.d(TAG, "navigateToNewsDetailActivity");
+    public void navigateToNewsDetailActivity(long id) {
+        Log.d(TAG, "navigateToNewsDetailActivity " + id);
     }
 }

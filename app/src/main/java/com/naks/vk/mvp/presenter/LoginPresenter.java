@@ -7,6 +7,7 @@ import com.naks.vk.di.component.DaggerLoginComponent;
 import com.naks.vk.di.module.LoginModule;
 import com.naks.vk.mvp.model.interactor.LoginInteractor;
 import com.naks.vk.mvp.view.LoginView;
+import com.vk.sdk.VKScope;
 
 import javax.inject.Inject;
 
@@ -14,7 +15,23 @@ import javax.inject.Inject;
 public class LoginPresenter extends MvpPresenter<LoginView>
         implements LoginInteractor.OnLoginFinishedListener {
 
-    @Inject LoginInteractor loginInteractor;
+    private static final String[] scope = new String[]{
+            VKScope.NOTIFICATIONS,
+            VKScope.MESSAGES,
+            VKScope.FRIENDS,
+            VKScope.OFFLINE,
+            VKScope.PHOTOS,
+            VKScope.STATUS,
+            VKScope.GROUPS,
+            VKScope.EMAIL,
+            VKScope.NOTES,
+            VKScope.PAGES,
+            VKScope.WALL,
+            VKScope.DOCS,
+    };
+
+    @Inject
+    LoginInteractor loginInteractor;
 
     public LoginPresenter() {
         super();
@@ -39,7 +56,7 @@ public class LoginPresenter extends MvpPresenter<LoginView>
 
     @Override
     public void onLoggedOut() {
-        getViewState().showLoginScreen();
+        getViewState().showLoginScreen(scope);
     }
 
     @Override

@@ -14,6 +14,10 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
     private NewsAsyncLoader loader;
     private Random random;
 
+    public GetNewsInteractorImpl(Random random) {
+        this.random = random;
+    }
+
     @Override
     public void get(final TypeNews type, int page, boolean isPageLoading, boolean pullToRefresh,
                     OnNewsLoadingFinishedListener listener) {
@@ -85,7 +89,6 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
         }
 
         private List<News> createSampleNews(String sampleText) {
-            if (random == null) random = new Random();
             if (random.nextBoolean()) return null;
             List<News> result = new ArrayList<>(100);
             for (int i=0; i<100; i++) {

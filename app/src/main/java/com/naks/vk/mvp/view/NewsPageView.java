@@ -30,5 +30,5 @@ public interface NewsPageView extends MvpView {
     void addNews(List<News> news, boolean maybeMore);
 
     @StateStrategyType(SkipStrategy.class)
-    void navigateToNewsDetailActivity(News item);
+    void navigateToNewsDetailActivity(long id);
 }

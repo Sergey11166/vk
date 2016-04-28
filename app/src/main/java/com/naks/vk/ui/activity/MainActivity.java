@@ -13,20 +13,26 @@ import com.naks.vk.mvp.presenter.MainPresenter;
 import com.naks.vk.mvp.view.MainView;
 import com.naks.vk.ui.fragment.NewsTabsFragment;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, MainView {
 
-    @InjectPresenter
-    MainPresenter presenter;
+    @InjectPresenter MainPresenter presenter;
+
+    @BindView(R.id.naw_view) NavigationView navigationView;
+    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setupNavigationView((NavigationView) findViewById(R.id.naw_view));
+        ButterKnife.bind(this);
+        setupNavigationView();
     }
 
-    private void setupNavigationView(NavigationView navigationView) {
+    private void setupNavigationView() {
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_news);
         onNavigationItemSelected(navigationView.getMenu().getItem(0));
@@ -34,9 +40,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        assert drawer != null;
-        presenter.onBackPressed(drawer.isDrawerOpen(GravityCompat.START));
+        presenter.onBackPressed(drawerLayout.isDrawerOpen(GravityCompat.START));
     }
 
     @Override
@@ -59,9 +63,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void closeDrawer() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        assert drawer != null;
-        drawer.closeDrawer(GravityCompat.START);
+        drawerLayout.closeDrawer(GravityCompat.START);
     }
 
     @Override

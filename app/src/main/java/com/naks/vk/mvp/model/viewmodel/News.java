@@ -5,9 +5,12 @@ import android.os.Parcelable;
 
 public class News implements Parcelable {
 
+    private long id;
+
     private String content;
 
     protected News(Parcel in) {
+        id = in.readLong();
         content = in.readString();
     }
 
@@ -25,10 +28,16 @@ public class News implements Parcelable {
         }
     };
 
+    public long getId() {
+        return id;
+    }
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getContent() {
         return content;
     }
-
     public void setContent(String content) {
         this.content = content;
     }
@@ -40,6 +49,7 @@ public class News implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeString(content);
     }
 }

@@ -17,7 +17,7 @@ public interface GetNewsInteractor {
 
         void onLoadingSuccess(List<News> news, boolean isPageLoading, boolean pullToRefresh);
 
-        void onLoadingFailed(Exception e, boolean isPageLoading, boolean pullToRefresh);
+        void onLoadingFailed(Throwable t, boolean isPageLoading, boolean pullToRefresh);
     }
 
     void get(TypeNews type, int page, boolean isPageLoading, boolean pullToRefresh,

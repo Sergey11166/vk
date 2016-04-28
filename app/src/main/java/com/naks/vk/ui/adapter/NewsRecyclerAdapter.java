@@ -31,7 +31,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onClick(v, holder.news);
+                listener.onClick(holder.news.getId());
             }
         });
     }
@@ -52,6 +52,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         }
     }
 
+    @SuppressWarnings("unused")
     public List<News> getData() {
         return data;
     }
@@ -65,6 +66,6 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
     }
 
     public interface OnNewsItemClickListener {
-        void onClick(View v, News news);
+        void onClick(long id);
     }
 }
