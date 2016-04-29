@@ -10,6 +10,7 @@ import android.view.View;
 /*
 * androidessence.com/hide-the-floatingactionbutton-when-scrolling-a-recyclerview/
  */
+@SuppressWarnings("unused")
 public class FABScrollBehavior extends FloatingActionButton.Behavior {
 
     public FABScrollBehavior(Context context, AttributeSet attributeSet) {

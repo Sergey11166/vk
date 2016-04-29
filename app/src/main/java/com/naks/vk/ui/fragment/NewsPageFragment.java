@@ -21,7 +21,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class NewsPageFragment extends BaseFragment implements NewsPageView {
@@ -61,9 +60,8 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override public void onRefresh() {presenter.loadNews(true);}
-        });
+        errorView.setOnClickListener(v -> presenter.loadNews(false));
+        swipeRefreshLayout.setOnRefreshListener(() -> presenter.loadNews(true));
         setupRecyclerView();
     }
 
@@ -75,37 +73,18 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
 
     private void setupRecyclerView() {
         adapter = new NewsRecyclerAdapter();
-        adapter.setOnNewsItemClickListener(new NewsRecyclerAdapter.OnNewsItemClickListener() {
-            @Override
-            public void onClick(long id) {presenter.onItemClick(id);}
-        });
+        adapter.setOnNewsItemClickListener(id -> presenter.onItemClick(id));
         recyclerView.setAdapter(adapter);
-    }
-
-    @OnClick(R.id.errorView)
-    @SuppressWarnings("unused")
-    void errorViewClicked() {
-        presenter.loadNews(false);
     }
 
     @Override
     public void showRefreshing() {
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-            }
-        });
+        swipeRefreshLayout.post(() -> swipeRefreshLayout.setRefreshing(true));
     }
 
     @Override
     public void hideRefreshing() {
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        swipeRefreshLayout.post(() -> swipeRefreshLayout.setRefreshing(false));
     }
 
     @Override

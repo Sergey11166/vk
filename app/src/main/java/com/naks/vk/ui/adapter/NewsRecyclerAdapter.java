@@ -28,12 +28,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
     public void onBindViewHolder(final NewsRecyclerAdapter.ViewHolder holder, int position) {
         holder.news = data.get(position);
         holder.textContent.setText(holder.news.getContent());
-        holder.v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onClick(holder.news.getId());
-            }
-        });
+        holder.v.setOnClickListener(v -> listener.onClick(holder.news.getId()));
     }
 
     @Override
