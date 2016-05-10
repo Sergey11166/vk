@@ -55,6 +55,7 @@ public class NewsTabsFragment extends BaseFragment implements NewsTabView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news_tabs_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
+        viewPager.setOffscreenPageLimit(3);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
         DrawerLayout drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);

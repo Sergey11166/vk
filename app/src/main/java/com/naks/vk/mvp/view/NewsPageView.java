@@ -22,6 +22,7 @@ public interface NewsPageView extends MvpView {
 
     void showError(String message);
 
+    @StateStrategyType(SkipStrategy.class)
     void showRefreshingError(String message);
 
     void setNews(List<News> news, boolean maybeMore);

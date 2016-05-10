@@ -13,8 +13,8 @@ import java.util.List;
 
 public class NewsTabAdapter extends FragmentPagerAdapter {
 
-    private final List<Fragment> mFragments = new ArrayList<>();
-    private final List<String> mFragmentTitles = new ArrayList<>();
+    private final List<Fragment> mFragments = new ArrayList<>(4);
+    private final List<String> mFragmentTitles = new ArrayList<>(4);
 
     public NewsTabAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);

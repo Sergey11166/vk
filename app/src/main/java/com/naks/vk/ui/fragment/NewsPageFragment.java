@@ -38,6 +38,8 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
     private NewsRecyclerAdapter adapter;
     private Unbinder unbinder;
 
+    private boolean isVisibleToUser;
+
     public static NewsPageFragment newInstance() {
         return new NewsPageFragment();
     }
@@ -108,6 +110,7 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
 
     @Override
     public void showRefreshingError(String message) {
+        if (!isVisibleToUser) return;
         Toast.makeText(getActivity(), "refreshing failed", Toast.LENGTH_SHORT).show();
     }
 
@@ -125,5 +128,11 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
     @Override
     public void navigateToNewsDetailActivity(long id) {
         Log.d(TAG, "navigateToNewsDetailActivity " + id);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        this.isVisibleToUser = isVisibleToUser;
     }
 }
