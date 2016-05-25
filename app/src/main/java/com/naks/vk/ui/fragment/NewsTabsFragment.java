@@ -14,11 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.naks.vk.R;
+import com.naks.vk.di.component.HasComponent;
+import com.naks.vk.di.component.MainComponent;
+import com.naks.vk.di.component.NewsTabComponent;
+import com.naks.vk.di.module.NewsTabModule;
 import com.naks.vk.mvp.presenter.NewsTabPresenter;
 import com.naks.vk.mvp.view.NewsTabView;
 import com.naks.vk.ui.adapter.NewsTabAdapter;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,11 +32,14 @@ import butterknife.Unbinder;
 
 import static com.naks.vk.mvp.model.interactor.GetNewsInteractor.TypeNews;
 
-public class NewsTabsFragment extends BaseFragment implements NewsTabView {
+public class NewsTabsFragment extends BaseFixFragment
+        implements NewsTabView, HasComponent<NewsTabComponent> {
 
     public static final String TAG = "NewsTabsFragment";
 
-    @InjectPresenter NewsTabPresenter presenter;
+    private NewsTabComponent component;
+
+    @Inject NewsTabPresenter presenter;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.view_pager) ViewPager viewPager;
@@ -39,15 +47,21 @@ public class NewsTabsFragment extends BaseFragment implements NewsTabView {
 
     private Unbinder unbinder;
 
-    public NewsTabsFragment(){}
+    @Override
+    protected void setupComponent(MainComponent component) {
+        this.component = component.plus(new NewsTabModule(this));
+        this.component.inject(this);
+    }
 
-    public static NewsTabsFragment newInstance() {
-        return new NewsTabsFragment();
+    @Override
+    public NewsTabComponent getComponent() {
+        return component;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -60,9 +74,14 @@ public class NewsTabsFragment extends BaseFragment implements NewsTabView {
         activity.setSupportActionBar(toolbar);
         DrawerLayout drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
         setupDrawer(activity, drawerLayout);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setupViewPager();
         tabLayout.setupWithViewPager(viewPager);
-        return view;
     }
 
     @Override
@@ -79,11 +98,11 @@ public class NewsTabsFragment extends BaseFragment implements NewsTabView {
     }
 
     private void setupViewPager() {
-        NewsTabAdapter adapter = new NewsTabAdapter(getChildFragmentManager());
-        adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.NEWS, "news");
-        adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.RECOMMENDATIONS, "recommendation");
-        adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.FRIENDS, "friends");
-        adapter.addFragment(NewsPageFragment.newInstance(), TypeNews.COMMUNITIES, "communities");
+        NewsTabAdapter adapter = new NewsTabAdapter(childFragmentManager());
+        adapter.addFragment(new NewsPageFragment(), TypeNews.NEWS, "news");
+        adapter.addFragment(new NewsPageFragment(), TypeNews.RECOMMENDATIONS, "recommendation");
+        adapter.addFragment(new NewsPageFragment(), TypeNews.FRIENDS, "friends");
+        adapter.addFragment(new NewsPageFragment(), TypeNews.COMMUNITIES, "communities");
         viewPager.setAdapter(adapter);
     }
 
@@ -97,6 +116,5 @@ public class NewsTabsFragment extends BaseFragment implements NewsTabView {
 
     @Override
     public void navigateToNewPostActivity() {
-
     }
 }

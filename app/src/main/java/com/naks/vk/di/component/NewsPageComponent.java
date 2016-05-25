@@ -1,13 +1,15 @@
 package com.naks.vk.di.component;
 
-import com.naks.vk.di.anotation.PerPresenter;
+import com.naks.vk.di.anotation.PerFragment;
 import com.naks.vk.di.module.NewsPageModule;
-import com.naks.vk.mvp.presenter.NewsPagePresenter;
+import com.naks.vk.mvp.presenter.impl.NewsPagePresenterImpl;
+import com.naks.vk.ui.fragment.NewsPageFragment;
 
-import dagger.Component;
+import dagger.Subcomponent;
 
-@PerPresenter
-@Component(modules = NewsPageModule.class, dependencies = AppComponent.class)
+@PerFragment
+@Subcomponent(modules = NewsPageModule.class)
 public interface NewsPageComponent {
-    void inject(NewsPagePresenter presenter);
+    void inject(NewsPageFragment fragment);
+    void inject(NewsPagePresenterImpl presenter);
 }

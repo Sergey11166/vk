@@ -4,7 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.naks.vk.di.component.AppComponent;
+import com.naks.vk.di.component.DaggerLoginComponent;
+import com.naks.vk.di.component.HasComponent;
+import com.naks.vk.di.component.LoginComponent;
+import com.naks.vk.di.module.LoginModule;
 import com.naks.vk.mvp.presenter.LoginPresenter;
 import com.naks.vk.mvp.view.LoginView;
 import com.vk.sdk.VKAccessToken;
@@ -12,10 +16,22 @@ import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
-public class LoginActivity extends BaseActivity implements LoginView {
+import javax.inject.Inject;
 
-    @InjectPresenter
-    LoginPresenter presenter;
+public class LoginActivity extends BaseActivity implements LoginView, HasComponent<LoginComponent> {
+
+    private LoginComponent component;
+
+    @Inject LoginPresenter presenter;
+
+    @Override
+    protected void setupComponent(AppComponent appComponent) {
+        component = DaggerLoginComponent.builder()
+                .appComponent(appComponent)
+                .loginModule(new LoginModule(this))
+                .build();
+        component.inject(this);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,5 +69,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
     public void navigateToMainScreen() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    @Override
+    public LoginComponent getComponent() {
+        return component;
     }
 }

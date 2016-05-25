@@ -10,8 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.naks.vk.R;
+import com.naks.vk.di.component.HasComponent;
+import com.naks.vk.di.component.MainComponent;
+import com.naks.vk.di.component.NewsPageComponent;
+import com.naks.vk.di.module.NewsPageModule;
 import com.naks.vk.mvp.model.viewmodel.News;
 import com.naks.vk.mvp.presenter.NewsPagePresenter;
 import com.naks.vk.mvp.view.NewsPageView;
@@ -19,16 +22,21 @@ import com.naks.vk.ui.adapter.NewsRecyclerAdapter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class NewsPageFragment extends BaseFragment implements NewsPageView {
+public class NewsPageFragment extends BaseFragment
+        implements NewsPageView, HasComponent<NewsPageComponent> {
 
     private static final String TAG = "NewsPageFragment";
     public static final String KEY_NEWS_TYPE = NewsPageFragment.class.getName() + "_keyNewsType";
 
-    @InjectPresenter NewsPagePresenter presenter;
+    private NewsPageComponent component;
+
+    @Inject NewsPagePresenter presenter;
 
     @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
@@ -39,15 +47,17 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
     private Unbinder unbinder;
 
     private boolean isVisibleToUser;
+    private boolean isFirstViewCreated = true;
 
-    public static NewsPageFragment newInstance() {
-        return new NewsPageFragment();
+    @Override
+    protected void setupComponent(MainComponent component) {
+        this.component = component.plus(new NewsPageModule(this));
+        this.component.inject(this);
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        presenter.onCreated(getArguments());
+    public NewsPageComponent getComponent() {
+        return component;
     }
 
     @Nullable
@@ -62,14 +72,20 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.onViewCreated();
         errorView.setOnClickListener(v -> presenter.loadNews(false));
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.loadNews(true));
         setupRecyclerView();
+        if (isFirstViewCreated) {
+            presenter.loadNews(false);
+            isFirstViewCreated = false;
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        presenter.onDestroyView();
         unbinder.unbind();
     }
 
@@ -109,7 +125,7 @@ public class NewsPageFragment extends BaseFragment implements NewsPageView {
     }
 
     @Override
-    public void showRefreshingError(String message) {
+    public void showLiteError(String message) {
         if (!isVisibleToUser) return;
         Toast.makeText(getActivity(), "refreshing failed", Toast.LENGTH_SHORT).show();
     }

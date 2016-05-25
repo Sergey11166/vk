@@ -1,5 +1,6 @@
 package com.naks.vk.di.component;
 
+import com.naks.vk.db.DBHelper;
 import com.naks.vk.di.module.AppModule;
 import com.vk.sdk.VKAccessTokenTracker;
 
@@ -11,4 +12,5 @@ import dagger.Component;
 @Component(modules = AppModule.class)
 public interface AppComponent {
     VKAccessTokenTracker getVKAccessTokenTracker();
+    DBHelper getDBHelper();
 }
