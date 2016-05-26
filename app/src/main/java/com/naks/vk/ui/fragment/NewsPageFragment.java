@@ -72,10 +72,10 @@ public class NewsPageFragment extends BaseFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.onViewCreated();
         errorView.setOnClickListener(v -> presenter.loadNews(false));
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.loadNews(true));
         setupRecyclerView();
+        presenter.onViewCreated();
         if (isFirstViewCreated) {
             presenter.loadNews(false);
             isFirstViewCreated = false;

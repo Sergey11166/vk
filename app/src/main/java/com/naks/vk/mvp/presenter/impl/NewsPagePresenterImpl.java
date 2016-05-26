@@ -21,8 +21,7 @@ public class NewsPagePresenterImpl
 
     private GetNewsInteractor.TypeNews typeNews;
 
-    private LoadingSuccessHolder successHolder;
-    private LoadingErrorHolder errorHolder;
+    private StateHolder stateHolder;
 
     public NewsPagePresenterImpl(NewsPageFragment fragment) {
         fragment.getComponent().inject(this);
@@ -35,6 +34,9 @@ public class NewsPagePresenterImpl
     public void onViewCreated() {
         isViewCreated = true;
         updateUI();
+        if (stateHolder == null) {
+            stateHolder = new StateHolder();
+        }
     }
 
     @Override
@@ -59,11 +61,15 @@ public class NewsPagePresenterImpl
     private void loadData(int page, boolean isPageLoading, boolean pullToRefresh) {
         if (isInLoading) return;
         isInLoading = true;
-        showProgress(isPageLoading, pullToRefresh);
         interactor.get(typeNews, page, isPageLoading, pullToRefresh, this);
+        stateHolder.throwable = null;
+        stateHolder.isPageLoading = isPageLoading;
+        stateHolder.pullToRefresh = pullToRefresh;
+        showProgress(isPageLoading, pullToRefresh);
     }
 
     private void showProgress(boolean isPageLoading, boolean pullToRefresh) {
+        stateHolder.isShowProgress = true;
         if (isPageLoading) return;
         if (pullToRefresh) {
             view.showRefreshing();
@@ -84,56 +90,45 @@ public class NewsPagePresenterImpl
     @Override
     public void onLoadingSuccess(List<News> news, boolean isPageLoading, boolean pullToRefresh) {
         isInLoading = false;
-
-        if (successHolder == null) successHolder = new LoadingSuccessHolder();
-        successHolder.news = news;
-        successHolder.isPageLoading = isPageLoading;
-        successHolder.pullToRefresh = pullToRefresh;
-        successHolder.isApplied = false;
-
+        stateHolder.news = news;
+        stateHolder.isShowProgress = false;
         if (isViewCreated) updateUI();
     }
 
     @Override
     public void onLoadingFailed(Throwable t, boolean isPageLoading, boolean pullToRefresh) {
         isInLoading = false;
-
-        if (errorHolder == null) errorHolder = new LoadingErrorHolder();
-        errorHolder.throwable = t;
-        errorHolder.isPageLoading = isPageLoading;
-        errorHolder.pullToRefresh = pullToRefresh;
-        errorHolder.isApplied = false;
-
+        stateHolder.throwable = t;
+        stateHolder.isShowProgress = false;
         if (isViewCreated) updateUI();
     }
 
     private void updateUI() {
-        if (successHolder != null && !successHolder.isApplied) {
-            hideProgress(successHolder.isPageLoading, successHolder.pullToRefresh);
-            view.setNews(successHolder.news, false);
-            successHolder.isApplied = true;
-        } else if (errorHolder != null && !errorHolder.isApplied) {
-            hideProgress(errorHolder.isPageLoading, errorHolder.pullToRefresh);
-            if (errorHolder.pullToRefresh) {
-                view.showLiteError(errorHolder.throwable.getMessage());
+        if (stateHolder == null) return;
+        if (stateHolder.news != null) {
+            hideProgress(stateHolder.isPageLoading, stateHolder.pullToRefresh);
+            view.setNews(stateHolder.news, false);
+        }
+        if (stateHolder.isShowProgress) {
+            showProgress(stateHolder.isPageLoading, stateHolder.pullToRefresh);
+            if (!stateHolder.pullToRefresh && !stateHolder.isPageLoading) return;
+        }
+        if (stateHolder.throwable != null) {
+            hideProgress(stateHolder.isPageLoading, stateHolder.pullToRefresh);
+            if (stateHolder.pullToRefresh) {
+                view.showLiteError(stateHolder.throwable.getMessage());
+                stateHolder.throwable = null;
             } else {
-                view.showError(errorHolder.throwable.getMessage());
+                view.showError(stateHolder.throwable.getMessage());
             }
-            errorHolder.isApplied = true;
         }
     }
 
-    private class LoadingSuccessHolder {
+    private class StateHolder {
         List<News> news;
-        boolean isPageLoading;
-        boolean pullToRefresh;
-        boolean isApplied;
-    }
-
-    private class LoadingErrorHolder {
         Throwable throwable;
         boolean isPageLoading;
         boolean pullToRefresh;
-        boolean isApplied;
+        boolean isShowProgress;
     }
 }
