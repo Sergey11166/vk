@@ -1,6 +1,6 @@
 package com.naks.vk.mvp.presenter;
 
-public interface NewsTabPresenter extends MvpPresenter {
+public interface NewsTabPresenter {
 
     void onFABClick();
 }

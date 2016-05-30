@@ -1,6 +1,6 @@
 package com.naks.vk.mvp.presenter;
 
-public interface MainPresenter extends MvpPresenter {
+public interface MainPresenter {
 
     void onNavigationItemSelected(int itemId);
 

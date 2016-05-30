@@ -1,6 +1,6 @@
 package com.naks.vk.mvp.presenter;
 
-public interface NewsPagePresenter extends MvpPresenter {
+public interface NewsPagePresenter {
 
     void loadNews(boolean pullToRefresh);
     void onItemClick(long id);

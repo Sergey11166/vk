@@ -1,6 +1,6 @@
 package com.naks.vk.mvp.presenter;
 
-public interface LoginPresenter extends MvpPresenter {
+public interface LoginPresenter {
 
     void wakeUpSession();
 
