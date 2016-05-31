@@ -6,4 +6,8 @@ import com.naks.vk.mvp.model.viewmodel.News;
 import java.util.List;
 
 public interface NewsPageMosbyView extends MvpLceView<List<News>> {
+
+    void addData(List<News> data);
+
+    void navigateToNewsDetailActivity(long id);
 }

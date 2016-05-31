@@ -19,12 +19,12 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
     }
 
     @Override
-    public void get(final TypeNews type, int page, boolean isPageLoading, boolean pullToRefresh,
+    public void get(final TypeNews type, boolean pullToRefresh,
                     OnNewsLoadingFinishedListener listener) {
         if (loader != null && !loader.isCancelled()) {
             loader.cancel(true);
         }
-        loader = new NewsAsyncLoader(type, isPageLoading, pullToRefresh, listener);
+        loader = new NewsAsyncLoader(type, pullToRefresh, listener);
         loader.execute();
     }
 
@@ -33,16 +33,13 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
         private GetNewsInteractor.TypeNews type;
         private GetNewsInteractor.OnNewsLoadingFinishedListener listener;
         private boolean pullToRefresh;
-        private boolean isPageLoading;
 
         public NewsAsyncLoader(GetNewsInteractor.TypeNews type,
-                               boolean isPageLoading,
                                boolean pullToRefresh,
                                GetNewsInteractor.OnNewsLoadingFinishedListener listener) {
             this.listener = listener;
             this.type = type;
             this.pullToRefresh = pullToRefresh;
-            this.isPageLoading = isPageLoading;
         }
 
         @Override
@@ -82,9 +79,9 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
             }
 
             if (news == null) {
-                listener.onLoadingFailed(new Exception("Error loading"), isPageLoading, pullToRefresh);
+                listener.onLoadingFailed(new Exception("Error loading"), pullToRefresh);
             } else {
-                listener.onLoadingSuccess(news, isPageLoading, pullToRefresh);
+                listener.onLoadingSuccess(news);
             }
         }
 
@@ -93,6 +90,7 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
             List<News> result = new ArrayList<>(100);
             for (int i=0; i<100; i++) {
                 News news = new News();
+                news.setId(i);
                 StringBuilder sb = new StringBuilder(sampleText);
                 news.setContent(sb.append(i).toString());
                 result.add(news);

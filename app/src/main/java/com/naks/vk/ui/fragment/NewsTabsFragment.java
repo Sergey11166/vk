@@ -99,10 +99,10 @@ public class NewsTabsFragment extends BaseFixFragment
 
     private void setupViewPager() {
         NewsTabAdapter adapter = new NewsTabAdapter(childFragmentManager());
-        adapter.addFragment(new NewsPageFragment(), TypeNews.NEWS, "news");
-        adapter.addFragment(new NewsPageFragment(), TypeNews.RECOMMENDATIONS, "recommendation");
-        adapter.addFragment(new NewsPageFragment(), TypeNews.FRIENDS, "friends");
-        adapter.addFragment(new NewsPageFragment(), TypeNews.COMMUNITIES, "communities");
+        adapter.addFragment(new NewsPageMosbyFragment(), TypeNews.NEWS, "news");
+        adapter.addFragment(new NewsPageMosbyFragment(), TypeNews.RECOMMENDATIONS, "recommendation");
+        adapter.addFragment(new NewsPageMosbyFragment(), TypeNews.FRIENDS, "friends");
+        adapter.addFragment(new NewsPageMosbyFragment(), TypeNews.COMMUNITIES, "communities");
         viewPager.setAdapter(adapter);
     }
 

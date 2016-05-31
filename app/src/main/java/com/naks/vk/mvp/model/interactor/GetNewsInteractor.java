@@ -15,11 +15,10 @@ public interface GetNewsInteractor {
 
     interface OnNewsLoadingFinishedListener {
 
-        void onLoadingSuccess(List<News> news, boolean isPageLoading, boolean pullToRefresh);
+        void onLoadingSuccess(List<News> news);
 
-        void onLoadingFailed(Throwable t, boolean isPageLoading, boolean pullToRefresh);
+        void onLoadingFailed(Throwable t, boolean pullToRefresh);
     }
 
-    void get(TypeNews type, int page, boolean isPageLoading, boolean pullToRefresh,
-             OnNewsLoadingFinishedListener listener);
+    void get(TypeNews type, boolean pullToRefresh, OnNewsLoadingFinishedListener listener);
 }

@@ -1,13 +1,13 @@
 package com.naks.vk.di.module;
 
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.data.RetainingLceViewState;
 import com.naks.vk.di.anotation.PerFragment;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractorImpl;
-import com.naks.vk.mvp.presenter.NewsPagePresenter;
-import com.naks.vk.mvp.presenter.impl.NewsPagePresenterImpl;
-import com.naks.vk.mvp.view.NewsPageView;
+import com.naks.vk.mvp.presenter.NewsPageMosbyPresenter;
+import com.naks.vk.mvp.presenter.impl.NewsPageMosbyPresenterImpl;
 import com.naks.vk.ui.adapter.NewsRecyclerAdapter;
-import com.naks.vk.ui.fragment.NewsPageFragment;
+import com.naks.vk.ui.fragment.NewsPageMosbyFragment;
 
 import java.util.Random;
 
@@ -17,9 +17,9 @@ import dagger.Provides;
 @Module
 public class NewsPageModule {
 
-    private NewsPageFragment fragment;
+    private NewsPageMosbyFragment fragment;
 
-    public NewsPageModule(NewsPageFragment fragment) {
+    public NewsPageModule(NewsPageMosbyFragment fragment) {
         this.fragment = fragment;
     }
 
@@ -31,14 +31,14 @@ public class NewsPageModule {
 
     @Provides
     @PerFragment
-    NewsPageView provideView() {
-        return fragment;
+    NewsPageMosbyPresenter providePresenter() {
+        return new NewsPageMosbyPresenterImpl(fragment);
     }
 
     @Provides
     @PerFragment
-    NewsPagePresenter providePresenter() {
-        return new NewsPagePresenterImpl(fragment);
+    RetainingLceViewState provideViewState() {
+        return new RetainingLceViewState<>();
     }
 
     @Provides

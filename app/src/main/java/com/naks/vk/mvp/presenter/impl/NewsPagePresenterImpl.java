@@ -11,7 +11,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class NewsPagePresenterImpl
-        implements NewsPagePresenter, GetNewsInteractor.OnNewsLoadingFinishedListener{
+        implements NewsPagePresenter {
+        //GetNewsInteractor.OnNewsLoadingFinishedListener{
 
     @Inject NewsPageView view;
     @Inject GetNewsInteractor interactor;
@@ -24,7 +25,7 @@ public class NewsPagePresenterImpl
     private StateHolder stateHolder;
 
     public NewsPagePresenterImpl(NewsPageFragment fragment) {
-        fragment.getComponent().inject(this);
+        //fragment.getComponent().inject(this);
         String key = fragment.getArguments().getString(NewsPageFragment.KEY_NEWS_TYPE);
         assert key != null;
         typeNews = GetNewsInteractor.TypeNews.valueOf(GetNewsInteractor.TypeNews.class, key);
@@ -61,7 +62,7 @@ public class NewsPagePresenterImpl
     private void loadData(int page, boolean isPageLoading, boolean pullToRefresh) {
         if (isInLoading) return;
         isInLoading = true;
-        interactor.get(typeNews, page, isPageLoading, pullToRefresh, this);
+        //interactor.get(typeNews, page, isPageLoading, pullToRefresh, this);
         stateHolder.throwable = null;
         stateHolder.isPageLoading = isPageLoading;
         stateHolder.pullToRefresh = pullToRefresh;
@@ -87,7 +88,7 @@ public class NewsPagePresenterImpl
         }
     }
 
-    @Override
+    //@Override
     public void onLoadingSuccess(List<News> news, boolean isPageLoading, boolean pullToRefresh) {
         isInLoading = false;
         stateHolder.news = news;
@@ -95,7 +96,7 @@ public class NewsPagePresenterImpl
         if (isViewCreated) updateUI();
     }
 
-    @Override
+    //@Override
     public void onLoadingFailed(Throwable t, boolean isPageLoading, boolean pullToRefresh) {
         isInLoading = false;
         stateHolder.throwable = t;

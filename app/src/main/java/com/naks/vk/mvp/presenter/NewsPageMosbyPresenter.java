@@ -5,5 +5,7 @@ import com.naks.vk.mvp.view.NewsPageMosbyView;
 
 public interface NewsPageMosbyPresenter extends MvpPresenter<NewsPageMosbyView> {
 
-    void loadNews(final boolean pullToRefresh);
+    void loadNews(boolean pullToRefresh);
+
+    void onItemClick(long id);
 }

@@ -38,9 +38,9 @@ public class NewsPageFragment extends BaseFragment
 
     @Inject NewsPagePresenter presenter;
 
-    @BindView(R.id.swipeRefreshLayout) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.contentView) SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recyclerView) RecyclerView recyclerView;
-    @BindView(R.id.progressView) View progressView;
+    @BindView(R.id.loadingView) View progressView;
     @BindView(R.id.errorView) View errorView;
 
     private NewsRecyclerAdapter adapter;
@@ -51,8 +51,8 @@ public class NewsPageFragment extends BaseFragment
 
     @Override
     protected void setupComponent(MainComponent component) {
-        this.component = component.plus(new NewsPageModule(this));
-        this.component.inject(this);
+        //this.component = component.plus(new NewsPageModule(this));
+        //this.component.inject(this);
     }
 
     @Override
