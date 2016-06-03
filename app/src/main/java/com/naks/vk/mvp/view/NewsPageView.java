@@ -1,26 +1,13 @@
 package com.naks.vk.mvp.view;
 
+import com.hannesdorfmann.mosby.mvp.lce.MvpLceView;
 import com.naks.vk.mvp.model.viewmodel.News;
 
 import java.util.List;
 
-public interface NewsPageView extends MvpView {
+public interface NewsPageView extends MvpLceView<List<News>> {
 
-    void showRefreshing();
-
-    void hideRefreshing();
-
-    void showProgress();
-
-    void hideProgress();
-
-    void showError(String message);
-
-    void showLiteError(String message);
-
-    void setNews(List<News> news, boolean maybeMore);
-
-    void addNews(List<News> news, boolean maybeMore);
+    void addData(List<News> data);
 
     void navigateToNewsDetailActivity(long id);
 }

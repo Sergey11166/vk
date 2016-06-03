@@ -1,6 +1,6 @@
 package com.naks.vk.mvp.view;
 
-public interface LoginView extends MvpView {
+public interface LoginView {
 
     void showLoginScreen(String[] scope);
 

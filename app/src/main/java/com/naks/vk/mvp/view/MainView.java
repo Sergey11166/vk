@@ -1,6 +1,6 @@
 package com.naks.vk.mvp.view;
 
-public interface MainView extends MvpView {
+public interface MainView {
 
     void showNewsTabFragment();
 

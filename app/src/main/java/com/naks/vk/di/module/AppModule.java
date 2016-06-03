@@ -3,8 +3,6 @@ package com.naks.vk.di.module;
 import android.content.Context;
 import android.content.Intent;
 
-import com.naks.vk.App;
-import com.naks.vk.db.DBHelper;
 import com.naks.vk.ui.activity.LoginActivity;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
@@ -35,11 +33,5 @@ public class AppModule {
                 context.startActivity(intent);
             }
         };
-    }
-
-    @Provides
-    @Singleton
-    DBHelper provideDBHelper() {
-        return new DBHelper(context);
     }
 }

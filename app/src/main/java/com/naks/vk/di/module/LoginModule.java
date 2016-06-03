@@ -2,7 +2,7 @@ package com.naks.vk.di.module;
 
 import com.naks.vk.di.anotation.PerActivity;
 import com.naks.vk.mvp.model.interactor.LoginInteractor;
-import com.naks.vk.mvp.model.interactor.LoginInteractorImpl;
+import com.naks.vk.mvp.model.interactor.impl.LoginInteractorImpl;
 import com.naks.vk.mvp.presenter.LoginPresenter;
 import com.naks.vk.mvp.presenter.impl.LoginPresenterImpl;
 import com.naks.vk.mvp.view.LoginView;
@@ -18,12 +18,6 @@ public class LoginModule {
 
     public LoginModule(LoginActivity activity) {
         this.activity = activity;
-    }
-
-    @Provides
-    @PerActivity
-    LoginActivity provideLoginActivity() {
-        return activity;
     }
 
     @Provides

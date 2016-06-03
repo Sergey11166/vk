@@ -1,15 +1,17 @@
 package com.naks.vk.ui.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.LceViewState;
 import com.naks.vk.R;
 import com.naks.vk.di.component.HasComponent;
 import com.naks.vk.di.component.MainComponent;
@@ -19,6 +21,7 @@ import com.naks.vk.mvp.model.viewmodel.News;
 import com.naks.vk.mvp.presenter.NewsPagePresenter;
 import com.naks.vk.mvp.view.NewsPageView;
 import com.naks.vk.ui.adapter.NewsRecyclerAdapter;
+import com.naks.vk.ui.util.NewsErrorMessage;
 
 import java.util.List;
 
@@ -28,7 +31,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class NewsPageFragment extends BaseFragment
+public class NewsPageFragment extends MvpLceViewStateNestedBaseFragment<SwipeRefreshLayout,
+        List<News>, NewsPageView, NewsPagePresenter>
         implements NewsPageView, HasComponent<NewsPageComponent> {
 
     private static final String TAG = "NewsPageFragment";
@@ -36,119 +40,100 @@ public class NewsPageFragment extends BaseFragment
 
     private NewsPageComponent component;
 
-    @Inject NewsPagePresenter presenter;
+    @Inject NewsRecyclerAdapter adapter;
 
-    @BindView(R.id.contentView) SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.recyclerView) RecyclerView recyclerView;
-    @BindView(R.id.loadingView) View progressView;
-    @BindView(R.id.errorView) View errorView;
+    @BindView (R.id.recyclerView) RecyclerView recyclerView;
 
-    private NewsRecyclerAdapter adapter;
     private Unbinder unbinder;
-
-    private boolean isVisibleToUser;
-    private boolean isFirstViewCreated = true;
 
     @Override
     protected void setupComponent(MainComponent component) {
-        //this.component = component.plus(new NewsPageModule(this));
-        //this.component.inject(this);
+        Log.d(TAG, "setupComponent(" + component.toString() + ")");
+        this.component = component.plus(new NewsPageModule(this));
+        this.component.inject(this);
     }
 
     @Override
     public NewsPageComponent getComponent() {
+        Log.d(TAG, "getComponent()");
         return component;
+    }
+
+    @NonNull
+    @Override
+    @SuppressWarnings("unchecked")
+    public LceViewState<List<News>, NewsPageView> createViewState() {
+        Log.d(TAG, "createViewState()");
+        return component.getViewState();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, inflater.toString() + container + savedInstanceState);
         View view = inflater.inflate(R.layout.news_page_fragment, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        errorView.setOnClickListener(v -> presenter.loadNews(false));
-        swipeRefreshLayout.setOnRefreshListener(() -> presenter.loadNews(true));
-        setupRecyclerView();
-        presenter.onViewCreated();
-        if (isFirstViewCreated) {
-            presenter.loadNews(false);
-            isFirstViewCreated = false;
-        }
+    public void onViewCreated(View view, @Nullable Bundle savedInstance) {
+        super.onViewCreated(view, savedInstance);
+        Log.d(TAG, view.toString() + savedInstance);
+        contentView.setOnRefreshListener(() -> loadData(true));
+        adapter.setOnNewsItemClickListener(id -> presenter.onItemClick(id));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.onDestroyView();
+        Log.d(TAG, "onDestroyView()");
         unbinder.unbind();
     }
 
-    private void setupRecyclerView() {
-        adapter = new NewsRecyclerAdapter();
-        adapter.setOnNewsItemClickListener(id -> presenter.onItemClick(id));
-        recyclerView.setAdapter(adapter);
+    @Override
+    public void loadData(boolean pullToRefresh) {
+        Log.d(TAG, "loadData(" + pullToRefresh + ")");
+        presenter.loadNews(pullToRefresh);
     }
 
     @Override
-    public void showRefreshing() {
-        swipeRefreshLayout.post(() -> swipeRefreshLayout.setRefreshing(true));
+    protected String getErrorMessage(Throwable e, boolean pullToRefresh) {
+        Log.d(TAG, "getErrorMessage(" + e + ", " + pullToRefresh + ")");
+        return NewsErrorMessage.get(e, pullToRefresh, getActivity());
+    }
+
+    @NonNull
+    @Override
+    public NewsPagePresenter createPresenter() {
+        Log.d(TAG, "createPresenter()");
+        return component.getPresenter();
     }
 
     @Override
-    public void hideRefreshing() {
-        swipeRefreshLayout.post(() -> swipeRefreshLayout.setRefreshing(false));
-    }
-
-    @Override
-    public void showProgress() {
-        swipeRefreshLayout.setVisibility(View.GONE);
-        errorView.setVisibility(View.GONE);
-        progressView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProgress() {
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
-        progressView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showError(String message) {
-        swipeRefreshLayout.setVisibility(View.GONE);
-        errorView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showLiteError(String message) {
-        if (!isVisibleToUser) return;
-        Toast.makeText(getActivity(), "refreshing failed", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void setNews(List<News> news, boolean maybeMore) {
-        adapter.setData(news);
+    public void setData(List<News> data) {
+        Log.d(TAG, "setData(" + data + ")");
+        adapter.setData(data);
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void addNews(List<News> news, boolean maybeMore) {
+    public void addData(List<News> data) {
+        Log.d(TAG, "addData(" + data + ")");
 
     }
 
     @Override
     public void navigateToNewsDetailActivity(long id) {
-        Log.d(TAG, "navigateToNewsDetailActivity " + id);
+        Log.d(TAG, "navigateToNewsDetailActivity(" + id + ")");
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        this.isVisibleToUser = isVisibleToUser;
+    public List<News> getData() {
+        Log.d(TAG, "getData()");
+        return adapter == null ? null : adapter.getData();
     }
 }

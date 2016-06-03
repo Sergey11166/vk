@@ -32,7 +32,7 @@ import butterknife.Unbinder;
 
 import static com.naks.vk.mvp.model.interactor.GetNewsInteractor.TypeNews;
 
-public class NewsTabsFragment extends BaseFixFragment
+public class NewsTabsFragment extends BaseFragment
         implements NewsTabView, HasComponent<NewsTabComponent> {
 
     public static final String TAG = "NewsTabsFragment";
@@ -99,10 +99,10 @@ public class NewsTabsFragment extends BaseFixFragment
 
     private void setupViewPager() {
         NewsTabAdapter adapter = new NewsTabAdapter(childFragmentManager());
-        adapter.addFragment(new NewsPageMosbyFragment(), TypeNews.NEWS, "news");
-        adapter.addFragment(new NewsPageMosbyFragment(), TypeNews.RECOMMENDATIONS, "recommendation");
-        adapter.addFragment(new NewsPageMosbyFragment(), TypeNews.FRIENDS, "friends");
-        adapter.addFragment(new NewsPageMosbyFragment(), TypeNews.COMMUNITIES, "communities");
+        adapter.addFragment(new NewsPageFragment(), TypeNews.NEWS, "news");
+        adapter.addFragment(new NewsPageFragment(), TypeNews.RECOMMENDATIONS, "recommendation");
+        adapter.addFragment(new NewsPageFragment(), TypeNews.FRIENDS, "friends");
+        adapter.addFragment(new NewsPageFragment(), TypeNews.COMMUNITIES, "communities");
         viewPager.setAdapter(adapter);
     }
 

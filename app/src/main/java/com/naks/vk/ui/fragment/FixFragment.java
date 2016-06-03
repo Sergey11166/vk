@@ -39,7 +39,6 @@ public class FixFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     protected FragmentManager childFragmentManager() {

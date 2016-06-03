@@ -20,19 +20,13 @@ public class MainModule {
 
     @Provides
     @PerActivity
-    public MainActivity provideMainActivity() {
-        return activity;
-    }
-
-    @Provides
-    @PerActivity
     public MainView provideMainView() {
         return activity;
     }
 
     @Provides
     @PerActivity
-    public MainPresenter provideMainPresenter(MainActivity activity) {
+    public MainPresenter provideMainPresenter() {
         return new MainPresenterImpl(activity);
     }
 }

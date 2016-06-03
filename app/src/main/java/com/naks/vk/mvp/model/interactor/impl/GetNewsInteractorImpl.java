@@ -1,7 +1,8 @@
-package com.naks.vk.mvp.model.interactor;
+package com.naks.vk.mvp.model.interactor.impl;
 
 import android.os.AsyncTask;
 
+import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
 import com.naks.vk.mvp.model.viewmodel.News;
 
 import java.util.ArrayList;

@@ -11,7 +11,10 @@ import com.hannesdorfmann.mosby.mvp.viewstate.lce.MvpLceViewStateFragment;
 import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.ui.activity.MainActivity;
 
-public abstract class MvpLceViewStateNestedFragment<CV extends SwipeRefreshLayout, M, V extends MvpLceView<M>, P extends MvpPresenter<V>>
+public abstract class MvpLceViewStateNestedBaseFragment<
+        CV extends SwipeRefreshLayout,
+        M, V extends MvpLceView<M>,
+        P extends MvpPresenter<V>>
         extends MvpLceViewStateFragment<CV, M, V, P> {
 
     private static final String TAG = "MvpLceNestedFragment";

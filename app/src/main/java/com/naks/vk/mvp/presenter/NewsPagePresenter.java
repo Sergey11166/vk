@@ -1,12 +1,11 @@
 package com.naks.vk.mvp.presenter;
 
-public interface NewsPagePresenter {
+import com.hannesdorfmann.mosby.mvp.MvpPresenter;
+import com.naks.vk.mvp.view.NewsPageView;
+
+public interface NewsPagePresenter extends MvpPresenter<NewsPageView> {
 
     void loadNews(boolean pullToRefresh);
 
     void onItemClick(long id);
-
-    void onViewCreated();
-
-    void onDestroyView();
 }
