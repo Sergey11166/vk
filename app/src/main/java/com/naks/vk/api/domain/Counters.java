@@ -1,18 +1,69 @@
 package com.naks.vk.api.domain;
 
+/**
+ * number of various objects the user has.  Can be used in users.get method only when requesting information about a user.
+ * Returns an object
+ */
 public class Counters {
 
+    /**
+     * number of photo albums
+     */
     private int albums;
+
+    /**
+     * number of videos
+     */
     private int videos;
+
+    /**
+     * number of audios
+     */
     private int audios;
+
+    /**
+     * number of photos
+     */
     private int photos;
+
+    /**
+     * number of notes
+     */
     private int notes;
+
+    /**
+     * number of friends
+     */
     private int friends;
+
+    /**
+     * number of communities
+     */
     private int groups;
+
+    /**
+     * number of online friends
+     */
     private int onlineFriends;
+
+    /**
+     * number of mutual friends
+     */
     private int mutualFriends;
+
+    /**
+     * number of videos the user is tagged on
+     */
     private int userVideos;
+
+    /**
+     * number of followers
+     */
     private int followers;
+
+    /**
+     * number of objects in unit "Interesting pages"
+     */
     private int pages;
 
     public int getAlbums() {

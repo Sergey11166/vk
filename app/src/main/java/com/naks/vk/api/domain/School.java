@@ -2,16 +2,59 @@ package com.naks.vk.api.domain;
 
 public class School {
 
+    /**
+     *  school ID
+     */
     private long id;
+
+    /**
+     * ID of the country the school is located in
+     */
     private long country;
+
+    /**
+     * ID of the city the school is located in
+     */
     private long city;
+
+    /**
+     * school name
+     */
     private String name;
+
+    /**
+     * year the user started to study
+     */
     private int yearFrom;
+
+    /**
+     *  year the user finished to study
+     */
     private int yearTo;
+
+    /**
+     * graduation year
+     */
     private int yearGraduated;
+
+    /**
+     * school class letter
+     */
     private String schoolClass;
+
+    /**
+     * speciality
+     */
     private String speciality;
+
+    /**
+     * type ID
+     */
     private long type;
+
+    /**
+     * type name
+     */
     private String typeName;
 
     public long getId() {
