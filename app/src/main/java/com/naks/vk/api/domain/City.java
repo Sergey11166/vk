@@ -1,5 +1,8 @@
 package com.naks.vk.api.domain;
 
+/**
+ * Class describes City
+ */
 public class City {
 
     private long id;
@@ -19,5 +22,34 @@ public class City {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return "City{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof City)) return false;
+
+        City city = (City) o;
+
+        if (getId() != city.getId()) return false;
+        if (getTitle() != null ? !getTitle().equals(city.getTitle()) : city.getTitle() != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
+        return result;
     }
 }
