@@ -39,17 +39,11 @@ public class City {
 
         City city = (City) o;
 
-        if (getId() != city.getId()) return false;
-        if (getTitle() != null ? !getTitle().equals(city.getTitle()) : city.getTitle() != null)
-            return false;
-
-        return true;
+        return getId() == city.getId();
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (getId() ^ (getId() >>> 32));
-        result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
-        return result;
+        return (int) (getId() ^ (getId() >>> 32));
     }
 }

@@ -1,5 +1,7 @@
 package com.naks.vk.api.domain;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Class describes of various objects the user has.  Can be used in users.get method only when requesting information about a user.
  * Returns an object
@@ -44,16 +46,19 @@ public class Counters {
     /**
      * number of online friends
      */
+    @SerializedName("online_friends")
     private int onlineFriends;
 
     /**
      * number of mutual friends
      */
+    @SerializedName("mutual_friends")
     private int mutualFriends;
 
     /**
      * number of videos the user is tagged on
      */
+    @SerializedName("user_videos")
     private int userVideos;
 
     /**
@@ -65,6 +70,16 @@ public class Counters {
      * number of objects in unit "Interesting pages"
      */
     private int pages;
+
+    /**
+     * number of topics
+     */
+    private int topics;
+
+    /**
+     * Number of docs
+     */
+    private int docs;
 
     public int getAlbums() {
         return albums;
@@ -162,6 +177,22 @@ public class Counters {
         this.pages = pages;
     }
 
+    public int getTopics() {
+        return topics;
+    }
+
+    public void setTopics(int topics) {
+        this.topics = topics;
+    }
+
+    public int getDocs() {
+        return docs;
+    }
+
+    public void setDocs(int docs) {
+        this.docs = docs;
+    }
+
     @Override
     public String toString() {
         return "Counters{" +
@@ -177,6 +208,8 @@ public class Counters {
                 ", userVideos=" + userVideos +
                 ", followers=" + followers +
                 ", pages=" + pages +
+                ", topics=" + topics +
+                ", docs=" + docs +
                 '}';
     }
 
@@ -187,18 +220,20 @@ public class Counters {
 
         Counters counters = (Counters) o;
 
-        return getAlbums() == counters.getAlbums() &&
-                getVideos() == counters.getVideos() &&
-                getAudios() == counters.getAudios() &&
-                getPhotos() == counters.getPhotos() &&
-                getNotes() == counters.getNotes() &&
-                getFriends() == counters.getFriends() &&
-                getGroups() == counters.getGroups() &&
-                getOnlineFriends() == counters.getOnlineFriends() &&
-                getMutualFriends() == counters.getMutualFriends() &&
-                getUserVideos() == counters.getUserVideos() &&
-                getFollowers() == counters.getFollowers() &&
-                getPages() == counters.getPages();
+        if (getAlbums() != counters.getAlbums()) return false;
+        if (getVideos() != counters.getVideos()) return false;
+        if (getAudios() != counters.getAudios()) return false;
+        if (getPhotos() != counters.getPhotos()) return false;
+        if (getNotes() != counters.getNotes()) return false;
+        if (getFriends() != counters.getFriends()) return false;
+        if (getGroups() != counters.getGroups()) return false;
+        if (getOnlineFriends() != counters.getOnlineFriends()) return false;
+        if (getMutualFriends() != counters.getMutualFriends()) return false;
+        if (getUserVideos() != counters.getUserVideos()) return false;
+        if (getFollowers() != counters.getFollowers()) return false;
+        if (getPages() != counters.getPages()) return false;
+        if (getTopics() != counters.getTopics()) return false;
+        return getDocs() == counters.getDocs();
 
     }
 
@@ -216,6 +251,8 @@ public class Counters {
         result = 31 * result + getUserVideos();
         result = 31 * result + getFollowers();
         result = 31 * result + getPages();
+        result = 31 * result + getTopics();
+        result = 31 * result + getDocs();
         return result;
     }
 }

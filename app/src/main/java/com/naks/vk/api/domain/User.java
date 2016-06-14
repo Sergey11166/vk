@@ -18,6 +18,11 @@ public class User {
     public static final int RELATION_ACTIVELY_SEARCHING = 6;
     public static final int RELATION_IN_LOVE            = 7;
 
+    public static final int FRIEND_STATUS_NOT_FRIEND       = 0;
+    public static final int FRIEND_STATUS_REQUEST_SENDED   = 1;
+    public static final int FRIEND_STATUS_INCOMING_REQUEST = 2;
+    public static final int FRIEND_STATUS_IS_FRIEND        = 3;
+
     /**
      * Default fields
      */
@@ -431,10 +436,652 @@ public class User {
     private CropPhoto cropPhoto;
 
     /**
-     * 0 is not friend; 1 - is friend
+     * 0 is not friend; 1 - is friend.
      */
     @SerializedName("is_friend")
     private boolean isFriend;
+
+    /**
+     * friend status.
+     */
+    @SerializedName("friend_status")
+    private int friendStatus;
+
+    /**
+     * Object {@link Career}
+     */
+    private Career career;
+
+    /**
+     * Object {@link Military}
+     */
+    private Military military;
+
+    /**
+     * Is true if current user is blacklisted by this user, else is false.
+     */
+    private boolean blacklisted;
+
+    /**
+     * Is true if this user is blacklisted by current user, else is false.
+     */
+    private boolean blacklistedByName;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(String deactivated) {
+        this.deactivated = deactivated;
+    }
+
+    public String getPhotoId() {
+        return photoId;
+    }
+
+    public void setPhotoId(String photoId) {
+        this.photoId = photoId;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public int getSex() {
+        return sex;
+    }
+
+    public void setSex(int sex) {
+        this.sex = sex;
+    }
+
+    public String getBdate() {
+        return bdate;
+    }
+
+    public void setBdate(String bdate) {
+        this.bdate = bdate;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public String getHomeTown() {
+        return homeTown;
+    }
+
+    public void setHomeTown(String homeTown) {
+        this.homeTown = homeTown;
+    }
+
+    public boolean isHasPhoto() {
+        return hasPhoto;
+    }
+
+    public void setHasPhoto(boolean hasPhoto) {
+        this.hasPhoto = hasPhoto;
+    }
+
+    public String getPhoto50() {
+        return photo50;
+    }
+
+    public void setPhoto50(String photo50) {
+        this.photo50 = photo50;
+    }
+
+    public String getPhoto100() {
+        return photo100;
+    }
+
+    public void setPhoto100(String photo100) {
+        this.photo100 = photo100;
+    }
+
+    public String getPhoto200Orig() {
+        return photo200Orig;
+    }
+
+    public void setPhoto200Orig(String photo200Orig) {
+        this.photo200Orig = photo200Orig;
+    }
+
+    public String getPhoto200() {
+        return photo200;
+    }
+
+    public void setPhoto200(String photo200) {
+        this.photo200 = photo200;
+    }
+
+    public String getPhoto400Origin() {
+        return photo400Origin;
+    }
+
+    public void setPhoto400Origin(String photo400Origin) {
+        this.photo400Origin = photo400Origin;
+    }
+
+    public String getPhotoMax() {
+        return photoMax;
+    }
+
+    public void setPhotoMax(String photoMax) {
+        this.photoMax = photoMax;
+    }
+
+    public String getPhotoMaxOrigin() {
+        return photoMaxOrigin;
+    }
+
+    public void setPhotoMaxOrigin(String photoMaxOrigin) {
+        this.photoMaxOrigin = photoMaxOrigin;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+
+    public String getLists() {
+        return lists;
+    }
+
+    public void setLists(String lists) {
+        this.lists = lists;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public boolean isHasMobile() {
+        return hasMobile;
+    }
+
+    public void setHasMobile(boolean hasMobile) {
+        this.hasMobile = hasMobile;
+    }
+
+    public String getMobilePhone() {
+        return mobilePhone;
+    }
+
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
+    }
+
+    public String getHomePhone() {
+        return homePhone;
+    }
+
+    public void setHomePhone(String homePhone) {
+        this.homePhone = homePhone;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public int getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(int university) {
+        this.university = university;
+    }
+
+    public String getUniversityName() {
+        return universityName;
+    }
+
+    public void setUniversityName(String universityName) {
+        this.universityName = universityName;
+    }
+
+    public int getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(int faculty) {
+        this.faculty = faculty;
+    }
+
+    public String getFacultyName() {
+        return facultyName;
+    }
+
+    public void setFacultyName(String facultyName) {
+        this.facultyName = facultyName;
+    }
+
+    public int getGraduation() {
+        return graduation;
+    }
+
+    public void setGraduation(int graduation) {
+        this.graduation = graduation;
+    }
+
+    public String getEducationForm() {
+        return educationForm;
+    }
+
+    public void setEducationForm(String educationForm) {
+        this.educationForm = educationForm;
+    }
+
+    public String getEducationStatus() {
+        return educationStatus;
+    }
+
+    public void setEducationStatus(String educationStatus) {
+        this.educationStatus = educationStatus;
+    }
+
+    public List<University> getUniversities() {
+        return universities;
+    }
+
+    public void setUniversities(List<University> universities) {
+        this.universities = universities;
+    }
+
+    public List<School> getSchools() {
+        return schools;
+    }
+
+    public void setSchools(List<School> schools) {
+        this.schools = schools;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LastSeen getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setLastSeen(LastSeen lastSeen) {
+        this.lastSeen = lastSeen;
+    }
+
+    public int getFollowersCount() {
+        return followersCount;
+    }
+
+    public void setFollowersCount(int followersCount) {
+        this.followersCount = followersCount;
+    }
+
+    public int getCommonCount() {
+        return commonCount;
+    }
+
+    public void setCommonCount(int commonCount) {
+        this.commonCount = commonCount;
+    }
+
+    public Counters getCounters() {
+        return counters;
+    }
+
+    public void setCounters(Counters counters) {
+        this.counters = counters;
+    }
+
+    public Occupation getOccupation() {
+        return occupation;
+    }
+
+    public void setOccupation(Occupation occupation) {
+        this.occupation = occupation;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public List<Relative> getRelatives() {
+        return relatives;
+    }
+
+    public void setRelatives(List<Relative> relatives) {
+        this.relatives = relatives;
+    }
+
+    public int getRelation() {
+        return relation;
+    }
+
+    public void setRelation(int relation) {
+        this.relation = relation;
+    }
+
+    public RelationPartner getRelationPartner() {
+        return relationPartner;
+    }
+
+    public void setRelationPartner(RelationPartner relationPartner) {
+        this.relationPartner = relationPartner;
+    }
+
+    public Personal getPersonal() {
+        return personal;
+    }
+
+    public void setPersonal(Personal personal) {
+        this.personal = personal;
+    }
+
+    public String getSkype() {
+        return skype;
+    }
+
+    public void setSkype(String skype) {
+        this.skype = skype;
+    }
+
+    public String getInstagram() {
+        return instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
+    }
+
+    public String getFacebookName() {
+        return facebookName;
+    }
+
+    public void setFacebookName(String facebookName) {
+        this.facebookName = facebookName;
+    }
+
+    public boolean isWallComments() {
+        return wallComments;
+    }
+
+    public void setWallComments(boolean wallComments) {
+        this.wallComments = wallComments;
+    }
+
+    public String getActivities() {
+        return activities;
+    }
+
+    public void setActivities(String activities) {
+        this.activities = activities;
+    }
+
+    public String getInterests() {
+        return interests;
+    }
+
+    public void setInterests(String interests) {
+        this.interests = interests;
+    }
+
+    public String getMusic() {
+        return music;
+    }
+
+    public void setMusic(String music) {
+        this.music = music;
+    }
+
+    public String getMovies() {
+        return movies;
+    }
+
+    public void setMovies(String movies) {
+        this.movies = movies;
+    }
+
+    public String getTv() {
+        return tv;
+    }
+
+    public void setTv(String tv) {
+        this.tv = tv;
+    }
+
+    public String getBooks() {
+        return books;
+    }
+
+    public void setBooks(String books) {
+        this.books = books;
+    }
+
+    public String getGames() {
+        return games;
+    }
+
+    public void setGames(String games) {
+        this.games = games;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public String getQuotes() {
+        return quotes;
+    }
+
+    public void setQuotes(String quotes) {
+        this.quotes = quotes;
+    }
+
+    public boolean isCanPost() {
+        return canPost;
+    }
+
+    public void setCanPost(boolean canPost) {
+        this.canPost = canPost;
+    }
+
+    public boolean isCanSeeAllPosts() {
+        return canSeeAllPosts;
+    }
+
+    public void setCanSeeAllPosts(boolean canSeeAllPosts) {
+        this.canSeeAllPosts = canSeeAllPosts;
+    }
+
+    public boolean isCanSeeAudio() {
+        return canSeeAudio;
+    }
+
+    public void setCanSeeAudio(boolean canSeeAudio) {
+        this.canSeeAudio = canSeeAudio;
+    }
+
+    public boolean isCanWritePrivateMessage() {
+        return canWritePrivateMessage;
+    }
+
+    public void setCanWritePrivateMessage(boolean canWritePrivateMessage) {
+        this.canWritePrivateMessage = canWritePrivateMessage;
+    }
+
+    public boolean isCanSendFriendRequest() {
+        return canSendFriendRequest;
+    }
+
+    public void setCanSendFriendRequest(boolean canSendFriendRequest) {
+        this.canSendFriendRequest = canSendFriendRequest;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public boolean isHiddenFromFeed() {
+        return isHiddenFromFeed;
+    }
+
+    public void setHiddenFromFeed(boolean hiddenFromFeed) {
+        isHiddenFromFeed = hiddenFromFeed;
+    }
+
+    public int getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(int timezone) {
+        this.timezone = timezone;
+    }
+
+    public String getScreenName() {
+        return screenName;
+    }
+
+    public void setScreenName(String screenName) {
+        this.screenName = screenName;
+    }
+
+    public String getMaidenName() {
+        return maidenName;
+    }
+
+    public void setMaidenName(String maidenName) {
+        this.maidenName = maidenName;
+    }
+
+    public CropPhoto getCropPhoto() {
+        return cropPhoto;
+    }
+
+    public void setCropPhoto(CropPhoto cropPhoto) {
+        this.cropPhoto = cropPhoto;
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
+    }
+
+    public int getFriendStatus() {
+        return friendStatus;
+    }
+
+    public void setFriendStatus(int friendStatus) {
+        this.friendStatus = friendStatus;
+    }
+
+    public Career getCareer() {
+        return career;
+    }
+
+    public void setCareer(Career career) {
+        this.career = career;
+    }
+
+    public Military getMilitary() {
+        return military;
+    }
+
+    public void setMilitary(Military military) {
+        this.military = military;
+    }
+
+    public boolean isBlacklisted() {
+        return blacklisted;
+    }
+
+    public void setBlacklisted(boolean blacklisted) {
+        this.blacklisted = blacklisted;
+    }
+
+    public boolean isBlacklistedByName() {
+        return blacklistedByName;
+    }
+
+    public void setBlacklistedByName(boolean blacklistedByName) {
+        this.blacklistedByName = blacklistedByName;
+    }
 
     @Override
     public String toString() {
@@ -444,5 +1091,21 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", screenName='" + screenName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+
+        User user = (User) o;
+
+        return getId() == user.getId();
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (getId() ^ (getId() >>> 32));
     }
 }

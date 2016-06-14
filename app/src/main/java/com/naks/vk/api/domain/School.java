@@ -1,7 +1,7 @@
 package com.naks.vk.api.domain;
 
 /**
- * Class describes school
+ * Class describes school of user
  */
 public class School {
 

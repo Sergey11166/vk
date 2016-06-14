@@ -39,17 +39,12 @@ public class Country {
 
         Country country = (Country) o;
 
-        if (getId() != country.getId()) return false;
-        if (getTitle() != null ? !getTitle().equals(country.getTitle()) : country.getTitle() != null)
-            return false;
+        return getId() == country.getId();
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (getId() ^ (getId() >>> 32));
-        result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
-        return result;
+        return (int) (getId() ^ (getId() >>> 32));
     }
 }

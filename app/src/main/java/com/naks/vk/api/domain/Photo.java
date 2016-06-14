@@ -203,26 +203,12 @@ public class Photo {
 
         Photo photo = (Photo) o;
 
-        if (getPid() != photo.getPid()) return false;
+        return getPid() == photo.getPid();
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = getPid();
-        result = 31 * result + getAid();
-        result = 31 * result + getOwnerId();
-        result = 31 * result + (getSrc() != null ? getSrc().hashCode() : 0);
-        result = 31 * result + (getSrcBig() != null ? getSrcBig().hashCode() : 0);
-        result = 31 * result + (getSrcSmall() != null ? getSrcSmall().hashCode() : 0);
-        result = 31 * result + (getSrcXBig() != null ? getSrcXBig().hashCode() : 0);
-        result = 31 * result + (getSrcXXBig() != null ? getSrcXXBig().hashCode() : 0);
-        result = 31 * result + (getSrcXXXBig() != null ? getSrcXXXBig().hashCode() : 0);
-        result = 31 * result + getWidth();
-        result = 31 * result + getHeight();
-        result = 31 * result + getText();
-        result = 31 * result + getCreated();
-        return result;
+        return getPid();
     }
 }
