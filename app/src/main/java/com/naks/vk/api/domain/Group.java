@@ -2,6 +2,8 @@ package com.naks.vk.api.domain;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Class describes vk group
  */
@@ -94,17 +96,113 @@ public class Group {
     /**
      * URL of the 50px-wide community logo.
      */
-    private String photo;
+    @SerializedName("photo_50")
+    private String photo50;
 
     /**
      * URL of the 100px-wide community logo.
      */
-    @SerializedName("photo_medium")
-    private String photoMedium;
+    @SerializedName("photo_100")
+    private String photo100;
 
     /**
      * URL of the 200px-wide community logo.
      */
-    @SerializedName("photo_big")
-    private String photoBig;
+    @SerializedName("photo_200")
+    private String photo200;
+
+    /**
+     * Object {@link City}
+     */
+    private City city;
+
+    /**
+     * Object {@link Country}
+     */
+    private Country country;
+
+    /**
+     * Object {@link Place}
+     */
+    private Place place;
+
+    /**
+     * Description
+     */
+    private String description;
+
+    /**
+     * Name of the home wiki-page of the community.
+     */
+    @SerializedName("wiki_page")
+    private String wikiPage;
+
+    /**
+     * Number of community members.
+     */
+    @SerializedName("members_count")
+    private int membersCount;
+
+    /**
+     * Counters object with community counters. May include any set of the following fields:
+     * photos, albums, audios, videos, topics, docs.
+     */
+    private Counters counters;
+
+    /**
+     * Returned only for meeting and contain start/end time of the meeting as unixtime.
+     */
+    @SerializedName("start_date") private int startDate;
+    @SerializedName("end_date") private int endDate;
+
+    /**
+     * Return if type group is page. Description for {@link #startDate}
+     */
+    @SerializedName("public_date_label")
+    private String publicDateLabel;
+
+    /**
+     * Whether the current user can post on the community's wall (0 — cannot, 1 — can).
+     */
+    @SerializedName("can_post")
+    private boolean canPost;
+
+    /**
+     * Whether the current user can message on the community's wall (0 — cannot, 1 — can).
+     */
+    @SerializedName("can_message")
+    private boolean canMessage;
+
+
+    /**
+     * Whether others' posts on the community's wall can be viewed
+     * (0 — cannot be viewed, 1 — can be viewed).
+     */
+    @SerializedName("can_see_all_posts")
+    private boolean canSeeAllPosts;
+
+    @SerializedName("can_upload_doc")
+    private boolean canUploadDoc;
+
+    @SerializedName("can_upload_video")
+    private boolean canUploadVideo;
+
+    @SerializedName("can_create_topic")
+    private boolean canCreateTopic;
+
+    /**
+     * Returns the public page status bar. For groups, a string value is returned whether
+     * the group is public or not; for events — start date.
+     */
+    private String activity;
+
+    /**
+     * Group status. Returns a string with status text that is on the group page below its name.
+     */
+    private String status;
+
+    /**
+     * Information from public page contact module.
+     */
+    private List<Contact> contacts;
 }
