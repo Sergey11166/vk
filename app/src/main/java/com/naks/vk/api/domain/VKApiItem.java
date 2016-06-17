@@ -3,14 +3,11 @@ package com.naks.vk.api.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.vk.sdk.api.model.Identifiable;
 import com.vk.sdk.api.model.VKApiModel;
 import com.vk.sdk.api.model.VKApiPost;
 import com.vk.sdk.api.model.VKAttachments;
 import com.vk.sdk.api.model.VKList;
-import com.vk.sdk.api.model.VKPostArray;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,7 +62,7 @@ public class VKApiItem extends VKApiModel implements Parcelable {
     /**
      * массив, содержащий историю репостов для записи. Возвращается только в том случае,
      * если запись является репостом. Каждый из объектов массива, в свою очередь,
-     * является {@link VKPostArray} стандартного формата.
+     * является {@link VKApiPost} стандартного формата.
      */
     public VKList<VKApiPost> copy_history;
 
@@ -113,50 +110,47 @@ public class VKApiItem extends VKApiModel implements Parcelable {
         parse(from);
     }
 
-    public VKApiItem parse(JSONObject item) throws JSONException {
-        fields = item;
+    public VKApiItem parse(JSONObject source) throws JSONException {
+        type = source.optString("type");
+        source_id = source.optInt("source_id");
+        date = source.optLong("date");
+        post_id = source.optInt("post_id");
+        post_type = source.optString("post_type");
+        final_post = source.optString("post_final");
+        copy_owner_id = source.optInt("copy_owner_id");
+        copy_post_id = source.optInt("copy_post");
 
-        type = item.optString("type");
-        source_id = item.optInt("source_id");
-        date = item.optLong("date");
-        post_id = item.optInt("post_id");
-        post_type = item.optString("post_type");
-        final_post = item.optString("post_final");
-        copy_owner_id = item.optInt("copy_owner_id");
-        copy_post_id = item.optInt("copy_post");
+        copy_history = new VKList<>(source.optJSONArray("copy_history"), VKApiPost.class);
 
-        copy_history = new VKList<>(item.optJSONArray("copy_history"), VKApiPost.class);
+        copy_post_date = source.optLong("copy_post_date");
+        text = source.getString("text");
+        can_edit = source.optInt("can_edit", 0) == 1;
+        can_delete = source.optInt("can_delete", 0) == 1;
 
-        copy_post_date = item.optLong("copy_post_date");
-        text = item.getString("text");
-        can_edit = item.optInt("can_edit", 0) == 1;
-        can_delete = item.optInt("can_delete", 0) == 1;
-
-        JSONObject comments = item.optJSONObject("comments");
+        JSONObject comments = source.optJSONObject("comments");
         if (comments != null) this.comments = new Comments(comments);
 
-        JSONObject likes = item.optJSONObject("likes");
+        JSONObject likes = source.optJSONObject("likes");
         if (likes != null) this.likes = new Likes(likes);
 
-        JSONObject reposts = item.optJSONObject("reposts");
+        JSONObject reposts = source.optJSONObject("reposts");
         if (reposts != null) this.reposts = new Reposts(reposts);
 
-        JSONArray attachments = item.optJSONArray("attachments");
-        if (attachments != null) this.attachments = new VKAttachments(attachments);
+        attachments.fill(source.optJSONArray("attachments"));
 
-        JSONObject geo = item.optJSONObject("geo");
+        JSONObject geo = source.optJSONObject("geo");
         if (geo != null) this.geo = new Geo(geo);
 
-        JSONObject photos = item.optJSONObject("photos");
+        JSONObject photos = source.optJSONObject("photos");
         if (photos != null) this.photos = new Photoss(photos);
 
-        JSONObject photo_tags = item.optJSONObject("photo_tags");
+        JSONObject photo_tags = source.optJSONObject("photo_tags");
         if (photo_tags != null) this.photo_tags = new Photoss(photo_tags);
 
-        JSONObject notes = item.optJSONObject("notes");
+        JSONObject notes = source.optJSONObject("notes");
         if (notes != null) this.notes = new Notes(notes);
 
-        JSONObject friends = item.optJSONObject("friends");
+        JSONObject friends = source.optJSONObject("friends");
         if (friends != null) this.friends = new Friendss(friends);
 
         return this;
