@@ -9,8 +9,6 @@ import com.naks.vk.mvp.presenter.impl.NewsPagePresenterImpl;
 import com.naks.vk.ui.adapter.NewsRecyclerAdapter;
 import com.naks.vk.ui.fragment.NewsPageFragment;
 
-import java.util.Random;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -44,6 +42,6 @@ public class NewsPageModule {
     @Provides
     @PerFragment
     GetNewsInteractor provideGetNewsInteractor() {
-        return new GetNewsInteractorImpl(new Random());
+        return new GetNewsInteractorImpl();
     }
 }

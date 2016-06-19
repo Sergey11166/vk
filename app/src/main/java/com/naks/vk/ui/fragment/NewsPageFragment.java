@@ -13,17 +13,18 @@ import android.view.ViewGroup;
 
 import com.hannesdorfmann.mosby.mvp.viewstate.lce.LceViewState;
 import com.naks.vk.R;
+import com.naks.vk.api.domain.VKApiItem;
+import com.naks.vk.api.domain.VKApiNews;
 import com.naks.vk.di.component.HasComponent;
 import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.component.NewsPageComponent;
 import com.naks.vk.di.module.NewsPageModule;
-import com.naks.vk.mvp.model.viewmodel.News;
 import com.naks.vk.mvp.presenter.NewsPagePresenter;
 import com.naks.vk.mvp.view.NewsPageView;
 import com.naks.vk.ui.adapter.NewsRecyclerAdapter;
 import com.naks.vk.ui.util.NewsErrorMessage;
-
-import java.util.List;
+import com.vk.sdk.api.model.VKApiCommunityFull;
+import com.vk.sdk.api.model.VKApiUserFull;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class NewsPageFragment extends MvpLceViewStateNestedBaseFragment<SwipeRefreshLayout,
-        List<News>, NewsPageView, NewsPagePresenter>
+        VKApiNews, NewsPageView, NewsPagePresenter>
         implements NewsPageView, HasComponent<NewsPageComponent> {
 
     private static final String TAG = "NewsPageFragment";
@@ -62,7 +63,7 @@ public class NewsPageFragment extends MvpLceViewStateNestedBaseFragment<SwipeRef
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
-    public LceViewState<List<News>, NewsPageView> createViewState() {
+    public LceViewState<VKApiNews, NewsPageView> createViewState() {
         Log.d(TAG, "createViewState()");
         return component.getViewState();
     }
@@ -82,7 +83,8 @@ public class NewsPageFragment extends MvpLceViewStateNestedBaseFragment<SwipeRef
         super.onViewCreated(view, savedInstance);
         Log.d(TAG, view.toString() + savedInstance);
         contentView.setOnRefreshListener(() -> loadData(true));
-        adapter.setOnNewsItemClickListener(id -> presenter.onItemClick(id));
+        adapter.setOnNewsItemClickListener((item, user, group) ->
+                presenter.onItemClick(item, user, group));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
     }
@@ -114,25 +116,26 @@ public class NewsPageFragment extends MvpLceViewStateNestedBaseFragment<SwipeRef
     }
 
     @Override
-    public void setData(List<News> data) {
+    public void setData(VKApiNews data) {
         Log.d(TAG, "setData(" + data + ")");
         adapter.setData(data);
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void addData(List<News> data) {
+    public void addData(VKApiNews data) {
         Log.d(TAG, "addData(" + data + ")");
 
     }
 
     @Override
-    public void navigateToNewsDetailActivity(long id) {
-        Log.d(TAG, "navigateToNewsDetailActivity(" + id + ")");
+    public void navigateToNewsDetailActivity(VKApiItem item, VKApiUserFull user,
+                                             VKApiCommunityFull group) {
+        Log.d(TAG, "navigateToNewsDetailActivity(" + item + ")");
     }
 
     @Override
-    public List<News> getData() {
+    public VKApiNews getData() {
         Log.d(TAG, "getData()");
         return adapter == null ? null : adapter.getData();
     }

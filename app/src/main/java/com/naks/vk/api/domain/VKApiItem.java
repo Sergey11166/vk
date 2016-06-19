@@ -93,8 +93,14 @@ public class VKApiItem extends VKApiModel implements Parcelable {
 
     public Reposts reposts;
 
-    public VKAttachments attachments;
+    /**
+     * Information about attachments to the post (photos, links, etc.), if any;
+     */
+    public VKAttachments attachments = new VKAttachments();
 
+    /**
+     * Information about location.
+     */
     public Geo geo;
 
     /**
@@ -123,7 +129,7 @@ public class VKApiItem extends VKApiModel implements Parcelable {
         copy_history = new VKList<>(source.optJSONArray("copy_history"), VKApiPost.class);
 
         copy_post_date = source.optLong("copy_post_date");
-        text = source.getString("text");
+        text = source.optString("text");
         can_edit = source.optInt("can_edit", 0) == 1;
         can_delete = source.optInt("can_delete", 0) == 1;
 

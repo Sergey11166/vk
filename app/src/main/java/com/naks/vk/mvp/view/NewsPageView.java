@@ -1,13 +1,14 @@
 package com.naks.vk.mvp.view;
 
 import com.hannesdorfmann.mosby.mvp.lce.MvpLceView;
-import com.naks.vk.mvp.model.viewmodel.News;
+import com.naks.vk.api.domain.VKApiItem;
+import com.naks.vk.api.domain.VKApiNews;
+import com.vk.sdk.api.model.VKApiCommunityFull;
+import com.vk.sdk.api.model.VKApiUserFull;
 
-import java.util.List;
+public interface NewsPageView extends MvpLceView<VKApiNews> {
 
-public interface NewsPageView extends MvpLceView<List<News>> {
+    void addData(VKApiNews data);
 
-    void addData(List<News> data);
-
-    void navigateToNewsDetailActivity(long id);
+    void navigateToNewsDetailActivity(VKApiItem id, VKApiUserFull user, VKApiCommunityFull community);
 }

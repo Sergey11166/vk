@@ -1,102 +1,74 @@
 package com.naks.vk.mvp.model.interactor.impl;
 
-import android.os.AsyncTask;
+import android.util.Log;
 
+import com.naks.vk.BuildConfig;
+import com.naks.vk.api.domain.VKApiNews;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
-import com.naks.vk.mvp.model.viewmodel.News;
+import com.vk.sdk.api.VKError;
+import com.vk.sdk.api.VKParameters;
+import com.vk.sdk.api.VKRequest;
+import com.vk.sdk.api.VKResponse;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import org.json.JSONException;
 
+/**
+ * Interactor for get vk news
+ */
 public class GetNewsInteractorImpl implements GetNewsInteractor {
 
-    private NewsAsyncLoader loader;
-    private Random random;
-
-    public GetNewsInteractorImpl(Random random) {
-        this.random = random;
-    }
+    private static final String TAG = "GetNewsInteractorImpl";
 
     @Override
-    public void get(final TypeNews type, boolean pullToRefresh,
+    public void get(TypeNews type, boolean pullToRefresh, String startFrom,
                     OnNewsLoadingFinishedListener listener) {
-        if (loader != null && !loader.isCancelled()) {
-            loader.cancel(true);
-        }
-        loader = new NewsAsyncLoader(type, pullToRefresh, listener);
-        loader.execute();
-    }
 
-    private class NewsAsyncLoader extends AsyncTask<Void, Void, List<News>> {
+        VKRequest vkRequest = null;
 
-        private GetNewsInteractor.TypeNews type;
-        private GetNewsInteractor.OnNewsLoadingFinishedListener listener;
-        private boolean pullToRefresh;
-
-        public NewsAsyncLoader(GetNewsInteractor.TypeNews type,
-                               boolean pullToRefresh,
-                               GetNewsInteractor.OnNewsLoadingFinishedListener listener) {
-            this.listener = listener;
-            this.type = type;
-            this.pullToRefresh = pullToRefresh;
-        }
-
-        @Override
-        protected List<News> doInBackground(Void... params) {
-
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                return null;
-            }
-
-            List<News> news = null;
-
-            switch (type) {
-                case NEWS:
-                    news = createSampleNews("simple news");
-                    break;
-                case RECOMMENDATIONS:
-                    news = createSampleNews("simple recommendations");
-                    break;
-                case FRIENDS:
-                    news = createSampleNews("simple friends");
-                    break;
-                case COMMUNITIES:
-                    news = createSampleNews("simple communities");
-                    break;
-            }
-            if (news != null) Collections.shuffle(news);
-            return news;
+        switch (type) {
+            case NEWS:
+                vkRequest = new VKRequest("newsfeed.get", VKParameters.from("start_from", startFrom));
+                break;
+            case RECOMMENDATIONS:
+                vkRequest = new VKRequest("newsfeed.getRecommended", VKParameters.from("start_from", startFrom));
+                break;
+            case FRIENDS:
+                vkRequest = new VKRequest("newsfeed.get", VKParameters.from(
+                        "start_from", startFrom,
+                        "source_ids", "friends,following"));
+                break;
+            case COMMUNITIES:
+                vkRequest = new VKRequest("newsfeed.get", VKParameters.from(
+                        "start_from", startFrom,
+                        "source_ids", "groups,pages"));
+                break;
         }
 
-        @Override
-        protected void onPostExecute(List<News> news) {
-
-            if (isCancelled()) {
-                return;
+        vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                try {
+                    listener.onLoadingSuccess(new VKApiNews(response.json));
+                } catch (JSONException e) {
+                    if(BuildConfig.DEBUG) Log.e(TAG, "Pars response failed", e);
+                }
             }
 
-            if (news == null) {
-                listener.onLoadingFailed(new Exception("Error loading"), pullToRefresh);
-            } else {
-                listener.onLoadingSuccess(news);
-            }
-        }
+            @Override
+            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
 
-        private List<News> createSampleNews(String sampleText) {
-            if (random.nextBoolean()) return null;
-            List<News> result = new ArrayList<>(100);
-            for (int i=0; i<100; i++) {
-                News news = new News();
-                news.setId(i);
-                StringBuilder sb = new StringBuilder(sampleText);
-                news.setContent(sb.append(i).toString());
-                result.add(news);
             }
-            return result;
-        }
+
+            @Override
+            public void onError(VKError error) {
+                listener.onLoadingFailed(error, pullToRefresh);
+            }
+
+            @Override
+            public void onProgress(VKRequest.VKProgressType progressType,
+                                   long bytesLoaded, long bytesTotal) {
+
+            }
+        });
     }
 }

@@ -1,8 +1,7 @@
 package com.naks.vk.mvp.model.interactor;
 
-import com.naks.vk.mvp.model.viewmodel.News;
-
-import java.util.List;
+import com.naks.vk.api.domain.VKApiNews;
+import com.vk.sdk.api.VKError;
 
 public interface GetNewsInteractor {
 
@@ -15,10 +14,10 @@ public interface GetNewsInteractor {
 
     interface OnNewsLoadingFinishedListener {
 
-        void onLoadingSuccess(List<News> news);
+        void onLoadingSuccess(VKApiNews news);
 
-        void onLoadingFailed(Throwable t, boolean pullToRefresh);
+        void onLoadingFailed(VKError error, boolean pullToRefresh);
     }
 
-    void get(TypeNews type, boolean pullToRefresh, OnNewsLoadingFinishedListener listener);
+    void get(TypeNews type, boolean pullToRefresh, String startFrom, OnNewsLoadingFinishedListener listener);
 }

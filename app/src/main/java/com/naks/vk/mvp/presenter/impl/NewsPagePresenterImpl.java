@@ -3,13 +3,15 @@ package com.naks.vk.mvp.presenter.impl;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+import com.naks.vk.api.domain.VKApiItem;
+import com.naks.vk.api.domain.VKApiNews;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
-import com.naks.vk.mvp.model.viewmodel.News;
 import com.naks.vk.mvp.presenter.NewsPagePresenter;
 import com.naks.vk.mvp.view.NewsPageView;
 import com.naks.vk.ui.fragment.NewsPageFragment;
-
-import java.util.List;
+import com.vk.sdk.api.VKError;
+import com.vk.sdk.api.model.VKApiCommunityFull;
+import com.vk.sdk.api.model.VKApiUserFull;
 
 import javax.inject.Inject;
 
@@ -22,6 +24,8 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
 
     private GetNewsInteractor.TypeNews typeNews;
 
+    private String startFrom;
+
     public NewsPagePresenterImpl(NewsPageFragment fragment) {
         Log.d(TAG, "constructor " + toString());
         fragment.getComponent().inject(this);
@@ -33,17 +37,17 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     @Override
     public void loadNews(boolean pullToRefresh) {
         Log.d(TAG, "loadNews(" + pullToRefresh + ")");
-        interactor.get(typeNews, pullToRefresh, this);
+        interactor.get(typeNews, pullToRefresh, startFrom, this);
         assert getView() != null;
         getView().showLoading(pullToRefresh);
     }
 
     @Override
-    public void onItemClick(long id) {
-        Log.d(TAG, "inItemClick(" + id + ")");
+    public void onItemClick(VKApiItem item, VKApiUserFull user, VKApiCommunityFull group) {
+        Log.d(TAG, "inItemClick(" + item + ")");
         if (isViewAttached()) {
             assert getView() != null;
-            getView().navigateToNewsDetailActivity(id);
+            getView().navigateToNewsDetailActivity(item, user, group);
         }
     }
 
@@ -60,9 +64,10 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     }
 
     @Override
-    public void onLoadingSuccess(List<News> news) {
+    public void onLoadingSuccess(VKApiNews news) {
         if (isViewAttached()) {
             Log.d(TAG, "setData()");
+            startFrom = news.next_from;
             assert getView() != null;
             getView().setData(news);
 
@@ -72,12 +77,12 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     }
 
     @Override
-    public void onLoadingFailed(Throwable t, boolean pullToRefresh) {
+    public void onLoadingFailed(VKError error, boolean pullToRefresh) {
         if (isViewAttached()) {
 
-            Log.d(TAG, "showError(" + t.getClass().getSimpleName() + " , " + pullToRefresh + ")");
+            Log.d(TAG, "showError(" + error.getClass().getSimpleName() + " , " + pullToRefresh + ")");
             assert getView() != null;
-            getView().showError(t, pullToRefresh);
+            getView().showError(new Exception(error.toString()), pullToRefresh);
         }
     }
 }

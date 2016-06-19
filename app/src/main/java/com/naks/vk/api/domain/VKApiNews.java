@@ -3,7 +3,7 @@ package com.naks.vk.api.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.vk.sdk.api.model.VKApiCommunity;
+import com.vk.sdk.api.model.VKApiCommunityFull;
 import com.vk.sdk.api.model.VKApiModel;
 import com.vk.sdk.api.model.VKApiUserFull;
 
@@ -32,7 +32,7 @@ public class VKApiNews extends VKApiModel implements Parcelable {
     /**
      * Information about groups in the newsfeed.
      */
-    public List<VKApiCommunity> groups;
+    public List<VKApiCommunityFull> groups;
 
     /**
      * Contains a start_from parameter that is passed to get the next array of news.
@@ -46,7 +46,7 @@ public class VKApiNews extends VKApiModel implements Parcelable {
     protected VKApiNews(Parcel in) {
         items = in.createTypedArrayList(VKApiItem.CREATOR);
         profiles = in.createTypedArrayList(VKApiUserFull.CREATOR);
-        groups = in.createTypedArrayList(VKApiCommunity.CREATOR);
+        groups = in.createTypedArrayList(VKApiCommunityFull.CREATOR);
         next_from = in.readString();
     }
 
@@ -63,7 +63,10 @@ public class VKApiNews extends VKApiModel implements Parcelable {
     };
 
     public VKApiNews parse(JSONObject source) throws JSONException {
-        JSONArray items = source.optJSONArray("items");
+
+        JSONObject response = source.optJSONObject("response");
+
+        JSONArray items = response.optJSONArray("items");
         if (items != null) {
             this.items = new ArrayList<>();
             for (int i=0; i<items.length(); i++) {
@@ -72,7 +75,7 @@ public class VKApiNews extends VKApiModel implements Parcelable {
             }
         }
 
-        JSONArray profiles = source.optJSONArray("profiles");
+        JSONArray profiles = response.optJSONArray("profiles");
         if (profiles != null) {
             this.profiles = new ArrayList<>();
             for (int i=0; i<profiles.length(); i++) {
@@ -81,12 +84,12 @@ public class VKApiNews extends VKApiModel implements Parcelable {
             }
         }
 
-        JSONArray groups = source.optJSONArray("groups");
+        JSONArray groups = response.optJSONArray("groups");
         if (groups != null) {
             this.groups = new ArrayList<>();
             for (int i=0; i<groups.length(); i++) {
                 JSONObject group = (JSONObject) groups.get(i);
-                this.groups.add(new VKApiCommunity(group));
+                this.groups.add(new VKApiCommunityFull().parse(group));
             }
         }
 
