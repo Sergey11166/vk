@@ -14,7 +14,7 @@ public interface GetNewsInteractor {
 
     interface OnNewsLoadingFinishedListener {
 
-        void onLoadingSuccess(VKApiNews news);
+        void onLoadingSuccess(VKApiNews news, boolean pullTpRefresh);
 
         void onLoadingFailed(VKError error, boolean pullToRefresh);
     }

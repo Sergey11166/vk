@@ -34,10 +34,12 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
             } else {
                 holder.group = findGroupByItem(sourceId);
             }
-            holder.textContent.setText(holder.item.text);
-            holder.sourceName.setText(sourceId > 0 ?
+            assert holder.user != null;
+            assert holder.group != null;
+            holder.text.setText(sourceId > 0 ?
                     holder.user.first_name + "_" + holder.user.last_name :
                     holder.group.name);
+            if (!holder.item.text.isEmpty()) holder.text.append("\n\n" + holder.item.text);
             holder.v.setOnClickListener(v -> listener.onClick(holder.item, holder.user, holder.group));
         }
     }
@@ -49,16 +51,14 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View v;
-        public final TextView textContent;
-        public final TextView sourceName;
+        public final TextView text;
         public VKApiItem item;
         public VKApiUserFull user;
         public VKApiCommunityFull group;
         public ViewHolder(View itemView) {
             super(itemView);
             v = itemView;
-            textContent = (TextView) itemView.findViewById(R.id.text);
-            sourceName = (TextView) itemView.findViewById(R.id.source_name);
+            text = (TextView) itemView.findViewById(R.id.text);
         }
     }
 
@@ -69,6 +69,29 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
     public void setData(VKApiNews data) {
         this.data = data;
+        notifyDataSetChanged();
+    }
+
+    public void addData(VKApiNews data) {
+        if (this.data == null) {
+            this.data = data;
+            return;
+        }
+
+        this.data.items.addAll(data.items);
+
+        for (VKApiUserFull user : data.profiles) {
+            if (!this.data.profiles.contains(user)) {
+                this.data.profiles.add(user);
+            }
+        }
+
+        for (VKApiCommunityFull group : data.groups) {
+            if (!this.data.groups.contains(group)) {
+                this.data.groups.add(group);
+            }
+        }
+        notifyDataSetChanged();
     }
 
     public void setOnNewsItemClickListener(OnNewsItemClickListener listener) {

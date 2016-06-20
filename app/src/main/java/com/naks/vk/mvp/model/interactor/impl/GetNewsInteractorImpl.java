@@ -5,6 +5,7 @@ import android.util.Log;
 import com.naks.vk.BuildConfig;
 import com.naks.vk.api.domain.VKApiNews;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
+import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
@@ -27,28 +28,32 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
 
         switch (type) {
             case NEWS:
-                vkRequest = new VKRequest("newsfeed.get", VKParameters.from("start_from", startFrom));
+                vkRequest = new VKRequest("newsfeed.get", VKParameters.from(
+                        VKApiConst.FILTERS, "post",
+                        "start_from", startFrom));
                 break;
             case RECOMMENDATIONS:
-                vkRequest = new VKRequest("newsfeed.getRecommended", VKParameters.from("start_from", startFrom));
+                vkRequest = new VKRequest("newsfeed.getRecommended", VKParameters.from(
+                        "start_from", startFrom));
                 break;
             case FRIENDS:
                 vkRequest = new VKRequest("newsfeed.get", VKParameters.from(
-                        "start_from", startFrom,
-                        "source_ids", "friends,following"));
+                        VKApiConst.FILTERS, "post,photo,photo_tag",
+                        "source_ids", "friends,following",
+                        "start_from", startFrom));
                 break;
             case COMMUNITIES:
                 vkRequest = new VKRequest("newsfeed.get", VKParameters.from(
-                        "start_from", startFrom,
-                        "source_ids", "groups,pages"));
-                break;
+                        VKApiConst.FILTERS, "post,photo",
+                        "source_ids", "groups,pages",
+                        "start_from", startFrom));
         }
 
         vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 try {
-                    listener.onLoadingSuccess(new VKApiNews(response.json));
+                    listener.onLoadingSuccess(new VKApiNews(response.json), pullToRefresh);
                 } catch (JSONException e) {
                     if(BuildConfig.DEBUG) Log.e(TAG, "Pars response failed", e);
                 }

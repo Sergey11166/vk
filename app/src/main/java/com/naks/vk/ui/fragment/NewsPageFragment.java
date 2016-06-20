@@ -119,13 +119,12 @@ public class NewsPageFragment extends MvpLceViewStateNestedBaseFragment<SwipeRef
     public void setData(VKApiNews data) {
         Log.d(TAG, "setData(" + data + ")");
         adapter.setData(data);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void addData(VKApiNews data) {
         Log.d(TAG, "addData(" + data + ")");
-
+        adapter.addData(data);
     }
 
     @Override

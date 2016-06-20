@@ -37,7 +37,12 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     @Override
     public void loadNews(boolean pullToRefresh) {
         Log.d(TAG, "loadNews(" + pullToRefresh + ")");
+        String startFrom = null;
+        if (!pullToRefresh) startFrom = this.startFrom;
         interactor.get(typeNews, pullToRefresh, startFrom, this);
+
+        if (!pullToRefresh && this.startFrom != null) return;
+
         assert getView() != null;
         getView().showLoading(pullToRefresh);
     }
@@ -48,6 +53,7 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
         if (isViewAttached()) {
             assert getView() != null;
             getView().navigateToNewsDetailActivity(item, user, group);
+            loadNews(false);
         }
     }
 
@@ -64,15 +70,22 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     }
 
     @Override
-    public void onLoadingSuccess(VKApiNews news) {
+    public void onLoadingSuccess(VKApiNews news, boolean pullToRefresh) {
         if (isViewAttached()) {
-            Log.d(TAG, "setData()");
-            startFrom = news.next_from;
-            assert getView() != null;
-            getView().setData(news);
 
-            Log.d(TAG, "showContent()");
-            getView().showContent();
+            assert getView() != null;
+
+            if (pullToRefresh || startFrom == null) {
+                Log.d(TAG, "setData()");
+                getView().setData(news);
+
+                Log.d(TAG, "showContent()");
+                getView().showContent();
+            } else {
+                Log.d(TAG, "addData()");
+                getView().addData(news);
+            }
+            this.startFrom = news.next_from;
         }
     }
 

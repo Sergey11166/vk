@@ -93,7 +93,7 @@ public class VKApiNews extends VKApiModel implements Parcelable {
             }
         }
 
-        next_from = source.optString("next_from");
+        next_from = response.optString("next_from");
 
         return this;
     }
