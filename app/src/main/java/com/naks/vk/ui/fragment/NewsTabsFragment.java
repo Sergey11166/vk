@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.naks.vk.R;
-import com.naks.vk.di.component.HasComponent;
 import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.component.NewsTabComponent;
 import com.naks.vk.di.module.NewsTabModule;
@@ -32,12 +31,10 @@ import butterknife.Unbinder;
 
 import static com.naks.vk.mvp.model.interactor.GetNewsInteractor.TypeNews;
 
-public class NewsTabsFragment extends BaseFragment
-        implements NewsTabView, HasComponent<NewsTabComponent> {
+public class NewsTabsFragment extends DaggerFragment<NewsTabComponent>
+        implements NewsTabView {
 
     public static final String TAG = "NewsTabsFragment";
-
-    private NewsTabComponent component;
 
     @Inject NewsTabPresenter presenter;
 
@@ -49,19 +46,8 @@ public class NewsTabsFragment extends BaseFragment
 
     @Override
     protected void setupComponent(MainComponent component) {
-        this.component = component.plus(new NewsTabModule(this));
-        this.component.inject(this);
-    }
-
-    @Override
-    public NewsTabComponent getComponent() {
-        return component;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+        super.component = component.plus(new NewsTabModule(this));
+        super.component.inject(this);
     }
 
     @Nullable
@@ -98,7 +84,7 @@ public class NewsTabsFragment extends BaseFragment
     }
 
     private void setupViewPager() {
-        NewsTabAdapter adapter = new NewsTabAdapter(childFragmentManager());
+        NewsTabAdapter adapter = new NewsTabAdapter(getChildFragmentManager());
         adapter.addFragment(new NewsPageFragment(), TypeNews.NEWS, "news");
         adapter.addFragment(new NewsPageFragment(), TypeNews.RECOMMENDATIONS, "recommendation");
         adapter.addFragment(new NewsPageFragment(), TypeNews.FRIENDS, "friends");

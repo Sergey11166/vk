@@ -15,7 +15,6 @@ import com.hannesdorfmann.mosby.mvp.viewstate.lce.LceViewState;
 import com.naks.vk.R;
 import com.naks.vk.api.domain.VKApiItem;
 import com.naks.vk.api.domain.VKApiNews;
-import com.naks.vk.di.component.HasComponent;
 import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.component.NewsPageComponent;
 import com.naks.vk.di.module.NewsPageModule;
@@ -32,14 +31,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class NewsPageFragment extends MvpLceViewStateNestedBaseFragment<SwipeRefreshLayout,
-        VKApiNews, NewsPageView, NewsPagePresenter>
-        implements NewsPageView, HasComponent<NewsPageComponent> {
+public class NewsPageFragment extends MvpLceViewStateDaggerFragment<SwipeRefreshLayout,
+        VKApiNews, NewsPageView, NewsPagePresenter, NewsPageComponent>
+        implements NewsPageView {
 
     private static final String TAG = "NewsPageFragment";
     public static final String KEY_NEWS_TYPE = NewsPageFragment.class.getName() + "_keyNewsType";
-
-    private NewsPageComponent component;
 
     @Inject NewsRecyclerAdapter adapter;
 
@@ -47,17 +44,19 @@ public class NewsPageFragment extends MvpLceViewStateNestedBaseFragment<SwipeRef
 
     private Unbinder unbinder;
 
+    private boolean isVisibleToUser;
+
     @Override
     protected void setupComponent(MainComponent component) {
         Log.d(TAG, "setupComponent(" + component.toString() + ")");
-        this.component = component.plus(new NewsPageModule(this));
-        this.component.inject(this);
+        super.component = component.plus(new NewsPageModule(this));
+        super.component.inject(this);
     }
 
     @Override
-    public NewsPageComponent getComponent() {
-        Log.d(TAG, "getComponent()");
-        return component;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @NonNull
@@ -97,9 +96,54 @@ public class NewsPageFragment extends MvpLceViewStateNestedBaseFragment<SwipeRef
     }
 
     @Override
+    public void showLoading(boolean pullToRefresh) {
+        super.showLoading(pullToRefresh);
+        Log.d(TAG, "showLoading(" + pullToRefresh + ")");
+        contentView.post(() -> contentView.setRefreshing(true));
+    }
+
+    @Override
+    public void showContent() {
+        super.showContent();
+        Log.d(TAG, "showContent()");
+        contentView.post(() -> contentView.setRefreshing(false));
+    }
+
+    @Override
+    public void showError(Throwable e, boolean pullToRefresh) {
+        super.showError(e, pullToRefresh);
+        Log.d(TAG, "showError(" + e + ", " + pullToRefresh + ")");
+        contentView.post(() -> contentView.setRefreshing(false));
+    }
+
+    @Override
+    protected void showLightError(String msg) {
+        Log.d(TAG, "showLightError(" + msg + ")");
+        if (isVisibleToUser) super.showLightError(msg);
+    }
+
+    @Override
     public void loadData(boolean pullToRefresh) {
         Log.d(TAG, "loadData(" + pullToRefresh + ")");
         presenter.loadNews(pullToRefresh);
+    }
+
+    @Override
+    public void setData(VKApiNews data) {
+        Log.d(TAG, "setData(" + data + ")");
+        adapter.setData(data);
+    }
+
+    @Override
+    public void addData(VKApiNews data) {
+        Log.d(TAG, "addData(" + data + ")");
+        adapter.addData(data);
+    }
+
+    @Override
+    public VKApiNews getData() {
+        Log.d(TAG, "getData()");
+        return adapter == null ? null : adapter.getData();
     }
 
     @Override
@@ -116,26 +160,14 @@ public class NewsPageFragment extends MvpLceViewStateNestedBaseFragment<SwipeRef
     }
 
     @Override
-    public void setData(VKApiNews data) {
-        Log.d(TAG, "setData(" + data + ")");
-        adapter.setData(data);
-    }
-
-    @Override
-    public void addData(VKApiNews data) {
-        Log.d(TAG, "addData(" + data + ")");
-        adapter.addData(data);
-    }
-
-    @Override
     public void navigateToNewsDetailActivity(VKApiItem item, VKApiUserFull user,
                                              VKApiCommunityFull group) {
         Log.d(TAG, "navigateToNewsDetailActivity(" + item + ")");
     }
 
     @Override
-    public VKApiNews getData() {
-        Log.d(TAG, "getData()");
-        return adapter == null ? null : adapter.getData();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        this.isVisibleToUser = isVisibleToUser;
     }
 }
