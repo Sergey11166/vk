@@ -14,8 +14,11 @@ import com.vk.sdk.api.model.VKApiUserFull;
 
 public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapter.ViewHolder>{
 
+    static final int VISIBLE_THRESHOLD = 10;
+
     private VKApiNews data;
     private OnNewsItemClickListener listener;
+    private EndlessScrollListener endlessScrollListener;
 
     @Override
     public NewsRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -27,6 +30,13 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
     @Override
     public void onBindViewHolder(final NewsRecyclerAdapter.ViewHolder holder, int position) {
         if (data != null && data.items != null) {
+
+            if(position == getItemCount() - VISIBLE_THRESHOLD) {
+                if(endlessScrollListener != null) {
+                    endlessScrollListener.onLoadMore();
+                }
+            }
+
             holder.item = data.items.get(position);
             int sourceId = holder.item.source_id;
             if (sourceId > 0) {
@@ -94,10 +104,6 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         notifyDataSetChanged();
     }
 
-    public void setOnNewsItemClickListener(OnNewsItemClickListener listener) {
-        this.listener = listener;
-    }
-
     private VKApiUserFull findUsersByItem(int sourceId) {
         for (VKApiUserFull user : data.profiles) {
             if(user.id == sourceId) return user;
@@ -112,7 +118,19 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         return null;
     }
 
+    public void setOnNewsItemClickListener(OnNewsItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public void setEndlessScrollListener(EndlessScrollListener endlessScrollListener) {
+        this.endlessScrollListener = endlessScrollListener;
+    }
+
     public interface OnNewsItemClickListener {
         void onClick(VKApiItem item, VKApiUserFull user, VKApiCommunityFull community);
+    }
+
+    public interface EndlessScrollListener {
+        void onLoadMore();
     }
 }

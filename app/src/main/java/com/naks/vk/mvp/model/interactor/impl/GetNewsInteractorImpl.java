@@ -19,6 +19,7 @@ import org.json.JSONException;
 public class GetNewsInteractorImpl implements GetNewsInteractor {
 
     private static final String TAG = "GetNewsInteractorImpl";
+    private static final String COUNT = "20";
 
     @Override
     public void get(TypeNews type, boolean pullToRefresh, String startFrom,
@@ -29,25 +30,23 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
         switch (type) {
             case NEWS:
                 vkRequest = new VKRequest("newsfeed.get", VKParameters.from(
-                        VKApiConst.FILTERS, "post",
-                        "start_from", startFrom));
+                        VKApiConst.FILTERS, "post"));
                 break;
             case RECOMMENDATIONS:
-                vkRequest = new VKRequest("newsfeed.getRecommended", VKParameters.from(
-                        "start_from", startFrom));
+                vkRequest = new VKRequest("newsfeed.getRecommended");
                 break;
             case FRIENDS:
                 vkRequest = new VKRequest("newsfeed.get", VKParameters.from(
                         VKApiConst.FILTERS, "post,photo,photo_tag",
-                        "source_ids", "friends,following",
-                        "start_from", startFrom));
+                        "source_ids", "friends,following"));
                 break;
             case COMMUNITIES:
                 vkRequest = new VKRequest("newsfeed.get", VKParameters.from(
                         VKApiConst.FILTERS, "post,photo",
-                        "source_ids", "groups,pages",
-                        "start_from", startFrom));
+                        "source_ids", "groups,pages"));
         }
+        vkRequest.addExtraParameter("start_from", startFrom);
+        vkRequest.addExtraParameter("count", COUNT);
 
         vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
