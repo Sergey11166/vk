@@ -1,12 +1,9 @@
 package com.naks.vk.mvp.presenter.impl;
 
-import com.naks.vk.App;
-import com.naks.vk.di.component.DaggerLoginComponent;
-import com.naks.vk.di.module.LoginModule;
 import com.naks.vk.mvp.model.interactor.LoginInteractor;
 import com.naks.vk.mvp.presenter.LoginPresenter;
 import com.naks.vk.mvp.view.LoginView;
-import com.naks.vk.ui.activity.LoginActivity;
+import com.naks.vk.ui.activity.LoginActivityDagger;
 import com.vk.sdk.VKScope;
 
 import javax.inject.Inject;
@@ -31,7 +28,7 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLog
     @Inject LoginView view;
     @Inject LoginInteractor loginInteractor;
 
-    public LoginPresenterImpl(LoginActivity activity) {
+    public LoginPresenterImpl(LoginActivityDagger activity) {
         activity.getComponent().inject(this);
     }
 

@@ -6,15 +6,15 @@ import android.support.v4.app.Fragment;
 
 import com.naks.vk.di.component.HasComponent;
 import com.naks.vk.di.component.MainComponent;
-import com.naks.vk.ui.activity.MainActivity;
+import com.naks.vk.ui.activity.MainActivityDagger;
 
-public abstract class DaggerFragment<C> extends Fragment implements HasComponent<C> {
+public abstract class DaggerBaseFragment<C> extends Fragment implements HasComponent<C> {
 
     protected C component;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        setupComponent(((MainActivity)getActivity()).getComponent());
+        setupComponent(((MainActivityDagger)getActivity()).getComponent());
         super.onCreate(savedInstanceState);
     }
 

@@ -3,7 +3,7 @@ package com.naks.vk.mvp.model.interactor.impl;
 import android.content.Context;
 
 import com.naks.vk.mvp.model.interactor.LoginInteractor;
-import com.naks.vk.ui.activity.LoginActivity;
+import com.naks.vk.ui.activity.LoginActivityDagger;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
@@ -12,7 +12,7 @@ public class LoginInteractorImpl implements LoginInteractor {
 
     private Context context;
 
-    public LoginInteractorImpl(LoginActivity activity) {
+    public LoginInteractorImpl(LoginActivityDagger activity) {
         this.context = activity;
     }
 

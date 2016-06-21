@@ -22,10 +22,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements
+public class MainActivityDagger extends DaggerBaseActivity<MainComponent> implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent<MainComponent>, MainView {
-
-    private MainComponent component;
 
     @Inject MainPresenter presenter;
 
@@ -86,10 +84,5 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void pressBack() {
         super.onBackPressed();
-    }
-
-    @Override
-    public MainComponent getComponent() {
-        return component;
     }
 }

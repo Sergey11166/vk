@@ -31,7 +31,7 @@ import butterknife.Unbinder;
 
 import static com.naks.vk.mvp.model.interactor.GetNewsInteractor.TypeNews;
 
-public class NewsTabsFragment extends DaggerFragment<NewsTabComponent>
+public class NewsTabsFragment extends DaggerBaseFragment<NewsTabComponent>
         implements NewsTabView {
 
     public static final String TAG = "NewsTabsFragment";

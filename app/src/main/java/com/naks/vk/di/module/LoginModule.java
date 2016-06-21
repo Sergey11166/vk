@@ -6,7 +6,7 @@ import com.naks.vk.mvp.model.interactor.impl.LoginInteractorImpl;
 import com.naks.vk.mvp.presenter.LoginPresenter;
 import com.naks.vk.mvp.presenter.impl.LoginPresenterImpl;
 import com.naks.vk.mvp.view.LoginView;
-import com.naks.vk.ui.activity.LoginActivity;
+import com.naks.vk.ui.activity.LoginActivityDagger;
 
 import dagger.Module;
 import dagger.Provides;
@@ -14,9 +14,9 @@ import dagger.Provides;
 @Module
 public class LoginModule {
 
-    private LoginActivity activity;
+    private LoginActivityDagger activity;
 
-    public LoginModule(LoginActivity activity) {
+    public LoginModule(LoginActivityDagger activity) {
         this.activity = activity;
     }
 

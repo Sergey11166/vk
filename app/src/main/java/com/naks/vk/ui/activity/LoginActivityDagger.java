@@ -18,9 +18,8 @@ import com.vk.sdk.api.VKError;
 
 import javax.inject.Inject;
 
-public class LoginActivity extends BaseActivity implements LoginView, HasComponent<LoginComponent> {
-
-    private LoginComponent component;
+public class LoginActivityDagger extends DaggerBaseActivity<LoginComponent>
+        implements LoginView, HasComponent<LoginComponent> {
 
     @Inject LoginPresenter presenter;
 
@@ -67,12 +66,7 @@ public class LoginActivity extends BaseActivity implements LoginView, HasCompone
 
     @Override
     public void navigateToMainScreen() {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, MainActivityDagger.class));
         finish();
-    }
-
-    @Override
-    public LoginComponent getComponent() {
-        return component;
     }
 }

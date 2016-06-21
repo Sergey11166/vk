@@ -4,7 +4,7 @@ import com.naks.vk.di.anotation.PerActivity;
 import com.naks.vk.mvp.presenter.MainPresenter;
 import com.naks.vk.mvp.presenter.impl.MainPresenterImpl;
 import com.naks.vk.mvp.view.MainView;
-import com.naks.vk.ui.activity.MainActivity;
+import com.naks.vk.ui.activity.MainActivityDagger;
 
 import dagger.Module;
 import dagger.Provides;
@@ -12,9 +12,9 @@ import dagger.Provides;
 @Module
 public class MainModule {
 
-    private MainActivity activity;
+    private MainActivityDagger activity;
 
-    public MainModule(MainActivity activity) {
+    public MainModule(MainActivityDagger activity) {
         this.activity = activity;
     }
 

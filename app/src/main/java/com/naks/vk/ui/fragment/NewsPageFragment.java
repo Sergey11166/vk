@@ -31,7 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class NewsPageFragment extends MvpLceViewStateDaggerFragment<SwipeRefreshLayout,
+public class NewsPageFragment extends MvpLceViewStateDaggerBaseFragment<SwipeRefreshLayout,
         VKApiNews, NewsPageView, NewsPagePresenter, NewsPageComponent>
         implements NewsPageView {
 
