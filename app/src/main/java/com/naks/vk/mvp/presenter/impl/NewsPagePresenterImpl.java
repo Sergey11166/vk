@@ -53,7 +53,6 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
         if (isViewAttached()) {
             assert getView() != null;
             getView().navigateToNewsDetailActivity(item, user, group);
-            loadNews(false);
         }
     }
 
@@ -95,6 +94,10 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
 
             Log.d(TAG, "showError(" + error.getClass().getSimpleName() + " , " + pullToRefresh + ")");
             assert getView() != null;
+            if (!pullToRefresh && startFrom != null) {
+                getView().showErrorLoadPage();
+                return;
+            }
             getView().showError(new Exception(error.toString()), pullToRefresh);
         }
     }

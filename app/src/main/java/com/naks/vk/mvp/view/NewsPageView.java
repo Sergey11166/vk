@@ -10,5 +10,7 @@ public interface NewsPageView extends MvpLceView<VKApiNews> {
 
     void addData(VKApiNews data);
 
+    void showErrorLoadPage();
+
     void navigateToNewsDetailActivity(VKApiItem id, VKApiUserFull user, VKApiCommunityFull community);
 }

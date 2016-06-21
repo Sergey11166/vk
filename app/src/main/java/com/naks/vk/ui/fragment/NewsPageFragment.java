@@ -87,6 +87,7 @@ public class NewsPageFragment extends MvpLceViewStateDaggerBaseFragment<SwipeRef
         adapter.setEndlessScrollListener(() -> loadData(false));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        adapter.initOnScrollListener(recyclerView);
     }
 
     @Override
@@ -121,6 +122,12 @@ public class NewsPageFragment extends MvpLceViewStateDaggerBaseFragment<SwipeRef
     protected void showLightError(String msg) {
         Log.d(TAG, "showLightError(" + msg + ")");
         if (isVisibleToUser) super.showLightError(msg);
+    }
+
+    @Override
+    public void showErrorLoadPage() {
+        Log.d(TAG, "showErrorLoadPage()");
+        adapter.showErrorLoadPage();
     }
 
     @Override
