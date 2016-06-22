@@ -1,18 +1,27 @@
 package com.naks.vk.ui.adapter;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.naks.vk.R;
 import com.naks.vk.api.domain.VKApiItem;
 import com.naks.vk.api.domain.VKApiNews;
 import com.vk.sdk.api.model.VKApiCommunityFull;
 import com.vk.sdk.api.model.VKApiUserFull;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
@@ -26,9 +35,14 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private boolean isLoading;
     private boolean isShowError;
 
+    private Context context;
     private VKApiNews data;
     private OnNewsItemClickListener newsItemClickListener;
-    private EndlessScrollListener endlessScrollListener;
+    private OnLoadMoreListener onLoadMoreListener;
+
+    public NewsRecyclerAdapter(Context context) {
+        this.context = context;
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -52,31 +66,42 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (holder instanceof ProgressViewHolder) return;
 
         if (holder instanceof ErrorViewHolder) {
-            ((ErrorViewHolder)holder).v.setOnClickListener(v -> {
+            ((ErrorViewHolder)holder).button.setOnClickListener(v -> {
                 isShowError = false;
                 notifyItemChanged(getItemCount() - 1);
-                endlessScrollListener.onLoadMore();
+                onLoadMoreListener.onLoadMore();
             });
             return;
         }
 
         if (data != null && data.items != null) {
-            ItemViewHolder itemVH = (ItemViewHolder) holder;
-            itemVH.item = data.items.get(position);
-            int sourceId = itemVH.item.source_id;
+
+            ItemViewHolder vh = (ItemViewHolder) holder;
+            vh.item = data.items.get(position);
+
+            int sourceId = vh.item.source_id;
             if (sourceId > 0) {
-                itemVH.user = findUsersByItem(sourceId);
+                vh.user = findUsersByItem(sourceId);
             } else {
-                itemVH.group = findGroupByItem(sourceId);
+                vh.group = findGroupByItem(sourceId);
             }
-            assert itemVH.user != null;
-            assert itemVH.group != null;
-            itemVH.text.setText(sourceId > 0 ?
-                    itemVH.user.first_name + "_" + itemVH.user.last_name :
-                    itemVH.group.name);
-            if (!itemVH.item.text.isEmpty()) itemVH.text.append("\n\n" + itemVH.item.text);
-            itemVH.v.setOnClickListener(v -> newsItemClickListener
-                    .onClick(itemVH.item, itemVH.user, itemVH.group));
+            assert vh.user != null;
+            assert vh.group != null;
+
+            Glide.with(context)
+                    .load(sourceId > 0 ? vh.user.photo_100 : vh.group.photo_100)
+                    .centerCrop()
+                    .crossFade()
+                    .into(vh.headImage);
+
+            vh.owner.setText(sourceId > 0 ?
+                    vh.user.first_name + " " + vh.user.last_name :
+                    vh.group.name);
+
+            vh.date.setText(String.valueOf(vh.item.date));
+            if (!vh.item.text.isEmpty()) vh.text.setText(vh.item.text);
+
+            vh.v.setOnClickListener(v -> newsItemClickListener.onClick(vh.item, vh.user, vh.group));
         }
     }
 
@@ -142,8 +167,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 totalItemCount = linearLayoutManager.getItemCount();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 if (!isLoading && totalItemCount <= (lastVisibleItem + VISIBLE_THRESHOLD)) {
-                    if (endlessScrollListener != null) {
-                        endlessScrollListener.onLoadMore();
+                    if (onLoadMoreListener != null) {
+                        onLoadMoreListener.onLoadMore();
                         data.items.add(null);
                         notifyItemInserted(getItemCount() - 1);
                     }
@@ -172,48 +197,52 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.newsItemClickListener = listener;
     }
 
-    public void setEndlessScrollListener(EndlessScrollListener endlessScrollListener) {
-        this.endlessScrollListener = endlessScrollListener;
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        this.onLoadMoreListener = onLoadMoreListener;
     }
 
     public interface OnNewsItemClickListener {
         void onClick(VKApiItem item, VKApiUserFull user, VKApiCommunityFull community);
     }
 
-    public interface EndlessScrollListener {
+    public interface OnLoadMoreListener {
         void onLoadMore();
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public final View v;
-        public final TextView text;
+
+        @BindView(R.id.headImage) ImageView headImage;
+        @BindView(R.id.owner) TextView owner;
+        @BindView(R.id.date) TextView date;
+        @BindView(R.id.text) TextView text;
+
         public VKApiItem item;
         public VKApiUserFull user;
         public VKApiCommunityFull group;
         public ItemViewHolder(View view) {
             super(view);
             v = view;
-            text = (TextView) view.findViewById(R.id.text);
+            ButterKnife.bind(this, view);
         }
     }
 
     public static class ProgressViewHolder extends RecyclerView.ViewHolder {
         public final View v;
-        public ProgressBar progressBar;
+
         public ProgressViewHolder(View view) {
             super(view);
             v = view;
-            progressBar = (ProgressBar) view.findViewById(R.id.progressItem);
+            ButterKnife.bind(this, view);
         }
     }
 
     public static class ErrorViewHolder extends RecyclerView.ViewHolder {
-        public final View v;
-        public TextView error;
+        @BindView(R.id.button) Button button;
+
         public ErrorViewHolder(View view) {
             super(view);
-            v = view;
-            error = (TextView) view.findViewById(R.id.errorView);
+            ButterKnife.bind(this, view);
         }
     }
 }

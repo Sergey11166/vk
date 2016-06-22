@@ -19,5 +19,7 @@
 
     <string name="error_news">Error while loading news</string>
     <string name="error_news_retry">Error while loading news. Click here to retry</string>
+    <string name="error_item_button">Retry</string>
+    <string name="imageDescription">imageDescription</string>
 
 </resources>
