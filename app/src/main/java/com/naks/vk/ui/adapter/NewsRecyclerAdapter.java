@@ -1,25 +1,24 @@
 package com.naks.vk.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.Transformation;
-import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.naks.vk.R;
 import com.naks.vk.api.domain.VKApiItem;
 import com.naks.vk.api.domain.VKApiNews;
 import com.vk.sdk.api.model.VKApiCommunityFull;
 import com.vk.sdk.api.model.VKApiUserFull;
 
+import at.blogc.android.views.ExpandableTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -99,7 +98,21 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     vh.group.name);
 
             vh.date.setText(String.valueOf(vh.item.date));
-            if (!vh.item.text.isEmpty()) vh.text.setText(vh.item.text);
+
+            if (!vh.item.text.isEmpty()) {
+                vh.text.setVisibility(View.VISIBLE);
+                vh.text.setText(vh.item.text);
+                vh.text.setInterpolator(new OvershootInterpolator());
+                vh.expandButton.setVisibility(vh.text.getLineCount() < vh.text.getMaxLines() ?
+                        View.GONE : View.VISIBLE);
+                vh.expandButton.setOnClickListener(view -> {
+                    vh.text.expand();
+                    vh.expandButton.setVisibility(View.GONE);
+                });
+            } else {
+                vh.text.setVisibility(View.GONE);
+                vh.expandButton.setVisibility(View.GONE);
+            }
 
             vh.v.setOnClickListener(v -> newsItemClickListener.onClick(vh.item, vh.user, vh.group));
         }
@@ -215,7 +228,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         @BindView(R.id.headImage) ImageView headImage;
         @BindView(R.id.owner) TextView owner;
         @BindView(R.id.date) TextView date;
-        @BindView(R.id.text) TextView text;
+        @BindView(R.id.text) ExpandableTextView text;
+        @BindView(R.id.expandButton) TextView expandButton;
 
         public VKApiItem item;
         public VKApiUserFull user;
