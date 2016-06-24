@@ -68,8 +68,8 @@
 
         </RelativeLayout>
 
-        <at.blogc.android.views.ExpandableTextView
-            android:id="@+id/text"
+        <TextView
+            android:id="@+id/collapsedText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="@android:color/black"
@@ -77,15 +77,25 @@
             android:paddingRight="17dp"
             android:paddingTop="8dp"
             android:textSize="15sp"
-            android:ellipsize="end"
-            android:maxLines="5"
-            app:animation_duration="500"/>
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/expandedText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@android:color/black"
+            android:paddingLeft="17dp"
+            android:paddingRight="17dp"
+            android:paddingBottom="17dp"
+            android:paddingTop="8dp"
+            android:textSize="15sp"/>
 
         <TextView
             android:id="@+id/expandButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="17dp"
+            android:paddingRight="17dp"
             android:paddingBottom="17dp"
             android:textSize="15sp"
             android:text="@string/expandButton"

@@ -3,10 +3,10 @@ package com.naks.vk.ui.adapter;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,7 +18,6 @@ import com.naks.vk.api.domain.VKApiNews;
 import com.vk.sdk.api.model.VKApiCommunityFull;
 import com.vk.sdk.api.model.VKApiUserFull;
 
-import at.blogc.android.views.ExpandableTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -29,6 +28,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int VIEW_ITEM = 0;
     private static final int VIEW_PROGRESS = 1;
     private static final int VIEW_ERROR_LOAD_PAGE = 3;
+    private static final int MAX_COUNT_WORDS = 10;
 
     private int lastVisibleItem, totalItemCount;
     private boolean isLoading;
@@ -100,17 +100,31 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             vh.date.setText(String.valueOf(vh.item.date));
 
             if (!vh.item.text.isEmpty()) {
-                vh.text.setVisibility(View.VISIBLE);
-                vh.text.setText(vh.item.text);
-                vh.text.setInterpolator(new OvershootInterpolator());
-                vh.expandButton.setVisibility(vh.text.getLineCount() < vh.text.getMaxLines() ?
-                        View.GONE : View.VISIBLE);
-                vh.expandButton.setOnClickListener(view -> {
-                    vh.text.expand();
+                String[] words = vh.item.text.split(" ");
+                if (words.length > MAX_COUNT_WORDS) {
+                    vh.collapsedText.setVisibility(View.VISIBLE);
+                    vh.expandedText.setVisibility(View.GONE);
+                    vh.expandButton.setVisibility(View.VISIBLE);
+                    vh.collapsedText.setEllipsize(TextUtils.TruncateAt.END);
+                    StringBuilder sb = new StringBuilder();
+                    for (int i=0; i<MAX_COUNT_WORDS; i++) {
+                        sb.append(words[i]);
+                        if (i != MAX_COUNT_WORDS - 1) {
+                            sb.append(" ");
+                        } else {
+                            sb.append("…");
+                        }
+                    }
+                    vh.collapsedText.setText(sb.toString());
+                } else {
+                    vh.collapsedText.setVisibility(View.GONE);
+                    vh.expandedText.setVisibility(View.VISIBLE);
                     vh.expandButton.setVisibility(View.GONE);
-                });
+                    vh.expandedText.setText(vh.item.text);
+                }
             } else {
-                vh.text.setVisibility(View.GONE);
+                vh.collapsedText.setVisibility(View.GONE);
+                vh.expandedText.setVisibility(View.GONE);
                 vh.expandButton.setVisibility(View.GONE);
             }
 
@@ -228,7 +242,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         @BindView(R.id.headImage) ImageView headImage;
         @BindView(R.id.owner) TextView owner;
         @BindView(R.id.date) TextView date;
-        @BindView(R.id.text) ExpandableTextView text;
+        @BindView(R.id.collapsedText) TextView collapsedText;
+        @BindView(R.id.expandedText) TextView expandedText;
         @BindView(R.id.expandButton) TextView expandButton;
 
         public VKApiItem item;
