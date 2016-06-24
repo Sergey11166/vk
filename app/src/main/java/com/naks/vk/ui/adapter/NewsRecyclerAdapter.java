@@ -1,12 +1,15 @@
 package com.naks.vk.ui.adapter;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +31,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int VIEW_ITEM = 0;
     private static final int VIEW_PROGRESS = 1;
     private static final int VIEW_ERROR_LOAD_PAGE = 3;
-    private static final int MAX_COUNT_WORDS = 10;
+    private static final int MAX_COUNT_WORDS = 40;
 
     private int lastVisibleItem, totalItemCount;
     private boolean isLoading;
@@ -100,26 +103,29 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             vh.date.setText(String.valueOf(vh.item.date));
 
             if (!vh.item.text.isEmpty()) {
+                vh.expandButton.setOnClickListener(view -> {
+                    vh.expandButton.setVisibility(View.GONE);
+                    vh.collapsedText.setVisibility(View.GONE);
+                    vh.expandedText.setVisibility(View.VISIBLE);
+                    vh.expandedText.setText(vh.item.text);
+                    animateExpand(vh.collapsedText, vh.expandedText);
+                });
+
                 String[] words = vh.item.text.split(" ");
                 if (words.length > MAX_COUNT_WORDS) {
                     vh.collapsedText.setVisibility(View.VISIBLE);
                     vh.expandedText.setVisibility(View.GONE);
                     vh.expandButton.setVisibility(View.VISIBLE);
-                    vh.collapsedText.setEllipsize(TextUtils.TruncateAt.END);
                     StringBuilder sb = new StringBuilder();
                     for (int i=0; i<MAX_COUNT_WORDS; i++) {
                         sb.append(words[i]);
-                        if (i != MAX_COUNT_WORDS - 1) {
-                            sb.append(" ");
-                        } else {
-                            sb.append("…");
-                        }
+                        sb.append(i != MAX_COUNT_WORDS - 1 ? " " : "…");
                     }
                     vh.collapsedText.setText(sb.toString());
                 } else {
                     vh.collapsedText.setVisibility(View.GONE);
-                    vh.expandedText.setVisibility(View.VISIBLE);
                     vh.expandButton.setVisibility(View.GONE);
+                    vh.expandedText.setVisibility(View.VISIBLE);
                     vh.expandedText.setText(vh.item.text);
                 }
             } else {
@@ -273,5 +279,42 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             super(view);
             ButterKnife.bind(this, view);
         }
+    }
+
+    public static void animateExpand(TextView collapsedView, TextView expandedView) {
+
+        collapsedView.measure(
+                View.MeasureSpec.makeMeasureSpec(expandedView.getMeasuredWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        );
+        int startHeight = collapsedView.getMeasuredHeight();
+
+        expandedView.measure(
+                View.MeasureSpec.makeMeasureSpec(expandedView.getMeasuredWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        );
+
+        int endHeight = expandedView.getMeasuredHeight();
+
+        final ValueAnimator valueAnimator = ValueAnimator.ofInt(startHeight, endHeight);
+
+        valueAnimator.addUpdateListener(animation -> {
+            final ViewGroup.LayoutParams layoutParams = expandedView.getLayoutParams();
+            layoutParams.height = (int) animation.getAnimatedValue();
+            expandedView.setLayoutParams(layoutParams);
+        });
+
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(final Animator animation) {
+                final ViewGroup.LayoutParams layoutParams = expandedView.getLayoutParams();
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                expandedView.setLayoutParams(layoutParams);
+            }
+        });
+
+        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        valueAnimator.setDuration(400).start();
     }
 }

@@ -76,8 +76,7 @@
             android:paddingLeft="17dp"
             android:paddingRight="17dp"
             android:paddingTop="8dp"
-            android:textSize="15sp"
-            android:ellipsize="end"/>
+            android:textSize="15sp"/>
 
         <TextView
             android:id="@+id/expandedText"
