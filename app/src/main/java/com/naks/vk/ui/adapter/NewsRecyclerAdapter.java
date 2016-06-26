@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,6 +33,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int VIEW_PROGRESS = 1;
     private static final int VIEW_ERROR_LOAD_PAGE = 3;
     private static final int MAX_COUNT_WORDS = 40;
+
+    private static final int ANIMATE_EXPAND_DURATION = 600;
 
     private int lastVisibleItem, totalItemCount;
     private boolean isLoading;
@@ -104,11 +107,10 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             if (!vh.item.text.isEmpty()) {
                 vh.expandButton.setOnClickListener(view -> {
-                    vh.expandButton.setVisibility(View.GONE);
                     vh.collapsedText.setVisibility(View.GONE);
                     vh.expandedText.setVisibility(View.VISIBLE);
                     vh.expandedText.setText(vh.item.text);
-                    animateExpand(vh.collapsedText, vh.expandedText);
+                    animateExpand(vh.collapsedText, vh.expandedText, vh.expandButton);
                 });
 
                 String[] words = vh.item.text.split(" ");
@@ -116,6 +118,11 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     vh.collapsedText.setVisibility(View.VISIBLE);
                     vh.expandedText.setVisibility(View.GONE);
                     vh.expandButton.setVisibility(View.VISIBLE);
+
+                    final ViewGroup.LayoutParams layoutParams = vh.expandButton.getLayoutParams();
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    vh.expandButton.setLayoutParams(layoutParams);
+
                     StringBuilder sb = new StringBuilder();
                     for (int i=0; i<MAX_COUNT_WORDS; i++) {
                         sb.append(words[i]);
@@ -281,40 +288,78 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    public static void animateExpand(TextView collapsedView, TextView expandedView) {
+    public static void animateExpand(TextView collapsedView, TextView expandedView, TextView button) {
 
-        collapsedView.measure(
-                View.MeasureSpec.makeMeasureSpec(expandedView.getMeasuredWidth(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        );
-        int startHeight = collapsedView.getMeasuredHeight();
+        int[] startHeight = new int[1];
+        int[] finishHeight = new int[1];
+        int[] buttonHeight = new int[1];
 
-        expandedView.measure(
-                View.MeasureSpec.makeMeasureSpec(expandedView.getMeasuredWidth(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        );
+        button.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        button.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-        int endHeight = expandedView.getMeasuredHeight();
+                        buttonHeight[0] = button.getMeasuredHeight();
 
-        final ValueAnimator valueAnimator = ValueAnimator.ofInt(startHeight, endHeight);
+                        final ValueAnimator animator = ValueAnimator.ofInt(buttonHeight[0], 0);
+                        animator.addUpdateListener(animation -> {
+                            final ViewGroup.LayoutParams layoutParams = button.getLayoutParams();
+                            layoutParams.height = (int) animation.getAnimatedValue();
+                            button.setLayoutParams(layoutParams);
+                        });
 
-        valueAnimator.addUpdateListener(animation -> {
-            final ViewGroup.LayoutParams layoutParams = expandedView.getLayoutParams();
-            layoutParams.height = (int) animation.getAnimatedValue();
-            expandedView.setLayoutParams(layoutParams);
-        });
+                        animator.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(final Animator animation) {
+                                final ViewGroup.LayoutParams layoutParams = button.getLayoutParams();
+                                layoutParams.height = 0;
+                                button.setLayoutParams(layoutParams);
+                            }
+                        });
 
-        valueAnimator.addListener(new AnimatorListenerAdapter() {
+                        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                        animator.setDuration(ANIMATE_EXPAND_DURATION).start();
+                    }
+                });
+
+        collapsedView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void onAnimationEnd(final Animator animation) {
-                final ViewGroup.LayoutParams layoutParams = expandedView.getLayoutParams();
-                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                expandedView.setLayoutParams(layoutParams);
+            public void onGlobalLayout() {
+                collapsedView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                startHeight[0] = collapsedView.getMeasuredHeight() + buttonHeight[0];
             }
         });
 
-        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        expandedView.getViewTreeObserver()
 
-        valueAnimator.setDuration(400).start();
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        expandedView.getViewTreeObserver().removeOnGlobalLayoutListener (this);
+
+                        finishHeight[0] = expandedView.getMeasuredHeight();
+
+                        final ValueAnimator animator = ValueAnimator.ofInt(startHeight[0], finishHeight[0]);
+
+                        animator.addUpdateListener(animation -> {
+                            final ViewGroup.LayoutParams layoutParams = expandedView.getLayoutParams();
+                            layoutParams.height = (int) animation.getAnimatedValue();
+                            expandedView.setLayoutParams(layoutParams);
+                        });
+
+                        animator.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(final Animator animation) {
+                                final ViewGroup.LayoutParams layoutParams = expandedView.getLayoutParams();
+                                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                                expandedView.setLayoutParams(layoutParams);
+                            }
+                        });
+
+                        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                        animator.setDuration(ANIMATE_EXPAND_DURATION).start();
+                    }
+                });
     }
 }
