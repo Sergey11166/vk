@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,7 +35,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int VIEW_ERROR_LOAD_PAGE = 3;
     private static final int MAX_COUNT_WORDS = 40;
 
-    private static final int ANIMATE_EXPAND_DURATION = 600;
+    private static final int ANIMATE_EXPAND_DURATION = 200;
 
     private int lastVisibleItem, totalItemCount;
     private boolean isLoading;
@@ -106,12 +107,9 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             vh.date.setText(String.valueOf(vh.item.date));
 
             if (!vh.item.text.isEmpty()) {
-                vh.expandButton.setOnClickListener(view -> {
-                    vh.collapsedText.setVisibility(View.GONE);
-                    vh.expandedText.setVisibility(View.VISIBLE);
-                    vh.expandedText.setText(vh.item.text);
-                    animateExpand(vh.collapsedText, vh.expandedText, vh.expandButton);
-                });
+
+                vh.expandButton.setOnClickListener(view -> expandWithAnimation(
+                        vh.collapsedText, vh.expandedText, vh.expandButton, vh.item.text));
 
                 String[] words = vh.item.text.split(" ");
                 if (words.length > MAX_COUNT_WORDS) {
@@ -288,11 +286,10 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    public static void animateExpand(TextView collapsedView, TextView expandedView, TextView button) {
+    public static void expandWithAnimation(TextView collapsedView, TextView expandedView,
+                                            TextView button, String text) {
 
         int[] startHeight = new int[1];
-        int[] finishHeight = new int[1];
-        int[] buttonHeight = new int[1];
 
         button.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -300,9 +297,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     public void onGlobalLayout() {
                         button.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                        buttonHeight[0] = button.getMeasuredHeight();
-
-                        final ValueAnimator animator = ValueAnimator.ofInt(buttonHeight[0], 0);
+                        final ValueAnimator animator = ValueAnimator.ofInt(button.getMeasuredHeight(), 0);
                         animator.addUpdateListener(animation -> {
                             final ViewGroup.LayoutParams layoutParams = button.getLayoutParams();
                             layoutParams.height = (int) animation.getAnimatedValue();
@@ -327,20 +322,22 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             @Override
             public void onGlobalLayout() {
                 collapsedView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                startHeight[0] = collapsedView.getMeasuredHeight() + buttonHeight[0];
+                startHeight[0] = collapsedView.getMeasuredHeight();
             }
         });
 
-        expandedView.getViewTreeObserver()
+        expandedView.setText(text);
+        expandedView.setVisibility(View.VISIBLE);
+        collapsedView.setVisibility(View.GONE);
 
+        expandedView.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         expandedView.getViewTreeObserver().removeOnGlobalLayoutListener (this);
 
-                        finishHeight[0] = expandedView.getMeasuredHeight();
-
-                        final ValueAnimator animator = ValueAnimator.ofInt(startHeight[0], finishHeight[0]);
+                        final ValueAnimator animator = ValueAnimator
+                                .ofInt(startHeight[0], expandedView.getMeasuredHeight());
 
                         animator.addUpdateListener(animation -> {
                             final ViewGroup.LayoutParams layoutParams = expandedView.getLayoutParams();
@@ -357,7 +354,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             }
                         });
 
-                        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                        animator.setInterpolator(new LinearInterpolator());
                         animator.setDuration(ANIMATE_EXPAND_DURATION).start();
                     }
                 });
