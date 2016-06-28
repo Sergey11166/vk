@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -135,7 +136,18 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             vh.expandButton.setVisibility(View.GONE);
         }
 
-        vh.v.setOnClickListener(v -> newsItemClickListener.onClick(vh.item, vh.user, vh.group));
+        vh.collapsedText.setOnClickListener(v -> onItemClick(v, vh));
+        vh.expandedText.setOnClickListener(v -> onItemClick(v, vh));
+        vh.v.setOnClickListener(v -> onItemClick(v, vh));
+    }
+
+    private void onItemClick(View v, ItemViewHolder vh) {
+        if (v.getTag() != null) {
+            v.setTag(null);
+            return;
+        }
+        Toast.makeText(context, "onNewsClick", Toast.LENGTH_SHORT).show();
+        newsItemClickListener.onClick(vh.item, vh.user, vh.group);
     }
 
     @Override
@@ -301,14 +313,14 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 sb.append(i != MAX_COUNT_WORDS - 1 ? " " : "…");
             }
             TextView collapsedTV = (TextView) collapsedText;
-            collapsedTV.setText(textToSpannable(sb.toString()));
+            collapsedTV.setText(textToSpannable(sb.toString()), TextView.BufferType.SPANNABLE);
             collapsedTV.setMovementMethod(LinkMovementMethod.getInstance());
         } else {
             collapsedText.setVisibility(View.GONE);
             expandButton.setVisibility(View.GONE);
             expandedText.setVisibility(View.VISIBLE);
             TextView expandedTV = (TextView) expandedText;
-            expandedTV.setText(textToSpannable(text));
+            expandedTV.setText(textToSpannable(text), TextView.BufferType.SPANNABLE);
             expandedTV.setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
@@ -321,7 +333,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         Matcher mather = hashTagsPattern.matcher(text);
         List<String> hashTags = new ArrayList<>();
         while (mather.find()) {
-            String tag = mather.group(1);
+            String tag = mather.group(1).replaceAll("\\s+","");
             String[] tags = tag.split("#");
             if (tags.length > 1) {
                 hashTags.addAll(Arrays.asList(tags));
@@ -333,11 +345,18 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             startPos = text.indexOf(hashTag) - 1;
             endPos = startPos + hashTag.length() + 1;
             ForegroundColorSpan colorSpan = new ForegroundColorSpan(color);
-            Object clickableSpan = new ClickableSpan() {
+            ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(View view) {
+                    view.setTag(true);
                     Toast.makeText(context, hashTag, Toast.LENGTH_SHORT).show();
                     //TODO 28.06.2016: Implement searching by tag
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
                 }
             };
             result.setSpan(colorSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -387,8 +406,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         });
 
         TextView expandedTV = (TextView) expandedView;
-        expandedTV.setText(textToSpannable(text));
         expandedTV.setMovementMethod(LinkMovementMethod.getInstance());
+        expandedTV.setText(textToSpannable(text), TextView.BufferType.SPANNABLE);
         expandedView.setVisibility(View.VISIBLE);
         collapsedView.setVisibility(View.GONE);
 
