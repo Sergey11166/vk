@@ -33,7 +33,6 @@ import com.vk.sdk.api.model.VKApiCommunityFull;
 import com.vk.sdk.api.model.VKApiUserFull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,9 +60,11 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private VKApiNews data;
     private OnNewsItemClickListener newsItemClickListener;
     private OnLoadMoreListener onLoadMoreListener;
+    private int spanColor;
 
     public NewsRecyclerAdapter(Context context) {
         this.context = context;
+        this.spanColor = ContextCompat.getColor(context, R.color.colorAccent);
     }
 
     @Override
@@ -85,6 +86,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+
         if (holder instanceof ProgressViewHolder) return;
 
         if (holder instanceof ErrorViewHolder) {
@@ -155,7 +157,6 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return data == null || data.items == null ? 0 : data.items.size();
     }
 
-    @SuppressWarnings("unused")
     public VKApiNews getData() {
         return data;
     }
@@ -327,24 +328,30 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private Spannable textToSpannable(String text) {
         Spannable result = new SpannableString(text);
-        int color = ContextCompat.getColor(context, R.color.colorAccent);
+        addHashTagSpans(result);
+        addUrlSpans(result);
 
-        Pattern hashTagsPattern = Pattern.compile("#(\\S+)");
+        return result;
+    }
+
+    private void addHashTagSpans(Spannable spannable) {
+        String text = spannable.toString();
+
+        Pattern hashTagsPattern = Pattern.compile("(?:^|\\s|[\\p{Punct}&&[^/]])(#[\\p{L}0-9-_@]+)");
         Matcher mather = hashTagsPattern.matcher(text);
         List<String> hashTags = new ArrayList<>();
         while (mather.find()) {
-            String tag = mather.group(1).replaceAll("\\s+","");
+            String tag = mather.group(1);
             String[] tags = tag.split("#");
-            if (tags.length > 1) {
-                hashTags.addAll(Arrays.asList(tags));
-            } else hashTags.add(tag);
+            if (tags.length > 1) for (String t : tags) hashTags.add("#".concat(t));
+            else hashTags.add("#".concat(tag));
         }
 
         for (String hashTag : hashTags) {
             int startPos, endPos; //span positions
-            startPos = text.indexOf(hashTag) - 1;
-            endPos = startPos + hashTag.length() + 1;
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(color);
+            startPos = text.indexOf(hashTag);
+            endPos = startPos + hashTag.length();
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(spanColor);
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(View view) {
@@ -359,11 +366,13 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     ds.setUnderlineText(false);
                 }
             };
-            result.setSpan(colorSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            result.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(colorSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+    }
 
-        return result;
+    private void addUrlSpans(Spannable spannable) {
+
     }
 
     private void expandWithAnimation(View collapsedView,View expandedView, View button, String text) {
