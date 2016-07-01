@@ -372,7 +372,38 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void addUrlSpans(Spannable spannable) {
+        String text = spannable.toString();
 
+        Pattern urlPattern = Pattern.compile("(http|ftp|https)://([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?");
+        Matcher matcher = urlPattern.matcher(text);
+        List<String> urls = new ArrayList<>();
+        while (matcher.find()) {
+            String url = matcher.group();
+            urls.add(url);
+        }
+
+        for (String url : urls) {
+            int startPos, endPos; //span positions
+            startPos = text.indexOf(url);
+            endPos = startPos + url.length();
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(spanColor);
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View view) {
+                    view.setTag(true);
+                    Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
+                    // TODO: 01.07.2016: Handle click on link
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+            };
+            spannable.setSpan(colorSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 
     private void expandWithAnimation(View collapsedView,View expandedView, View button, String text) {
