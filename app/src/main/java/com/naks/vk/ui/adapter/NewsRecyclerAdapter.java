@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import com.naks.vk.R;
 import com.naks.vk.api.domain.VKApiItem;
 import com.naks.vk.api.domain.VKApiNews;
-import com.naks.vk.ui.widget.NewsTextView;
+import com.naks.vk.ui.widget.NewsTextContentView;
 import com.vk.sdk.api.model.VKApiCommunityFull;
 import com.vk.sdk.api.model.VKApiUserFull;
 
@@ -237,7 +237,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         @BindView(R.id.headImage) ImageView headImage;
         @BindView(R.id.owner) TextView owner;
         @BindView(R.id.date) TextView date;
-        @BindView(R.id.newsTextView) NewsTextView text;
+        @BindView(R.id.newsTextView)
+        NewsTextContentView text;
 
         public VKApiItem item;
         public VKApiUserFull user;

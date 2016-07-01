@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
@@ -35,7 +37,7 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NewsTextView extends LinearLayout {
+public class NewsTextContentView extends LinearLayout {
 
     private static final int MAX_COUNT_WORDS = 40;
     private static final int ANIMATE_EXPAND_DURATION = 200;
@@ -50,24 +52,24 @@ public class NewsTextView extends LinearLayout {
     private boolean isExpanded;
     private int position;
 
-    public NewsTextView(Context context) {
+    public NewsTextContentView(Context context) {
         super(context);
         this.init(context);
     }
 
-    public NewsTextView(Context context, AttributeSet attrs) {
+    public NewsTextContentView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.init(context);
     }
 
-    public NewsTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public NewsTextContentView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @SuppressWarnings("unused")
-    public NewsTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public NewsTextContentView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.init(context);
     }
@@ -200,8 +202,10 @@ public class NewsTextView extends LinearLayout {
                 @Override
                 public void onClick(View view) {
                     view.setTag(true);
-                    Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
-                    // TODO: 01.07.2016: Handle click on link
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(intent);
+                    }
                 }
 
                 @Override

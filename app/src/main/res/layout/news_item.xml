@@ -69,7 +69,7 @@
 
         </RelativeLayout>
 
-        <com.naks.vk.ui.widget.NewsTextView
+        <com.naks.vk.ui.widget.NewsTextContentView
             android:id="@+id/newsTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
