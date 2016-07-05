@@ -104,7 +104,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         // TODO: 28.06.2016: Implement pars date
         vh.date.setText(date);
 
-        vh.ownerLayout.setOnClickListener(view1 -> {
+        vh.ownerLayout.setOnClickListener(view -> {
             Toast.makeText(context, "clickOnHeader", Toast.LENGTH_SHORT).show();
             // TODO: 28.06.2016: Implement showing owner (profile or group)
         });

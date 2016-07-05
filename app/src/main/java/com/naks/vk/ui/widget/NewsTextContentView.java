@@ -138,7 +138,7 @@ public class NewsTextContentView extends LinearLayout {
     }
 
     private Spannable textToSpannable(String text) {
-        Spannable result = new SpannableString(text);
+        Spannable result = addProfileAndGroupsSpans(text);
         addHashTagSpans(result);
         addUrlSpans(result);
 
@@ -217,6 +217,54 @@ public class NewsTextContentView extends LinearLayout {
             spannable.setSpan(colorSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+    }
+
+    private Spannable addProfileAndGroupsSpans(String text) {
+
+        Pattern pattern = Pattern.compile("\\[(.*?)\\]");
+        Matcher matcher = pattern.matcher(text);
+        List<String> targets = new ArrayList<>();
+        while (matcher.find()) {
+            String target = matcher.group();
+            targets.add(target);
+        }
+
+        List<String> trs = new ArrayList<>(targets.size());
+        for (String target : targets) {
+            String replacement = target.substring(target.indexOf("|"), target.length() - 1);
+            text = text.replace(target, replacement);
+            trs.add(replacement);
+        }
+
+        Spannable spannable = new SpannableString(text);
+
+        for (String target : trs) {
+            int startPos, endPos;
+            int startTarget = text.indexOf(target);
+            startPos = startTarget + target.indexOf("|") + 1;
+            endPos = startTarget + target.length() - 1;
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(spanColor);
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View view) {
+                    view.setTag(true);
+                    Toast.makeText(context, target, Toast.LENGTH_SHORT).show();
+                    //TODO 28.06.2016: Implement showing profile or group
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+            };
+            spannable.setSpan(colorSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            //cut first part of targets and brackets
+            text = text.replace(target, target.substring(startPos, endPos));
+        }
+        return spannable;
     }
 
     private void expandWithAnimation(View collapsedView,View expandedView, View button, String text) {
