@@ -140,6 +140,7 @@ public class NewsTextContentView extends LinearLayout {
     private Spannable textToSpannable(String text) {
         Spannable result = addProfileAndGroupsSpans(text);
         addHashTagSpans(result);
+        addSpecialUrlSpans(result);
         addUrlSpans(result);
 
         return result;
@@ -219,6 +220,43 @@ public class NewsTextContentView extends LinearLayout {
         }
     }
 
+    private void addSpecialUrlSpans(Spannable spannable) {
+        String text = spannable.toString();
+
+        Pattern urlPattern = Pattern.compile("(vk|habr)([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?");
+        Matcher matcher = urlPattern.matcher(text);
+        List<String> urls = new ArrayList<>();
+        while (matcher.find()) {
+            String url = matcher.group();
+            urls.add(url);
+        }
+
+        for (String url : urls) {
+            int startPos, endPos; //span positions
+            startPos = text.indexOf(url);
+            endPos = startPos + url.length();
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(spanColor);
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View view) {
+                    view.setTag(true);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://".concat(url)));
+                    if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+            };
+            spannable.setSpan(colorSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannable.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
     private Spannable addProfileAndGroupsSpans(String text) {
 
         Pattern pattern = Pattern.compile("\\[(.*?)\\]");
@@ -231,7 +269,8 @@ public class NewsTextContentView extends LinearLayout {
 
         List<String> trs = new ArrayList<>(targets.size());
         for (String target : targets) {
-            String replacement = target.substring(target.indexOf("|"), target.length() - 1);
+            String str = target.split("\\|")[1];
+            String replacement = str.substring(0, str.length() - 1);
             text = text.replace(target, replacement);
             trs.add(replacement);
         }
@@ -240,15 +279,14 @@ public class NewsTextContentView extends LinearLayout {
 
         for (String target : trs) {
             int startPos, endPos;
-            int startTarget = text.indexOf(target);
-            startPos = startTarget + target.indexOf("|") + 1;
-            endPos = startTarget + target.length() - 1;
+            startPos = text.indexOf(target);
+            endPos = startPos + target.length();
             ForegroundColorSpan colorSpan = new ForegroundColorSpan(spanColor);
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(View view) {
                     view.setTag(true);
-                    Toast.makeText(context, target, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, targets.get(trs.indexOf(target)), Toast.LENGTH_SHORT).show();
                     //TODO 28.06.2016: Implement showing profile or group
                 }
 
@@ -260,9 +298,6 @@ public class NewsTextContentView extends LinearLayout {
             };
             spannable.setSpan(colorSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannable.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            //cut first part of targets and brackets
-            text = text.replace(target, target.substring(startPos, endPos));
         }
         return spannable;
     }
