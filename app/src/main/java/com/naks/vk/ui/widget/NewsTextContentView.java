@@ -42,6 +42,11 @@ public class NewsTextContentView extends LinearLayout {
     private static final int MAX_COUNT_WORDS = 40;
     private static final int ANIMATE_EXPAND_DURATION = 200;
 
+    private static final String PATTERN_HASHTAG = "#[\\p{L}0-9-_@]+";
+    private static final String PATTERN_URL = "((ftp|https?)://)?([\\w_-]+(?:(?:\\.[\\w_-]+)+))" +
+            "([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])";
+    private static final String PATTERN_USERS_AND_GROUPS = "\\[(.*?)\\]";
+
     @BindView(R.id.collapsedText) TextView collapsedText;
     @BindView(R.id.expandedText) TextView expandedText;
     @BindView(R.id.expandButton) TextView expandButton;
@@ -140,7 +145,7 @@ public class NewsTextContentView extends LinearLayout {
     private Spannable textToSpannable(String text) {
         Spannable result = addProfileAndGroupsSpans(text);
         addHashTagSpans(result);
-        addSpecialUrlSpans(result);
+        //addSpecialUrlSpans(result);
         addUrlSpans(result);
 
         return result;
@@ -149,15 +154,10 @@ public class NewsTextContentView extends LinearLayout {
     private void addHashTagSpans(Spannable spannable) {
         String text = spannable.toString();
 
-        Pattern hashTagsPattern = Pattern.compile("(?:^|\\s|[\\p{Punct}&&[^/]])(#[\\p{L}0-9-_@]+)");
+        Pattern hashTagsPattern = Pattern.compile(PATTERN_HASHTAG);
         Matcher mather = hashTagsPattern.matcher(text);
         List<String> hashTags = new ArrayList<>();
-        while (mather.find()) {
-            String tag = mather.group(1);
-            String[] tags = tag.split("#");
-            if (tags.length > 1) for (String t : tags) hashTags.add("#".concat(t));
-            else hashTags.add("#".concat(tag));
-        }
+        while (mather.find()) hashTags.add(mather.group());
 
         for (String hashTag : hashTags) {
             int startPos, endPos; //span positions
@@ -186,7 +186,7 @@ public class NewsTextContentView extends LinearLayout {
     private void addUrlSpans(Spannable spannable) {
         String text = spannable.toString();
 
-        Pattern urlPattern = Pattern.compile("(http|ftp|https)://([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?");
+        Pattern urlPattern = Pattern.compile(PATTERN_URL);
         Matcher matcher = urlPattern.matcher(text);
         List<String> urls = new ArrayList<>();
         while (matcher.find()) {
@@ -203,44 +203,10 @@ public class NewsTextContentView extends LinearLayout {
                 @Override
                 public void onClick(View view) {
                     view.setTag(true);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    if (intent.resolveActivity(context.getPackageManager()) != null) {
-                        context.startActivity(intent);
-                    }
-                }
-
-                @Override
-                public void updateDrawState(TextPaint ds) {
-                    super.updateDrawState(ds);
-                    ds.setUnderlineText(false);
-                }
-            };
-            spannable.setSpan(colorSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.setSpan(clickableSpan, startPos, endPos, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-    }
-
-    private void addSpecialUrlSpans(Spannable spannable) {
-        String text = spannable.toString();
-
-        Pattern urlPattern = Pattern.compile("(vk|habr)([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?");
-        Matcher matcher = urlPattern.matcher(text);
-        List<String> urls = new ArrayList<>();
-        while (matcher.find()) {
-            String url = matcher.group();
-            urls.add(url);
-        }
-
-        for (String url : urls) {
-            int startPos, endPos; //span positions
-            startPos = text.indexOf(url);
-            endPos = startPos + url.length();
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(spanColor);
-            ClickableSpan clickableSpan = new ClickableSpan() {
-                @Override
-                public void onClick(View view) {
-                    view.setTag(true);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://".concat(url)));
+                    String fullUrl = url;
+                    String prefix = "http://";
+                    if (!fullUrl.startsWith(prefix)) fullUrl = prefix.concat(url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl));
                     if (intent.resolveActivity(context.getPackageManager()) != null) {
                         context.startActivity(intent);
                     }
@@ -259,7 +225,7 @@ public class NewsTextContentView extends LinearLayout {
 
     private Spannable addProfileAndGroupsSpans(String text) {
 
-        Pattern pattern = Pattern.compile("\\[(.*?)\\]");
+        Pattern pattern = Pattern.compile(PATTERN_USERS_AND_GROUPS);
         Matcher matcher = pattern.matcher(text);
         List<String> targets = new ArrayList<>();
         while (matcher.find()) {
