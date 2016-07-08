@@ -57,6 +57,16 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     }
 
     @Override
+    public void onMenuItemComplainClick(VKApiItem item) {
+
+    }
+
+    @Override
+    public void onMenuItemNotInterestingClick(VKApiItem item) {
+
+    }
+
+    @Override
     public void attachView(NewsPageView view) {
         super.attachView(view);
         Log.d(TAG, "attachView(" + view.toString() + ")");

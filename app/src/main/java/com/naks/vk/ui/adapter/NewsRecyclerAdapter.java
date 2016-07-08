@@ -41,6 +41,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private VKApiNews data;
     private OnNewsItemClickListener newsItemClickListener;
     private OnLoadMoreListener onLoadMoreListener;
+    private MenuItemClickListener menuItemClickListener;
     private List<Integer> expandedPositions;
 
     public NewsRecyclerAdapter(Context context) {
@@ -215,15 +216,24 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void setOnNewsItemClickListener(OnNewsItemClickListener listener) {
-        this.newsItemClickListener = listener;
+        newsItemClickListener = listener;
     }
 
-    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
-        this.onLoadMoreListener = onLoadMoreListener;
+    public void setOnLoadMoreListener(OnLoadMoreListener listener) {
+        onLoadMoreListener = listener;
+    }
+
+    public void setMenuItemClickListener(MenuItemClickListener listener) {
+        menuItemClickListener = listener;
     }
 
     public interface OnNewsItemClickListener {
         void onClick(VKApiItem item, VKApiUserFull user, VKApiCommunityFull community);
+    }
+
+    public interface MenuItemClickListener {
+        void complainOnClick(VKApiItem item);
+        void notInterestingOnClick(VKApiItem item);
     }
 
     public interface OnLoadMoreListener {

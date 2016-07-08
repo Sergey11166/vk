@@ -85,6 +85,17 @@ public class NewsPageFragment extends MvpLceViewStateDaggerBaseFragment<SwipeRef
         adapter.setOnNewsItemClickListener((item, user, group) ->
                 presenter.onItemClick(item, user, group));
         adapter.setOnLoadMoreListener(() -> loadData(false));
+        adapter.setMenuItemClickListener(new NewsRecyclerAdapter.MenuItemClickListener() {
+            @Override
+            public void complainOnClick(VKApiItem item) {
+                presenter.onMenuItemComplainClick(item);
+            }
+
+            @Override
+            public void notInterestingOnClick(VKApiItem item) {
+                presenter.onMenuItemNotInterestingClick(item);
+            }
+        });
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         adapter.initOnScrollListener(recyclerView);

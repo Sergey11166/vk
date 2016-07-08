@@ -11,4 +11,8 @@ public interface NewsPagePresenter extends MvpPresenter<NewsPageView> {
     void loadNews(boolean pullToRefresh);
 
     void onItemClick(VKApiItem item, VKApiUserFull user, VKApiCommunityFull group);
+
+    void onMenuItemComplainClick(VKApiItem item);
+
+    void onMenuItemNotInterestingClick(VKApiItem item);
 }
