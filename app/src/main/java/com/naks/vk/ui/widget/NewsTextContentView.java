@@ -204,8 +204,10 @@ public class NewsTextContentView extends LinearLayout {
                 public void onClick(View view) {
                     view.setTag(true);
                     String fullUrl = url;
-                    String prefix = "http://";
-                    if (!fullUrl.startsWith(prefix)) fullUrl = prefix.concat(url);
+                    String prefix = "http";
+                    if (!fullUrl.startsWith(prefix) && !fullUrl.startsWith("ftp")) {
+                        fullUrl = prefix.concat("://").concat(url);
+                    }
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl));
                     if (intent.resolveActivity(context.getPackageManager()) != null) {
                         context.startActivity(intent);
@@ -230,7 +232,7 @@ public class NewsTextContentView extends LinearLayout {
         List<String> targets = new ArrayList<>();
         while (matcher.find()) {
             String target = matcher.group();
-            targets.add(target);
+            if (target.contains("|")) targets.add(target);
         }
 
         List<String> trs = new ArrayList<>(targets.size());
