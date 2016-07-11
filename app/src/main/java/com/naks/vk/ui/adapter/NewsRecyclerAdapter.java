@@ -2,6 +2,7 @@ package com.naks.vk.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,7 +93,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         assert vh.user != null;
         assert vh.group != null;
 
-        Glide.with(context)
+        Glide.with(context.getApplicationContext())
                 .load(sourceId > 0 ? vh.user.photo_100 : vh.group.photo_100)
                 .centerCrop()
                 .crossFade()
@@ -109,6 +110,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Toast.makeText(context, "clickOnHeader", Toast.LENGTH_SHORT).show();
             // TODO: 28.06.2016: Implement showing owner (profile or group)
         });
+
+        vh.popupButton.setOnClickListener(view -> showPopupMenu(vh.item, view));
 
         vh.text.setExpanded(expandedPositions.contains(position));
         vh.text.setText(vh.item.text, position);
@@ -215,6 +218,16 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
+    private void showPopupMenu(VKApiItem item, View view) {
+        PopupMenu popupMenu = new PopupMenu(context, view);
+        popupMenu.inflate(R.menu.popup_menu_news_item);
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            menuItemClickListener.onItemClick(context, item, menuItem.getItemId());
+            return true;
+        });
+        popupMenu.show();
+    }
+
     public void setOnNewsItemClickListener(OnNewsItemClickListener listener) {
         newsItemClickListener = listener;
     }
@@ -232,8 +245,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public interface MenuItemClickListener {
-        void complainOnClick(VKApiItem item);
-        void notInterestingOnClick(VKApiItem item);
+        void onItemClick(Context context, VKApiItem item, int menuItemId);
     }
 
     public interface OnLoadMoreListener {
@@ -247,8 +259,8 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         @BindView(R.id.headImage) ImageView headImage;
         @BindView(R.id.owner) TextView owner;
         @BindView(R.id.date) TextView date;
-        @BindView(R.id.newsTextView)
-        NewsTextContentView text;
+        @BindView(R.id.popupButton) ImageView popupButton;
+        @BindView(R.id.newsTextView) NewsTextContentView text;
 
         public VKApiItem item;
         public VKApiUserFull user;

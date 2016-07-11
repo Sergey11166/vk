@@ -1,8 +1,13 @@
 package com.naks.vk.mvp.presenter.impl;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+import com.naks.vk.R;
 import com.naks.vk.api.domain.VKApiItem;
 import com.naks.vk.api.domain.VKApiNews;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
@@ -57,13 +62,30 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     }
 
     @Override
-    public void onMenuItemComplainClick(VKApiItem item) {
+    public void onMenuItemClick(Context context, VKApiItem item, int menuItemId) {
+        Log.d(TAG, "onMenuItemClick(VKApiItem, " + menuItemId + ")");
+        switch (menuItemId) {
+            case R.id.popup_news_copy:
+                String url = "http://vk.com/wall"
+                        .concat(String.valueOf(item.source_id))
+                        .concat("_")
+                        .concat(String.valueOf(item.post_id));
+                ClipboardManager clipboardManager = (ClipboardManager) context
+                        .getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("VK_WALL_ID_URL", url);
+                clipboardManager.setPrimaryClip(clipData);
+                Toast.makeText(context, context.getString(R.string.toast_reference)
+                                .concat(" ").concat(url).concat(" ")
+                                .concat(context.getString(R.string.toast_is_copied)),
+                        Toast.LENGTH_SHORT).show();
+                return;
 
-    }
+            case R.id.popup_news_complains:
 
-    @Override
-    public void onMenuItemNotInterestingClick(VKApiItem item) {
+                return;
 
+            case R.id.popup_news_not_interesting:
+        }
     }
 
     @Override

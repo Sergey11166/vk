@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/popup_news_copy"
+        android:title="@string/copy_to_buffer"/>
+
+    <item
+        android:id="@+id/popup_news_complains"
+        android:title="@string/complains"/>
+
+    <item
+        android:id="@+id/popup_news_not_interesting"
+        android:title="@string/not_interesting"/>
+</menu>

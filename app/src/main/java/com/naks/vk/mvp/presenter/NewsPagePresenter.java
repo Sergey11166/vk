@@ -1,5 +1,7 @@
 package com.naks.vk.mvp.presenter;
 
+import android.content.Context;
+
 import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.naks.vk.api.domain.VKApiItem;
 import com.naks.vk.mvp.view.NewsPageView;
@@ -12,7 +14,5 @@ public interface NewsPagePresenter extends MvpPresenter<NewsPageView> {
 
     void onItemClick(VKApiItem item, VKApiUserFull user, VKApiCommunityFull group);
 
-    void onMenuItemComplainClick(VKApiItem item);
-
-    void onMenuItemNotInterestingClick(VKApiItem item);
+    void onMenuItemClick(Context context, VKApiItem item, int menuItemId);
 }

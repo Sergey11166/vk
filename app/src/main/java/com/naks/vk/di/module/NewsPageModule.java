@@ -24,7 +24,7 @@ public class NewsPageModule {
     @Provides
     @PerFragment
     NewsRecyclerAdapter provideAdapter() {
-        return new NewsRecyclerAdapter(fragment.getActivity().getApplicationContext());
+        return new NewsRecyclerAdapter(fragment.getActivity());
     }
 
     @Provides

@@ -85,10 +85,10 @@ public class NewsTabsFragment extends DaggerBaseFragment<NewsTabComponent>
 
     private void setupViewPager() {
         NewsTabAdapter adapter = new NewsTabAdapter(getChildFragmentManager());
-        adapter.addFragment(new NewsPageFragment(), TypeNews.NEWS, "news");
-        adapter.addFragment(new NewsPageFragment(), TypeNews.RECOMMENDATIONS, "recommendation");
-        adapter.addFragment(new NewsPageFragment(), TypeNews.FRIENDS, "friends");
-        adapter.addFragment(new NewsPageFragment(), TypeNews.COMMUNITIES, "communities");
+        adapter.addFragment(new NewsPageFragment(), TypeNews.NEWS, getString(R.string.tab_news));
+        adapter.addFragment(new NewsPageFragment(), TypeNews.RECOMMENDATIONS, getString(R.string.tab_recommendations));
+        adapter.addFragment(new NewsPageFragment(), TypeNews.FRIENDS, getString(R.string.tab_friends));
+        adapter.addFragment(new NewsPageFragment(), TypeNews.COMMUNITIES, getString(R.string.tab_communities));
         viewPager.setAdapter(adapter);
     }
 
