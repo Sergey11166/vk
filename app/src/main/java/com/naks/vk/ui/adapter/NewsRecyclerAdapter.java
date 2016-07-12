@@ -1,6 +1,9 @@
 package com.naks.vk.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.naks.vk.R;
 import com.naks.vk.api.domain.VKApiItem;
 import com.naks.vk.api.domain.VKApiNews;
@@ -95,9 +99,17 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         Glide.with(context.getApplicationContext())
                 .load(sourceId > 0 ? vh.user.photo_100 : vh.group.photo_100)
+                .asBitmap()
                 .centerCrop()
-                .crossFade()
-                .into(vh.headImage);
+                .into(new BitmapImageViewTarget(vh.headImage) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory
+                                .create(context.getResources(), resource);
+                        drawable.setCircular(true);
+                        vh.headImage.setImageDrawable(drawable);
+                    }
+                });
 
         vh.owner.setText(sourceId > 0 ? vh.user.first_name + " " + vh.user.last_name :
                 vh.group.name);
