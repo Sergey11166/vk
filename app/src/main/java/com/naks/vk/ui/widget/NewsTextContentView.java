@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.PopupMenu;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -19,7 +18,6 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -54,37 +52,36 @@ public class NewsTextContentView extends LinearLayout {
     @BindView(R.id.expandButton) TextView expandButton;
 
     private ExpandListener expandListener;
-    private Context context;
     private int spanColor;
     private boolean isExpanded;
     private int position;
 
     public NewsTextContentView(Context context) {
         super(context);
-        this.init(context);
+        this.init();
     }
 
     public NewsTextContentView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.init(context);
+        this.init();
     }
 
     public NewsTextContentView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.init(context);
+        this.init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @SuppressWarnings("unused")
     public NewsTextContentView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        this.init(context);
+        this.init();
     }
 
-    private void init(Context c) {
-        this.context = c;
-        this.spanColor = ContextCompat.getColor(context, R.color.colorAccent);
-        LayoutInflater li = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    private void init() {
+        this.spanColor = ContextCompat.getColor(getContext(), R.color.colorAccent);
+        LayoutInflater li = (LayoutInflater) getContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         li.inflate(R.layout.news_text_view, this);
     }
 
@@ -170,7 +167,7 @@ public class NewsTextContentView extends LinearLayout {
                 @Override
                 public void onClick(View view) {
                     view.setTag(true);
-                    Toast.makeText(context, hashTag, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), hashTag, Toast.LENGTH_SHORT).show();
                     //TODO 28.06.2016: Implement searching by tag
                 }
 
@@ -211,8 +208,8 @@ public class NewsTextContentView extends LinearLayout {
                         fullUrl = prefix.concat("://").concat(url);
                     }
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl));
-                    if (intent.resolveActivity(context.getPackageManager()) != null) {
-                        context.startActivity(intent);
+                    if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                        getContext().startActivity(intent);
                     }
                 }
 
@@ -256,7 +253,7 @@ public class NewsTextContentView extends LinearLayout {
                 @Override
                 public void onClick(View view) {
                     view.setTag(true);
-                    Toast.makeText(context, targets.get(trs.indexOf(target)), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), targets.get(trs.indexOf(target)), Toast.LENGTH_SHORT).show();
                     //TODO 28.06.2016: Implement showing profile or group
                 }
 

@@ -20,9 +20,12 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.naks.vk.R;
 import com.naks.vk.api.domain.VKApiItem;
 import com.naks.vk.api.domain.VKApiNews;
+import com.naks.vk.ui.widget.NewsImagesContentView;
 import com.naks.vk.ui.widget.NewsTextContentView;
 import com.vk.sdk.api.model.VKApiCommunityFull;
+import com.vk.sdk.api.model.VKApiPhoto;
 import com.vk.sdk.api.model.VKApiUserFull;
+import com.vk.sdk.api.model.VKAttachments;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,6 +132,14 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         vh.text.setText(vh.item.text, position);
         vh.text.setOnTextClickListener(v -> onItemClick(v, vh));
         vh.text.setOnExpandClickListener(pos -> expandedPositions.add(pos));
+
+        List<VKApiPhoto> images = new ArrayList<>();
+        for (VKAttachments.VKApiAttachment attachment : vh.item.attachments) {
+            if (attachment.getType().equals("photo")) {
+                images.add(((VKApiPhoto) attachment));
+            }
+        }
+        vh.images.setImages(images);
 
         vh.v.setOnClickListener(v -> onItemClick(v, vh));
     }
@@ -273,6 +284,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         @BindView(R.id.date) TextView date;
         @BindView(R.id.popupButton) ImageView popupButton;
         @BindView(R.id.newsTextView) NewsTextContentView text;
+        @BindView(R.id.newsImagesView) NewsImagesContentView images;
 
         public VKApiItem item;
         public VKApiUserFull user;
