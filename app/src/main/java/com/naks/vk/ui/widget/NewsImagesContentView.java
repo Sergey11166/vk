@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -14,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.vk.sdk.api.model.VKApiPhoto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NewsImagesContentView extends RelativeLayout {
@@ -54,9 +56,7 @@ public class NewsImagesContentView extends RelativeLayout {
             return;
         }
         setVisibility(VISIBLE);
-        for (ImageView view : views) {
-            ((ViewManager)view.getParent()).removeView(view);
-        }
+        for (ImageView view : views) removeView(view);
         views.clear();
         switch (images.size()) {
             case 1:
@@ -74,8 +74,46 @@ public class NewsImagesContentView extends RelativeLayout {
                 return;
 
             case 2:
+                final int count2 = images.size();
+                final LayoutParams[] params2 = new LayoutParams[count2];
+                final int[] widths2 = new int[count2];
+                final int[] heights2 = new int[count2];
+                final ImageView[] views = new ImageView[count2];
+                for(int i = 0; i< count2; i++) {
+                    views[i] = new ImageView(getContext());
+                    views[i].setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    views[i].setId(View.generateViewId());
+                }
 
+                boolean isHorizontal = false;
+                for (int i=0; i<count2; i++)
+                    isHorizontal = images.get(i).height >= images.get(i).width;
+
+                if (isHorizontal) {
+                    int wSum = 0; for(int i = 0; i< count2; i++) wSum += images.get(i).width;
+                    for(int i = 0; i< count2; i++)
+                        widths2[i] = (int) (images.get(i).width * 350 * scale/ wSum);
+                } else {
+                    for(int i = 0; i< count2; i++) widths2[i] = (int) (350 * scale);
+                }
+
+                for (int i = 0; i< count2; i++) {
+                    heights2[i] = widths2[i] * images.get(i).height / images.get(i).width;
+                    params2[i] = new LayoutParams(widths2[i], heights2[i]);
+                    if (i != 0) {
+                        params2[i].addRule(isHorizontal ? RIGHT_OF : BELOW, views[i - 1].getId());
+                        if (isHorizontal) params2[i].setMargins((int) (2 * scale), 0, 0, 0);
+                        else params2[i].setMargins(0, (int) (2 * scale), 0, 0);
+                    }
+                    addView(views[i], params2[i]);
+                    this.views.addAll(Arrays.asList(views));
+                    Glide.with(getContext())
+                            .load(images.get(i).photo_604)
+                            .placeholder(new ColorDrawable(Color.LTGRAY))
+                            .into(views[i]);
+                }
                 return;
+
             case 3:
 
                 return;
