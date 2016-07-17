@@ -70,10 +70,10 @@ public class NewsImagesContentView extends RelativeLayout {
                 handle3Images(images);
                 return;
             case 4:
-
+                handle4Or5Images(images);
                 return;
             case 5:
-
+                handle4Or5Images(images);
                 return;
             case 6:
 
@@ -120,7 +120,7 @@ public class NewsImagesContentView extends RelativeLayout {
                         params[i].bottomMargin);
             }
             addView(views[i], params[i]);
-            this.views.addAll(Arrays.asList(views));
+            this.views.add(views[i]);
             Glide.with(getContext())
                     .load(images[i].photo_604)
                     .placeholder(new ColorDrawable(Color.LTGRAY))
@@ -172,6 +172,26 @@ public class NewsImagesContentView extends RelativeLayout {
         for (int i=0; i<images2.length; i++) images2[i] = images.get(i + (isFirstImageVertical ? 2 : 1));
         ImageView[] views2 = createViewsForImages(isFirstImageVertical ? 1 : 2);
         LayoutParams[] params2 = new LayoutParams[isFirstImageVertical ? 1 : 2];
+        for (int i=0; i<params2.length; i++) {
+            params2[i] = new LayoutParams(0, 0);
+            params2[i].setMargins(0, (int) (2 * scale), 0, 0);
+            params2[i].addRule(BELOW, views1[0].getId());
+        }
+        fillImagesToViewsInLine(images2, views2, params2);
+    }
+
+    private void handle4Or5Images(List<VKApiPhoto> images) {
+        VKApiPhoto[] images1 = new VKApiPhoto[2];
+        for (int i=0; i<images1.length; i++) images1[i] = images.get(i);
+        ImageView[] views1 = createViewsForImages(2);
+        LayoutParams[] params1 = new LayoutParams[2];
+        for (int i=0; i<params1.length; i++) params1[i] = new LayoutParams(0, 0);
+        fillImagesToViewsInLine(images1, views1, params1);
+
+        VKApiPhoto[] images2 = new VKApiPhoto[images.size() - 2];
+        for (int i=0; i<images2.length; i++) images2[i] = images.get(i + 2);
+        ImageView[] views2 = createViewsForImages(images.size() - 2);
+        LayoutParams[] params2 = new LayoutParams[images.size() - 2];
         for (int i=0; i<params2.length; i++) {
             params2[i] = new LayoutParams(0, 0);
             params2[i].setMargins(0, (int) (2 * scale), 0, 0);
