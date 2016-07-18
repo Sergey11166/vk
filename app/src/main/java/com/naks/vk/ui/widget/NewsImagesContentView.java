@@ -14,12 +14,12 @@ import com.bumptech.glide.Glide;
 import com.vk.sdk.api.model.VKApiPhoto;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class NewsImagesContentView extends RelativeLayout {
 
     private static final int IMAGES_WIDTH = 350;
+    private static final int MARGIN_BETWEEN_IMAGES = 2;
 
     private List<ImageView> views;
     private float scale;
@@ -76,20 +76,143 @@ public class NewsImagesContentView extends RelativeLayout {
                 handle4Or5Images(images);
                 return;
             case 6:
-
+                handle6Or7Images(images);
                 return;
             case 7:
-
+                handle6Or7Images(images);
                 return;
             case 8:
-
+                handle8Or9Or10Images(images);
                 return;
             case 9:
-
+                handle8Or9Or10Images(images);
                 return;
             case 10:
-
+                handle8Or9Or10Images(images);
         }
+    }
+
+    private void allImagesToLine(List<VKApiPhoto> images) {
+        final LayoutParams[] params = new LayoutParams[images.size()];
+        for (int i=0; i<images.size(); i++) params[i] = new LayoutParams(0, 0);
+        fillImagesToViewsInLine(images.toArray(new VKApiPhoto[images.size()]),
+                createViewsForImages(images.size()), params);
+    }
+
+    private void handle3Images(List<VKApiPhoto> images) {
+        boolean isAllVertical = isAllVertical(images);
+        if (isAllVertical) {
+            allImagesToLine(images);
+            return;
+        }
+
+        final boolean isFirstImageVertical = images.get(0).width < images.get(0).height;
+
+        VKApiPhoto[] images1 = new VKApiPhoto[isFirstImageVertical ? 2 : 1];
+        for (int i=0; i<images1.length; i++) images1[i] = images.get(i);
+        ImageView[] views1 = createViewsForImages(isFirstImageVertical ? 2 : 1);
+        LayoutParams[] params1 = new LayoutParams[isFirstImageVertical ? 2 : 1];
+        for (int i=0; i<params1.length; i++) params1[i] = new LayoutParams(0, 0);
+        fillImagesToViewsInLine(images1, views1, params1);
+
+        VKApiPhoto[] images2 = new VKApiPhoto[isFirstImageVertical ? 1 : 2];
+        for (int i=0; i<images2.length; i++) images2[i] = images.get(i + (isFirstImageVertical ? 2 : 1));
+        ImageView[] views2 = createViewsForImages(isFirstImageVertical ? 1 : 2);
+        LayoutParams[] params2 = new LayoutParams[isFirstImageVertical ? 1 : 2];
+        for (int i=0; i<params2.length; i++) {
+            params2[i] = new LayoutParams(0, 0);
+            params2[i].setMargins(0, (int) (MARGIN_BETWEEN_IMAGES * scale), 0, 0);
+            params2[i].addRule(BELOW, views1[0].getId());
+        }
+        fillImagesToViewsInLine(images2, views2, params2);
+    }
+
+    private void handle4Or5Images(List<VKApiPhoto> images) {
+        VKApiPhoto[] images1 = new VKApiPhoto[2];
+        for (int i=0; i<images1.length; i++) images1[i] = images.get(i);
+        ImageView[] views1 = createViewsForImages(2);
+        LayoutParams[] params1 = new LayoutParams[2];
+        for (int i=0; i<params1.length; i++) params1[i] = new LayoutParams(0, 0);
+        fillImagesToViewsInLine(images1, views1, params1);
+
+        VKApiPhoto[] images2 = new VKApiPhoto[images.size() - 2];
+        for (int i=0; i<images2.length; i++) images2[i] = images.get(i + 2);
+        ImageView[] views2 = createViewsForImages(images.size() - 2);
+        LayoutParams[] params2 = new LayoutParams[images.size() - 2];
+        for (int i=0; i<params2.length; i++) {
+            params2[i] = new LayoutParams(0, 0);
+            params2[i].setMargins(0, (int) (MARGIN_BETWEEN_IMAGES * scale), 0, 0);
+            params2[i].addRule(BELOW, views1[0].getId());
+        }
+        fillImagesToViewsInLine(images2, views2, params2);
+    }
+
+    private void handle6Or7Images(List<VKApiPhoto> images) {
+        boolean isAllVertical = isAllVertical(images);
+
+        final int countInTopLine = isAllVertical ? 3 : 2;
+        VKApiPhoto[] images1 = new VKApiPhoto[countInTopLine];
+        for (int i=0; i<images1.length; i++) images1[i] = images.get(i);
+        ImageView[] views1 = createViewsForImages(countInTopLine);
+        LayoutParams[] params1 = new LayoutParams[countInTopLine];
+        for (int i=0; i<params1.length; i++) params1[i] = new LayoutParams(0, 0);
+        fillImagesToViewsInLine(images1, views1, params1);
+
+        final int countMiddleLine = isAllVertical && images.size() == 7 ? 4 : countInTopLine;
+        VKApiPhoto[] images2 = new VKApiPhoto[countMiddleLine];
+        for (int i=0; i<images2.length; i++) images2[i] = images.get(i + countInTopLine);
+        ImageView[] views2 = createViewsForImages(countMiddleLine);
+        LayoutParams[] params2 = new LayoutParams[countMiddleLine];
+        for (int i=0; i<params2.length; i++) {
+            params2[i] = new LayoutParams(0, 0);
+            params2[i].setMargins(0, (int) (MARGIN_BETWEEN_IMAGES * scale), 0, 0);
+            params2[i].addRule(BELOW, views1[0].getId());
+        }
+        fillImagesToViewsInLine(images2, views2, params2);
+
+        if (isAllVertical) return;
+        VKApiPhoto[] images3 = new VKApiPhoto[images.size() - 4];
+        for (int i=0; i<images3.length; i++) images3[i] = images.get(i + 4);
+        ImageView[] views3 = createViewsForImages(images.size() - 4);
+        LayoutParams[] params3 = new LayoutParams[images.size() - 4];
+        for (int i=0; i<params3.length; i++) {
+            params3[i] = new LayoutParams(0, 0);
+            params3[i].setMargins(0, (int) (MARGIN_BETWEEN_IMAGES * scale), 0, 0);
+            params3[i].addRule(BELOW, views2[0].getId());
+        }
+        fillImagesToViewsInLine(images3, views3, params3);
+    }
+
+    private void handle8Or9Or10Images(List<VKApiPhoto> images) {
+        final int countInTopLine = images.size() == 8 ? 2 : 3;
+        VKApiPhoto[] images1 = new VKApiPhoto[countInTopLine];
+        for (int i=0; i<images1.length; i++) images1[i] = images.get(i);
+        ImageView[] views1 = createViewsForImages(countInTopLine);
+        LayoutParams[] params1 = new LayoutParams[countInTopLine];
+        for (int i=0; i<params1.length; i++) params1[i] = new LayoutParams(0, 0);
+        fillImagesToViewsInLine(images1, views1, params1);
+
+        VKApiPhoto[] images2 = new VKApiPhoto[3];
+        for (int i=0; i<images2.length; i++) images2[i] = images.get(i + countInTopLine);
+        ImageView[] views2 = createViewsForImages(3);
+        LayoutParams[] params2 = new LayoutParams[3];
+        for (int i=0; i<params2.length; i++) {
+            params2[i] = new LayoutParams(0, 0);
+            params2[i].setMargins(0, (int) (MARGIN_BETWEEN_IMAGES * scale), 0, 0);
+            params2[i].addRule(BELOW, views1[0].getId());
+        }
+        fillImagesToViewsInLine(images2, views2, params2);
+
+        VKApiPhoto[] images3 = new VKApiPhoto[images.size() - countInTopLine - 3];
+        for (int i=0; i<images3.length; i++) images3[i] = images.get(i + countInTopLine + 3);
+        ImageView[] views3 = createViewsForImages(images.size() - countInTopLine - 3);
+        LayoutParams[] params3 = new LayoutParams[images.size() - countInTopLine - 3];
+        for (int i=0; i<params3.length; i++) {
+            params3[i] = new LayoutParams(0, 0);
+            params3[i].setMargins(0, (int) (MARGIN_BETWEEN_IMAGES * scale), 0, 0);
+            params3[i].addRule(BELOW, views2[0].getId());
+        }
+        fillImagesToViewsInLine(images3, views3, params3);
     }
 
     private void fillImagesToViewsInLine(VKApiPhoto[] images, ImageView[] views, LayoutParams[] params) {
@@ -114,7 +237,7 @@ public class NewsImagesContentView extends RelativeLayout {
             if (i != 0) {
                 params[i].addRule(RIGHT_OF, views[i - 1].getId());
                 params[i].setMargins(
-                        (int) (2 * scale),
+                        (int) (MARGIN_BETWEEN_IMAGES * scale),
                         params[i].topMargin,
                         params[i].rightMargin,
                         params[i].bottomMargin);
@@ -128,75 +251,18 @@ public class NewsImagesContentView extends RelativeLayout {
         }
     }
 
-    private void allImagesToLine(List<VKApiPhoto> images) {
-        final LayoutParams[] params = new LayoutParams[images.size()];
-        for (int i=0; i<images.size(); i++) params[i] = new LayoutParams(0, 0);
-        fillImagesToViewsInLine(images.toArray(new VKApiPhoto[images.size()]),
-                createViewsForImages(images.size()), params);
-    }
-
     private ImageView[] createViewsForImages(int size) {
         final ImageView[] views = new ImageView[size];
         for(int i = 0; i<size; i++) {
             views[i] = new ImageView(getContext());
             views[i].setScaleType(ImageView.ScaleType.CENTER_CROP);
             views[i].setId(View.generateViewId());
-            views[i].setBackgroundColor(Color.YELLOW);
         }
         return views;
     }
 
-    private void handle3Images(List<VKApiPhoto> images) {
-        boolean isAllVertical = true;
-        for (VKApiPhoto image : images) {
-            if (image.width > image.height) {
-                isAllVertical = false;
-                break;
-            }
-        }
-        if (isAllVertical) {
-            allImagesToLine(images);
-            return;
-        }
-
-        final boolean isFirstImageVertical = images.get(0).width < images.get(0).height;
-
-        VKApiPhoto[] images1 = new VKApiPhoto[isFirstImageVertical ? 2 : 1];
-        for (int i=0; i<images1.length; i++) images1[i] = images.get(i);
-        ImageView[] views1 = createViewsForImages(isFirstImageVertical ? 2 : 1);
-        LayoutParams[] params1 = new LayoutParams[isFirstImageVertical ? 2 : 1];
-        for (int i=0; i<params1.length; i++) params1[i] = new LayoutParams(0, 0);
-        fillImagesToViewsInLine(images1, views1, params1);
-
-        VKApiPhoto[] images2 = new VKApiPhoto[isFirstImageVertical ? 1 : 2];
-        for (int i=0; i<images2.length; i++) images2[i] = images.get(i + (isFirstImageVertical ? 2 : 1));
-        ImageView[] views2 = createViewsForImages(isFirstImageVertical ? 1 : 2);
-        LayoutParams[] params2 = new LayoutParams[isFirstImageVertical ? 1 : 2];
-        for (int i=0; i<params2.length; i++) {
-            params2[i] = new LayoutParams(0, 0);
-            params2[i].setMargins(0, (int) (2 * scale), 0, 0);
-            params2[i].addRule(BELOW, views1[0].getId());
-        }
-        fillImagesToViewsInLine(images2, views2, params2);
-    }
-
-    private void handle4Or5Images(List<VKApiPhoto> images) {
-        VKApiPhoto[] images1 = new VKApiPhoto[2];
-        for (int i=0; i<images1.length; i++) images1[i] = images.get(i);
-        ImageView[] views1 = createViewsForImages(2);
-        LayoutParams[] params1 = new LayoutParams[2];
-        for (int i=0; i<params1.length; i++) params1[i] = new LayoutParams(0, 0);
-        fillImagesToViewsInLine(images1, views1, params1);
-
-        VKApiPhoto[] images2 = new VKApiPhoto[images.size() - 2];
-        for (int i=0; i<images2.length; i++) images2[i] = images.get(i + 2);
-        ImageView[] views2 = createViewsForImages(images.size() - 2);
-        LayoutParams[] params2 = new LayoutParams[images.size() - 2];
-        for (int i=0; i<params2.length; i++) {
-            params2[i] = new LayoutParams(0, 0);
-            params2[i].setMargins(0, (int) (2 * scale), 0, 0);
-            params2[i].addRule(BELOW, views1[0].getId());
-        }
-        fillImagesToViewsInLine(images2, views2, params2);
+    private static boolean isAllVertical(List<VKApiPhoto> images) {
+        for (VKApiPhoto image : images) if (image.width > image.height) return false;
+        return true;
     }
 }
