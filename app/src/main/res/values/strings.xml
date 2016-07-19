@@ -27,6 +27,7 @@
     <string name="error_item_button">Retry</string>
 
     <string name="expandButton">Show more</string>
+    <string name="today">Today at\u0020</string>
 
     <string name="toast_reference">Url</string>
     <string name="toast_is_copied">is copied</string>

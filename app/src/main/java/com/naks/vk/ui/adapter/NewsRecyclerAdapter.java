@@ -27,8 +27,13 @@ import com.vk.sdk.api.model.VKApiPhoto;
 import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKAttachments;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +45,9 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int VIEW_TYPE_ITEM = 0;
     private static final int VIEW_TYPE_PROGRESS = 1;
     private static final int VIEW_TYPE_ERROR_LOAD_PAGE = 3;
+
+    private static final SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    private static final SimpleDateFormat sdf2 = new SimpleDateFormat("dd MMMM HH:mm", Locale.getDefault());
 
     private int lastVisibleItem, totalItemCount;
     private boolean isLoading;
@@ -114,12 +122,9 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 });
 
-        vh.owner.setText(sourceId > 0 ? vh.user.first_name + " " + vh.user.last_name :
-                vh.group.name);
+        vh.owner.setText(sourceId > 0 ? vh.user.first_name + " " + vh.user.last_name : vh.group.name);
 
-        String date = String.valueOf(vh.item.date);
-        // TODO: 28.06.2016: Implement pars date
-        vh.date.setText(date);
+        vh.date.setText(formatDate(vh.item.date * 1000, context));
 
         vh.ownerLayout.setOnClickListener(view -> {
             Toast.makeText(context, "clickOnHeader", Toast.LENGTH_SHORT).show();
@@ -174,6 +179,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return;
         }
         this.data.items.remove(getItemCount() - 1);
+        if (data.items.get(0).date > this.data.items.get(getItemCount() - 1).date) return;
         this.data.items.addAll(data.items);
 
         for (VKApiUserFull user : data.profiles) {
@@ -238,6 +244,19 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return VIEW_TYPE_ITEM;
         } else {
             return isShowError ? VIEW_TYPE_ERROR_LOAD_PAGE : VIEW_TYPE_PROGRESS;
+        }
+    }
+
+    private static String formatDate(long date, Context context) {
+        final Calendar calendar = new GregorianCalendar();
+        final Calendar current = new GregorianCalendar();
+        calendar.setTime(new Date(date));
+        current.setTime(new Date());
+        if (calendar.get(Calendar.DAY_OF_YEAR) == current.get(Calendar.DAY_OF_YEAR) &&
+                calendar.get(Calendar.YEAR) == current.get(Calendar.YEAR)) {
+            return context.getString(R.string.today).concat(" ").concat(sdf1.format(date));
+        } else {
+            return sdf2.format(date);
         }
     }
 
