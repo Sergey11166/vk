@@ -23,7 +23,6 @@ import com.naks.vk.api.domain.VKApiNews;
 import com.naks.vk.ui.widget.NewsImagesContentView;
 import com.naks.vk.ui.widget.NewsTextContentView;
 import com.vk.sdk.api.model.VKApiCommunityFull;
-import com.vk.sdk.api.model.VKApiPhoto;
 import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKAttachments;
 
@@ -138,13 +137,13 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         vh.text.setOnTextClickListener(v -> onItemClick(v, vh));
         vh.text.setOnExpandClickListener(pos -> expandedPositions.add(pos));
 
-        List<VKApiPhoto> images = new ArrayList<>();
+        List<VKAttachments.VKApiAttachment> photosAndVideos = new ArrayList<>();
         for (VKAttachments.VKApiAttachment attachment : vh.item.attachments) {
-            if (attachment.getType().equals("photo")) {
-                images.add(((VKApiPhoto) attachment));
+            if (attachment.getType().equals("photo") || attachment.getType().equals("video")) {
+                photosAndVideos.add(attachment);
             }
         }
-        vh.images.setImages(images);
+        vh.images.setImages(photosAndVideos);
 
         vh.v.setOnClickListener(v -> onItemClick(v, vh));
     }
@@ -254,7 +253,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         current.setTime(new Date());
         if (calendar.get(Calendar.DAY_OF_YEAR) == current.get(Calendar.DAY_OF_YEAR) &&
                 calendar.get(Calendar.YEAR) == current.get(Calendar.YEAR)) {
-            return context.getString(R.string.today).concat(" ").concat(sdf1.format(date));
+            return context.getString(R.string.today).concat(sdf1.format(date));
         } else {
             return sdf2.format(date);
         }
