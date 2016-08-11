@@ -34,6 +34,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -59,6 +61,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private MenuItemClickListener menuItemClickListener;
     private List<Integer> expandedPositions;
 
+    @Inject
     public NewsRecyclerAdapter(Context context) {
         this.context = context;
         this.expandedPositions = new ArrayList<>();

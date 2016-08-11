@@ -1,5 +1,7 @@
 package com.naks.vk.di.component;
 
+import android.content.Context;
+
 import com.naks.vk.di.module.AppModule;
 import com.vk.sdk.VKAccessTokenTracker;
 
@@ -11,4 +13,5 @@ import dagger.Component;
 @Component(modules = AppModule.class)
 public interface AppComponent {
     VKAccessTokenTracker getVKAccessTokenTracker();
+    Context getContext();
 }

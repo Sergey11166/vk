@@ -26,7 +26,7 @@ public class NewsTabModule {
 
     @Provides
     @PerFragment
-    NewsTabPresenter providePresenter() {
-        return new NewsTabPresenterImpl(fragment);
+    NewsTabPresenter providePresenter(NewsTabView view) {
+        return new NewsTabPresenterImpl(view);
     }
 }

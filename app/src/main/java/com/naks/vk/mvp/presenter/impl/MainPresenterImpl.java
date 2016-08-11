@@ -3,16 +3,13 @@ package com.naks.vk.mvp.presenter.impl;
 import com.naks.vk.R;
 import com.naks.vk.mvp.presenter.MainPresenter;
 import com.naks.vk.mvp.view.MainView;
-import com.naks.vk.ui.activity.MainActivityDagger;
-
-import javax.inject.Inject;
 
 public class MainPresenterImpl implements MainPresenter {
 
-    @Inject MainView view;
+    private MainView view;
 
-    public MainPresenterImpl(MainActivityDagger activity) {
-        activity.getComponent().inject(this);
+    public MainPresenterImpl(MainView view) {
+        this.view = view;
     }
 
     public void onNavigationItemSelected(int itemId) {

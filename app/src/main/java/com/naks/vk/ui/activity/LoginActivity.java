@@ -4,9 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.naks.vk.di.component.AppComponent;
+import com.naks.vk.App;
 import com.naks.vk.di.component.DaggerLoginComponent;
-import com.naks.vk.di.component.HasComponent;
 import com.naks.vk.di.component.LoginComponent;
 import com.naks.vk.di.module.LoginModule;
 import com.naks.vk.mvp.presenter.LoginPresenter;
@@ -18,15 +17,14 @@ import com.vk.sdk.api.VKError;
 
 import javax.inject.Inject;
 
-public class LoginActivityDagger extends DaggerBaseActivity<LoginComponent>
-        implements LoginView, HasComponent<LoginComponent> {
+public class LoginActivity extends DaggerBaseActivity<LoginComponent> implements LoginView {
 
     @Inject LoginPresenter presenter;
 
     @Override
-    protected void setupComponent(AppComponent appComponent) {
+    protected void setupComponent() {
         component = DaggerLoginComponent.builder()
-                .appComponent(appComponent)
+                .appComponent(App.get(this).getComponent())
                 .loginModule(new LoginModule(this))
                 .build();
         component.inject(this);
@@ -66,7 +64,7 @@ public class LoginActivityDagger extends DaggerBaseActivity<LoginComponent>
 
     @Override
     public void navigateToMainScreen() {
-        startActivity(new Intent(this, MainActivityDagger.class));
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 }

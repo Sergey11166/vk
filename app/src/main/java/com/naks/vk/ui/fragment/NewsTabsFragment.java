@@ -15,11 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.naks.vk.R;
-import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.component.NewsTabComponent;
 import com.naks.vk.di.module.NewsTabModule;
+import com.naks.vk.mvp.model.interactor.TypeNews;
 import com.naks.vk.mvp.presenter.NewsTabPresenter;
 import com.naks.vk.mvp.view.NewsTabView;
+import com.naks.vk.ui.activity.MainActivity;
 import com.naks.vk.ui.adapter.NewsTabAdapter;
 
 import javax.inject.Inject;
@@ -28,8 +29,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-
-import static com.naks.vk.mvp.model.interactor.GetNewsInteractor.TypeNews;
 
 public class NewsTabsFragment extends DaggerBaseFragment<NewsTabComponent>
         implements NewsTabView {
@@ -45,8 +44,9 @@ public class NewsTabsFragment extends DaggerBaseFragment<NewsTabComponent>
     private Unbinder unbinder;
 
     @Override
-    protected void setupComponent(MainComponent component) {
-        super.component = component.plus(new NewsTabModule(this));
+    protected void setupComponent() {
+        super.component = ((MainActivity)getActivity()).getComponent()
+                .plus(new NewsTabModule(this));
         super.component.inject(this);
     }
 

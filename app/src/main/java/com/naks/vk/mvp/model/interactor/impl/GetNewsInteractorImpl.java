@@ -5,6 +5,8 @@ import android.util.Log;
 import com.naks.vk.BuildConfig;
 import com.naks.vk.api.domain.VKApiNews;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
+import com.naks.vk.mvp.model.interactor.OnNewsLoadingFinishedListener;
+import com.naks.vk.mvp.model.interactor.TypeNews;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;

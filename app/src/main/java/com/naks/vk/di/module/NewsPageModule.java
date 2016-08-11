@@ -1,12 +1,11 @@
 package com.naks.vk.di.module;
 
-import com.hannesdorfmann.mosby.mvp.viewstate.lce.data.RetainingLceViewState;
 import com.naks.vk.di.anotation.PerFragment;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
+import com.naks.vk.mvp.model.interactor.TypeNews;
 import com.naks.vk.mvp.model.interactor.impl.GetNewsInteractorImpl;
 import com.naks.vk.mvp.presenter.NewsPagePresenter;
 import com.naks.vk.mvp.presenter.impl.NewsPagePresenterImpl;
-import com.naks.vk.ui.adapter.NewsRecyclerAdapter;
 import com.naks.vk.ui.fragment.NewsPageFragment;
 
 import dagger.Module;
@@ -23,20 +22,10 @@ public class NewsPageModule {
 
     @Provides
     @PerFragment
-    NewsRecyclerAdapter provideAdapter() {
-        return new NewsRecyclerAdapter(fragment.getActivity());
-    }
-
-    @Provides
-    @PerFragment
-    NewsPagePresenter providePresenter() {
-        return new NewsPagePresenterImpl(fragment);
-    }
-
-    @Provides
-    @PerFragment
-    RetainingLceViewState provideViewState() {
-        return new RetainingLceViewState<>();
+    NewsPagePresenter providePresenter(GetNewsInteractor interactor) {
+        String key = fragment.getArguments().getString(NewsPageFragment.KEY_NEWS_TYPE);
+        assert key != null;
+        return new NewsPagePresenterImpl(interactor, TypeNews.valueOf(TypeNews.class, key));
     }
 
     @Provides

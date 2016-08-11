@@ -12,14 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hannesdorfmann.mosby.mvp.viewstate.lce.LceViewState;
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.data.RetainingLceViewState;
 import com.naks.vk.R;
 import com.naks.vk.api.domain.VKApiItem;
 import com.naks.vk.api.domain.VKApiNews;
-import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.component.NewsPageComponent;
 import com.naks.vk.di.module.NewsPageModule;
 import com.naks.vk.mvp.presenter.NewsPagePresenter;
 import com.naks.vk.mvp.view.NewsPageView;
+import com.naks.vk.ui.activity.MainActivity;
 import com.naks.vk.ui.adapter.NewsRecyclerAdapter;
 import com.naks.vk.ui.util.NewsErrorMessage;
 import com.vk.sdk.api.model.VKApiCommunityFull;
@@ -47,9 +48,10 @@ public class NewsPageFragment extends MvpLceViewStateDaggerBaseFragment<SwipeRef
     private boolean isVisibleToUser;
 
     @Override
-    protected void setupComponent(MainComponent component) {
-        Log.d(TAG, "setupComponent(" + component.toString() + ")");
-        super.component = component.plus(new NewsPageModule(this));
+    protected void setupComponent() {
+        Log.d(TAG, "setupComponent()");
+        super.component = ((MainActivity)getActivity()).getComponent()
+                .plus(new NewsPageModule(this));
         super.component.inject(this);
     }
 
@@ -64,7 +66,7 @@ public class NewsPageFragment extends MvpLceViewStateDaggerBaseFragment<SwipeRef
     @SuppressWarnings("unchecked")
     public LceViewState<VKApiNews, NewsPageView> createViewState() {
         Log.d(TAG, "createViewState()");
-        return component.getViewState();
+        return new RetainingLceViewState<>();
     }
 
     @Nullable

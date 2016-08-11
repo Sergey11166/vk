@@ -1,14 +1,12 @@
 package com.naks.vk.mvp.presenter.impl;
 
 import com.naks.vk.mvp.model.interactor.LoginInteractor;
+import com.naks.vk.mvp.model.interactor.OnLoginFinishedListener;
 import com.naks.vk.mvp.presenter.LoginPresenter;
 import com.naks.vk.mvp.view.LoginView;
-import com.naks.vk.ui.activity.LoginActivityDagger;
 import com.vk.sdk.VKScope;
 
-import javax.inject.Inject;
-
-public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLoginFinishedListener {
+public class LoginPresenterImpl implements LoginPresenter, OnLoginFinishedListener {
 
     private static final String[] scope = new String[]{
             VKScope.NOTIFICATIONS,
@@ -25,15 +23,16 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLog
             VKScope.DOCS,
     };
 
-    @Inject LoginView view;
-    @Inject LoginInteractor loginInteractor;
+    private LoginView view;
+    private LoginInteractor interactor;
 
-    public LoginPresenterImpl(LoginActivityDagger activity) {
-        activity.getComponent().inject(this);
+    public LoginPresenterImpl(LoginView view, LoginInteractor interactor) {
+        this.view = view;
+        this.interactor = interactor;
     }
 
     public void wakeUpSession() {
-        loginInteractor.wakeUpSession(this);
+        interactor.wakeUpSession(this);
     }
 
     public void onUserPassedAuthorization() {

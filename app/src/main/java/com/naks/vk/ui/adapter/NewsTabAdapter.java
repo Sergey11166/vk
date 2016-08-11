@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
+import com.naks.vk.mvp.model.interactor.TypeNews;
 import com.naks.vk.ui.fragment.NewsPageFragment;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class NewsTabAdapter extends FragmentPagerAdapter {
         super(fragmentManager);
     }
 
-    public void addFragment(Fragment fragment, GetNewsInteractor.TypeNews type, String title) {
+    public void addFragment(Fragment fragment, TypeNews type, String title) {
         Bundle args = new Bundle();
         args.putString(NewsPageFragment.KEY_NEWS_TYPE, type.name());
         fragment.setArguments(args);

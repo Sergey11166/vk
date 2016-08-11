@@ -11,32 +11,29 @@ import com.naks.vk.R;
 import com.naks.vk.api.domain.VKApiItem;
 import com.naks.vk.api.domain.VKApiNews;
 import com.naks.vk.mvp.model.interactor.GetNewsInteractor;
+import com.naks.vk.mvp.model.interactor.OnNewsLoadingFinishedListener;
+import com.naks.vk.mvp.model.interactor.TypeNews;
 import com.naks.vk.mvp.presenter.NewsPagePresenter;
 import com.naks.vk.mvp.view.NewsPageView;
-import com.naks.vk.ui.fragment.NewsPageFragment;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.model.VKApiCommunityFull;
 import com.vk.sdk.api.model.VKApiUserFull;
 
-import javax.inject.Inject;
-
 public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
-        implements NewsPagePresenter, GetNewsInteractor.OnNewsLoadingFinishedListener {
+        implements NewsPagePresenter, OnNewsLoadingFinishedListener {
 
     private static final String TAG = "NewsPagePresenter";
 
-    @Inject GetNewsInteractor interactor;
+    private GetNewsInteractor interactor;
 
-    private GetNewsInteractor.TypeNews typeNews;
+    private TypeNews typeNews;
 
     private String startFrom;
 
-    public NewsPagePresenterImpl(NewsPageFragment fragment) {
+    public NewsPagePresenterImpl(GetNewsInteractor interactor, TypeNews typeNews) {
         Log.d(TAG, "constructor " + toString());
-        fragment.getComponent().inject(this);
-        String key = fragment.getArguments().getString(NewsPageFragment.KEY_NEWS_TYPE);
-        assert key != null;
-        typeNews = GetNewsInteractor.TypeNews.valueOf(GetNewsInteractor.TypeNews.class, key);
+        this.interactor = interactor;
+        this.typeNews = typeNews;
     }
 
     @Override

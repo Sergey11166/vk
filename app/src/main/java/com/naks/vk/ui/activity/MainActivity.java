@@ -7,10 +7,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 
+import com.naks.vk.App;
 import com.naks.vk.R;
-import com.naks.vk.di.component.AppComponent;
 import com.naks.vk.di.component.DaggerMainComponent;
-import com.naks.vk.di.component.HasComponent;
 import com.naks.vk.di.component.MainComponent;
 import com.naks.vk.di.module.MainModule;
 import com.naks.vk.mvp.presenter.MainPresenter;
@@ -22,8 +21,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivityDagger extends DaggerBaseActivity<MainComponent> implements
-        NavigationView.OnNavigationItemSelectedListener, HasComponent<MainComponent>, MainView {
+public class MainActivity extends DaggerBaseActivity<MainComponent> implements
+        NavigationView.OnNavigationItemSelectedListener, MainView {
 
     @Inject MainPresenter presenter;
 
@@ -31,9 +30,9 @@ public class MainActivityDagger extends DaggerBaseActivity<MainComponent> implem
     @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
 
     @Override
-    protected void setupComponent(AppComponent appComponent) {
+    protected void setupComponent() {
         component = DaggerMainComponent.builder()
-                .appComponent(appComponent)
+                .appComponent(App.get(this).getComponent())
                 .mainModule(new MainModule(this))
                 .build();
         component.inject(this);
