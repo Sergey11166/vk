@@ -31,10 +31,12 @@ public class LoginPresenterImpl implements LoginPresenter, OnLoginFinishedListen
         this.interactor = interactor;
     }
 
+    @Override
     public void wakeUpSession() {
         interactor.wakeUpSession(this);
     }
 
+    @Override
     public void onUserPassedAuthorization() {
         view.navigateToMainScreen();
     }
@@ -48,7 +50,4 @@ public class LoginPresenterImpl implements LoginPresenter, OnLoginFinishedListen
     public void onLoggedIn() {
         view.navigateToMainScreen();
     }
-
-    @Override public void onPending() {}
-    @Override public void onUnknown() {}
 }

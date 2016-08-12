@@ -28,12 +28,6 @@ public class LoginInteractorImpl implements LoginInteractor {
                     case LoggedIn:
                         listener.onLoggedIn();
                         break;
-                    case Pending:
-                        listener.onPending();
-                        break;
-                    case Unknown:
-                        listener.onUnknown();
-                        break;
                 }
             }
 

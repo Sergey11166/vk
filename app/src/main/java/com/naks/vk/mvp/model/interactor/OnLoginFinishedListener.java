@@ -5,8 +5,4 @@ public interface OnLoginFinishedListener {
     void onLoggedOut();
 
     void onLoggedIn();
-
-    void onPending();
-
-    void onUnknown();
 }
