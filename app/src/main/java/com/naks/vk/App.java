@@ -10,7 +10,7 @@ import com.vk.sdk.VKSdk;
 
 public class App extends Application {
 
-    private AppComponent component;
+    AppComponent component;
 
     @Override
     public void onCreate() {

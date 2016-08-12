@@ -1,9 +1,5 @@
 package com.naks.vk.di.module;
 
-import android.app.Application;
-
-import com.naks.vk.App;
-import com.naks.vk.di.anotation.PerActivity;
 import com.naks.vk.mvp.model.interactor.LoginInteractor;
 import com.naks.vk.mvp.model.interactor.OnLoginFinishedListener;
 import com.naks.vk.mvp.view.LoginView;
@@ -22,18 +18,6 @@ import static org.mockito.Mockito.mock;
 
 @Module
 public class MockAppModule {
-
-    private App app;
-
-    public MockAppModule(App app) {
-        this.app = app;
-    }
-
-    @Provides
-    @Singleton
-    Application provideApplication() {
-        return app;
-    }
 
     @Provides
     @Singleton

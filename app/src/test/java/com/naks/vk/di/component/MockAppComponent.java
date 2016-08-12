@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = { MockAppModule.class })
-public interface MockAppComponent extends AppComponent {
+@Component(modules = MockAppModule.class)
+public interface MockAppComponent {
     void inject(LoginPresenterTest test);
 }
