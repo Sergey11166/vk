@@ -6,7 +6,7 @@ import com.naks.vk.mvp.view.MainView;
 
 public class MainPresenterImpl implements MainPresenter {
 
-    private MainView view;
+    MainView view;
 
     public MainPresenterImpl(MainView view) {
         this.view = view;

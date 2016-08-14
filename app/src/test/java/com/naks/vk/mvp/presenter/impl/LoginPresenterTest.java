@@ -1,15 +1,12 @@
 package com.naks.vk.mvp.presenter.impl;
 
-import com.naks.vk.BuildConfig;
 import com.naks.vk.TestApp;
+import com.naks.vk.di.component.DaggerMockLoginComponent;
+import com.naks.vk.di.module.MockLoginModule;
 import com.naks.vk.mvp.model.interactor.OnLoginFinishedListener;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
 
 import javax.inject.Inject;
 
@@ -18,15 +15,17 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, application = TestApp.class, sdk = 21)
 public class LoginPresenterTest {
 
     @Inject LoginPresenterImpl presenter;
 
     @Before
     public void setUp() {
-        ((TestApp) RuntimeEnvironment.application).getComponent().inject(this);
+        DaggerMockLoginComponent.builder()
+                .mockAppComponent((new TestApp()).getComponent())
+                .mockLoginModule(new MockLoginModule())
+                .build()
+                .inject(this);
     }
 
     @Test
