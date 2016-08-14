@@ -5,8 +5,6 @@ import com.naks.vk.mvp.model.interactor.LoginInteractor;
 import com.naks.vk.mvp.presenter.impl.LoginPresenterImpl;
 import com.naks.vk.mvp.view.LoginView;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -17,13 +15,13 @@ public class MockLoginModule {
 
     @Provides
     @PerActivity
-    LoginView provideLoginView() {
+    LoginView provideView() {
         return mock(LoginView.class);
     }
 
     @Provides
     @PerActivity
-    LoginInteractor provideLoginInteractor() {
+    LoginInteractor provideInteractor() {
         return mock(LoginInteractor.class);
     }
 

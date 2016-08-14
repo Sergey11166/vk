@@ -1,14 +1,18 @@
 package com.naks.vk;
 
+import android.app.Application;
+
 import com.naks.vk.di.component.DaggerMockAppComponent;
 import com.naks.vk.di.component.MockAppComponent;
 import com.naks.vk.di.module.MockAppModule;
 
-public class TestApp {
+public class TestApp extends Application {
 
     MockAppComponent component;
 
-    public TestApp() {
+    @Override
+    public void onCreate() {
+        super.onCreate();
         component = createComponent();
     }
 
