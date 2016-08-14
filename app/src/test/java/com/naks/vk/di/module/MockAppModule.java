@@ -2,6 +2,8 @@ package com.naks.vk.di.module;
 
 import com.naks.vk.mvp.model.interactor.LoginInteractor;
 import com.naks.vk.mvp.model.interactor.OnLoginFinishedListener;
+import com.naks.vk.mvp.presenter.LoginPresenter;
+import com.naks.vk.mvp.presenter.impl.LoginPresenterImpl;
 import com.naks.vk.mvp.view.LoginView;
 
 import org.mockito.invocation.InvocationOnMock;
@@ -28,14 +30,12 @@ public class MockAppModule {
     @Provides
     @Singleton
     LoginInteractor provideLoginInteractor() {
-        LoginInteractor interactor = mock(LoginInteractor.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                ((OnLoginFinishedListener)invocation.getArguments()[0]).onLoggedIn();
-                return null;
-            }
-        }).when(interactor).wakeUpSession(any(OnLoginFinishedListener.class));
-        return interactor;
+        return mock(LoginInteractor.class);
+    }
+
+    @Provides
+    @Singleton
+    LoginPresenterImpl providePresenter(LoginView view, LoginInteractor interactor) {
+        return new LoginPresenterImpl(view, interactor);
     }
 }

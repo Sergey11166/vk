@@ -8,7 +8,7 @@ import com.vk.sdk.VKScope;
 
 public class LoginPresenterImpl implements LoginPresenter, OnLoginFinishedListener {
 
-    private static final String[] scope = new String[]{
+    static final String[] scope = new String[]{
             VKScope.NOTIFICATIONS,
             VKScope.MESSAGES,
             VKScope.FRIENDS,
@@ -23,8 +23,8 @@ public class LoginPresenterImpl implements LoginPresenter, OnLoginFinishedListen
             VKScope.DOCS,
     };
 
-    private LoginView view;
-    private LoginInteractor interactor;
+    LoginView view;
+    LoginInteractor interactor;
 
     public LoginPresenterImpl(LoginView view, LoginInteractor interactor) {
         this.view = view;
