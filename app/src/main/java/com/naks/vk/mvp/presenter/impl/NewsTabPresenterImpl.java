@@ -5,7 +5,7 @@ import com.naks.vk.mvp.view.NewsTabView;
 
 public class NewsTabPresenterImpl implements NewsTabPresenter {
 
-    private NewsTabView view;
+    NewsTabView view;
 
     public NewsTabPresenterImpl(NewsTabView view) {
         this.view = view;
