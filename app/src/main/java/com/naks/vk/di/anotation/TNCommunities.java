@@ -1,11 +1,14 @@
 package com.naks.vk.di.anotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 
-import javax.inject.Scope;
+import javax.inject.Qualifier;
 
-@Scope
-@Retention(RetentionPolicy.RUNTIME)
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Qualifier
+@Documented
+@Retention(RUNTIME)
 public @interface TNCommunities {
 }
