@@ -24,9 +24,10 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
 
     private static final String TAG = "NewsPagePresenter";
 
-    private GetNewsInteractor interactor;
-    private TypeNews typeNews;
-    private String startFrom;
+    GetNewsInteractor interactor;
+    TypeNews typeNews;
+    String startFrom;
+    NewsPageView view;
 
     public NewsPagePresenterImpl(GetNewsInteractor interactor, TypeNews typeNews) {
         Log.d(TAG, "constructor " + toString());
@@ -47,10 +48,9 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     @Override
     public void onItemClick(VKApiItem item, VKApiUserFull user, VKApiCommunityFull group) {
         Log.d(TAG, "inItemClick(" + item + ")");
-        if (isViewAttached()) {
-            assert getView() != null;
-            getView().navigateToNewsDetailActivity(item, user, group);
-        }
+        if (view == null) view = getView();
+        assert view != null;
+        view.navigateToNewsDetailActivity(item, user, group);
     }
 
     @Override
@@ -105,7 +105,6 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     @Override
     public void onLoadingFailed(VKError error, boolean pullToRefresh) {
         Log.d(TAG, "showError(" + error.getClass().getSimpleName() + " , " + pullToRefresh + ")");
-        assert getView() != null;
         if (!pullToRefresh && startFrom != null) {
             showErrorLoadPage();
         } else {
@@ -113,31 +112,36 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
         }
     }
 
-    private void showLoading(boolean pullToRefresh) {
-        assert getView() != null;
-        getView().showLoading(pullToRefresh);
-    }
+    void showLoading(boolean pullToRefresh) {
+        if (view == null) view = getView();
+        assert view != null;
+        view.showLoading(pullToRefresh);
+}
 
-    private void setData(VKApiNews news) {
+    void setData(VKApiNews news) {
         Log.d(TAG, "setData()");
-        assert getView() != null;
-        getView().setData(news);
-        getView().showContent();
+        if (view == null) view = getView();
+        assert view != null;
+        view.setData(news);
+        view.showContent();
     }
 
-    private void addData(VKApiNews news) {
+    void addData(VKApiNews news) {
         Log.d(TAG, "addData()");
-        assert getView() != null;
-        getView().addData(news);
+        if (view == null) view = getView();
+        assert view != null;
+        view.addData(news);
     }
 
-    private void showErrorLoadPage() {
-        assert getView() != null;
-        getView().showErrorLoadPage();
+    void showErrorLoadPage() {
+        if (view == null) view = getView();
+        assert view != null;
+        view.showErrorLoadPage();
     }
 
-    private void showError(VKError error, boolean pullToRefresh) {
-        assert getView() != null;
-        getView().showError(new Exception(error.toString()), pullToRefresh);
+    void showError(VKError error, boolean pullToRefresh) {
+        if (view == null) view = getView();
+        assert view != null;
+        view.showError(new Exception(error.toString()), pullToRefresh);
     }
 }
