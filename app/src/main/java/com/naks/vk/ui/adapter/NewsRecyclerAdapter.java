@@ -110,7 +110,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         assert vh.user != null;
         assert vh.group != null;
 
-        Glide.with(context.getApplicationContext())
+        Glide.with(context)
                 .load(sourceId > 0 ? vh.user.photo_100 : vh.group.photo_100)
                 .asBitmap()
                 .centerCrop()
@@ -263,7 +263,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void showPopupMenu(VKApiItem item, View view) {
-        PopupMenu popupMenu = new PopupMenu(context, view);
+        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
         popupMenu.inflate(R.menu.popup_menu_news_item);
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             menuItemClickListener.onItemClick(context, item, menuItem.getItemId());
