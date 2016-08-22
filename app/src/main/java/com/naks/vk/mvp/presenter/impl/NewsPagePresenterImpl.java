@@ -25,9 +25,7 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     private static final String TAG = "NewsPagePresenter";
 
     private GetNewsInteractor interactor;
-
     private TypeNews typeNews;
-
     private String startFrom;
 
     public NewsPagePresenterImpl(GetNewsInteractor interactor, TypeNews typeNews) {
@@ -42,11 +40,8 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
         String startFrom = null;
         if (!pullToRefresh) startFrom = this.startFrom;
         interactor.get(typeNews, pullToRefresh, startFrom, this);
-
         if (!pullToRefresh && this.startFrom != null) return;
-
-        assert getView() != null;
-        getView().showLoading(pullToRefresh);
+        showLoading(pullToRefresh);
     }
 
     @Override
@@ -99,35 +94,50 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
 
     @Override
     public void onLoadingSuccess(VKApiNews news, boolean pullToRefresh) {
-        if (isViewAttached()) {
-
-            assert getView() != null;
-
-            if (pullToRefresh || startFrom == null) {
-                Log.d(TAG, "setData()");
-                getView().setData(news);
-
-                Log.d(TAG, "showContent()");
-                getView().showContent();
-            } else {
-                Log.d(TAG, "addData()");
-                getView().addData(news);
-            }
-            this.startFrom = news.next_from;
+        if (pullToRefresh || startFrom == null) {
+            setData(news);
+        } else {
+            addData(news);
         }
+        this.startFrom = news.next_from;
     }
 
     @Override
     public void onLoadingFailed(VKError error, boolean pullToRefresh) {
-        if (isViewAttached()) {
-
-            Log.d(TAG, "showError(" + error.getClass().getSimpleName() + " , " + pullToRefresh + ")");
-            assert getView() != null;
-            if (!pullToRefresh && startFrom != null) {
-                getView().showErrorLoadPage();
-                return;
-            }
-            getView().showError(new Exception(error.toString()), pullToRefresh);
+        Log.d(TAG, "showError(" + error.getClass().getSimpleName() + " , " + pullToRefresh + ")");
+        assert getView() != null;
+        if (!pullToRefresh && startFrom != null) {
+            showErrorLoadPage();
+        } else {
+            showError(error, pullToRefresh);
         }
+    }
+
+    private void showLoading(boolean pullToRefresh) {
+        assert getView() != null;
+        getView().showLoading(pullToRefresh);
+    }
+
+    private void setData(VKApiNews news) {
+        Log.d(TAG, "setData()");
+        assert getView() != null;
+        getView().setData(news);
+        getView().showContent();
+    }
+
+    private void addData(VKApiNews news) {
+        Log.d(TAG, "addData()");
+        assert getView() != null;
+        getView().addData(news);
+    }
+
+    private void showErrorLoadPage() {
+        assert getView() != null;
+        getView().showErrorLoadPage();
+    }
+
+    private void showError(VKError error, boolean pullToRefresh) {
+        assert getView() != null;
+        getView().showError(new Exception(error.toString()), pullToRefresh);
     }
 }

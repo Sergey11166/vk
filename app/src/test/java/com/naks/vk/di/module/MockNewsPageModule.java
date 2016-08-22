@@ -37,21 +37,21 @@ public class MockNewsPageModule {
 
         doAnswer(invocation -> {
             ((OnNewsLoadingFinishedListener)invocation.getArguments()[0])
-                    .onLoadingSuccess(new VKApiNews(new JSONObject("data")), false);
+                    .onLoadingSuccess(new VKApiNews(new JSONObject()), false);
             return null;
         }).when(interactor)
                 .get(TypeNews.NEWS, false, "startFrom", any(OnNewsLoadingFinishedListener.class));
 
         doAnswer(invocation -> {
             ((OnNewsLoadingFinishedListener)invocation.getArguments()[0])
-                    .onLoadingSuccess(new VKApiNews(new JSONObject("data")), true);
+                    .onLoadingSuccess(new VKApiNews(new JSONObject()), true);
             return null;
         }).when(interactor)
                 .get(TypeNews.NEWS, true, "startFrom", any(OnNewsLoadingFinishedListener.class));
 
         doAnswer(invocation -> {
             ((OnNewsLoadingFinishedListener)invocation.getArguments()[0])
-                    .onLoadingSuccess(new VKApiNews(new JSONObject("data")), false);
+                    .onLoadingSuccess(new VKApiNews(new JSONObject()), false);
             return null;
         }).when(interactor)
                 .get(TypeNews.NEWS, false, null, any(OnNewsLoadingFinishedListener.class));
@@ -59,31 +59,9 @@ public class MockNewsPageModule {
         return interactor;
     }
 
-    @TNNews
     @Provides
     @PerFragment
     NewsPagePresenterImpl providePresenterNews(GetNewsInteractor interactor) {
         return new NewsPagePresenterImpl(interactor, TypeNews.NEWS);
-    }
-
-    @Provides
-    @PerFragment
-    @TNRecommendations
-    NewsPagePresenterImpl providePresenterRecommendations(GetNewsInteractor interactor) {
-        return new NewsPagePresenterImpl(interactor, TypeNews.RECOMMENDATIONS);
-    }
-
-    @Provides
-    @TNFriends
-    @PerFragment
-    NewsPagePresenterImpl providePresenterFriends(GetNewsInteractor interactor) {
-        return new NewsPagePresenterImpl(interactor, TypeNews.FRIENDS);
-    }
-
-    @Provides
-    @PerFragment
-    @TNCommunities
-    NewsPagePresenterImpl providePresenterCommunities(GetNewsInteractor interactor) {
-        return new NewsPagePresenterImpl(interactor, TypeNews.COMMUNITIES);
     }
 }

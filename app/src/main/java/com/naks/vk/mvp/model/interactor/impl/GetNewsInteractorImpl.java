@@ -47,6 +47,7 @@ public class GetNewsInteractorImpl implements GetNewsInteractor {
                         VKApiConst.FILTERS, "post,photo",
                         "source_ids", "groups,pages"));
         }
+
         vkRequest.addExtraParameter("start_from", startFrom);
         vkRequest.addExtraParameter("count", COUNT);
 
