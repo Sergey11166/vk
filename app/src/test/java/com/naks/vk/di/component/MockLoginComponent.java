@@ -4,8 +4,6 @@ import com.naks.vk.di.anotation.PerActivity;
 import com.naks.vk.di.module.MockLoginModule;
 import com.naks.vk.mvp.presenter.impl.LoginPresenterTest;
 
-import javax.inject.Singleton;
-
 import dagger.Component;
 
 @PerActivity

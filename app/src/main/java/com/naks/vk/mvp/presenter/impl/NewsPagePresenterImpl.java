@@ -25,7 +25,7 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
     private static final String TAG = "NewsPagePresenter";
 
     GetNewsInteractor interactor;
-    TypeNews typeNews;
+    private TypeNews typeNews;
     String startFrom;
     NewsPageView view;
 
@@ -112,13 +112,13 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
         }
     }
 
-    void showLoading(boolean pullToRefresh) {
+    private void showLoading(boolean pullToRefresh) {
         if (view == null) view = getView();
         assert view != null;
         view.showLoading(pullToRefresh);
 }
 
-    void setData(VKApiNews news) {
+    private void setData(VKApiNews news) {
         Log.d(TAG, "setData()");
         if (view == null) view = getView();
         assert view != null;
@@ -126,20 +126,20 @@ public class NewsPagePresenterImpl extends MvpBasePresenter <NewsPageView>
         view.showContent();
     }
 
-    void addData(VKApiNews news) {
+    private void addData(VKApiNews news) {
         Log.d(TAG, "addData()");
         if (view == null) view = getView();
         assert view != null;
         view.addData(news);
     }
 
-    void showErrorLoadPage() {
+    private void showErrorLoadPage() {
         if (view == null) view = getView();
         assert view != null;
         view.showErrorLoadPage();
     }
 
-    void showError(VKError error, boolean pullToRefresh) {
+    private void showError(VKError error, boolean pullToRefresh) {
         if (view == null) view = getView();
         assert view != null;
         view.showError(new Exception(error.toString()), pullToRefresh);

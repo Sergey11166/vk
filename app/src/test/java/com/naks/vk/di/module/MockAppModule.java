@@ -10,7 +10,7 @@ import dagger.Provides;
 @Module
 public class MockAppModule {
 
-    TestApp testApp;
+    private TestApp testApp;
 
     public MockAppModule(TestApp testApp) {
         this.testApp = testApp;
