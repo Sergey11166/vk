@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileOptions {
@@ -55,10 +54,4 @@ dependencies {
     testCompile 'org.robolectric:robolectric:3.1.2'
     testCompile 'org.mockito:mockito-core:1.10.19'
     testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.6'
-}
-
-// to resolve issue https://code.google.com/p/android/issues/detail?id=224272
-android.applicationVariants.all {
-    def aptOutputDir = new File(buildDir, "generated/source/apt/${it.unitTestVariant.dirName}")
-    it.unitTestVariant.addJavaSourceFoldersToModel(aptOutputDir)
 }
